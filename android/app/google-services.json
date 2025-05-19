@@ -1,0 +1,67 @@
+{
+  "project_info": {
+    "project_number": "132381343622",
+    "project_id": "sudan-mall-a458a",
+    "storage_bucket": "sudan-mall-a458a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:132381343622:android:f179adf4cef66f2fa4b607",
+        "android_client_info": {
+          "package_name": "com.example.admin_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGUjJ4JpCbLTYEe2mFvtaat8D43Obktcc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:132381343622:android:d14fe8bb7c139686a4b607",
+        "android_client_info": {
+          "package_name": "com.example.sudan_goods"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGUjJ4JpCbLTYEe2mFvtaat8D43Obktcc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:132381343622:android:d78c4ffff5f10804a4b607",
+        "android_client_info": {
+          "package_name": "com.example.sudan_goods_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGUjJ4JpCbLTYEe2mFvtaat8D43Obktcc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
