@@ -61,7 +61,10 @@ class CartBottomSheet extends StatelessWidget {
                     return Text('Error: ${snapshot.error}');
                   } else {
                     final store = snapshot.data!;
-                    return Text('${store.name}\'s Cart', style: Theme.of(context).textTheme.titleLarge);
+                    return Text(
+                      '${store.name}\'s Cart',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    );
                   }
                 },
               ),
@@ -156,40 +159,56 @@ class CartBottomSheet extends StatelessWidget {
               const SizedBox(height: 16),
 
               // ✅ Buttons
-              SafeArea(
-                top: false, // don't pad top
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 8.0, bottom: 12),
-                  child: Row(
-                    children: [
-                    /*   Expanded(
-                        child: OutlinedButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text("Continue Shopping"),
-                        ),
-                      ),
-                      const SizedBox(width: 12), */
-                      Expanded(
-                        child: ElevatedButton(
-                          
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.orange.shade700,
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                          ),
-                          onPressed: () {
-                            // Proceed to checkout
-                          },
-                          child: const Text("Checkout", 
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
+              // ✅ Checkout Button after getting store.minOrder
+              FutureBuilder<Store>(
+                future: cart.getStoreDetails(storeId),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) return const SizedBox.shrink();
+
+                  final store = snapshot.data!;
+                  final bool canCheckout = subtotal >= store.minimumOrderAmount;
+
+                  return SafeArea(
+                    top: false,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 8.0, bottom: 12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          if (!canCheckout)
+                            Text(
+                              "Minimum order is €${store.minimumOrderAmount.toStringAsFixed(2)}",
+                              style: const TextStyle(color: Colors.red),
+                              textAlign: TextAlign.center,
+                            ),
+                          const SizedBox(height: 8),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  canCheckout
+                                      ? Colors.orange.shade700
+                                      : Colors.grey.shade400,
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                            ),
+                            onPressed:
+                                canCheckout
+                                    ? () {
+                                      // Proceed to checkout
+                                    }
+                                    : null, // disabled if not eligible
+                            child: const Text(
+                              "Checkout",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
+                    ),
+                  );
+                },
               ),
             ],
           ),
