@@ -121,7 +121,7 @@ class CartOverviewPage extends StatelessWidget {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: SafeArea(
-        minimum: const EdgeInsets.all(12),
+        minimum: const EdgeInsets.symmetric(horizontal: 12),
         child: SizedBox(
           width: double.infinity,
           child: ElevatedButton(

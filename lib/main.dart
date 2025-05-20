@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Sudan shops',
+      title: 'Sudan Goods',
       theme: AppTheme.lightTheme,
       home: AuthGate(), // We'll create this next
     );

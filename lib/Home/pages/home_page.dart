@@ -16,10 +16,11 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text(
-          'Sudan shops',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          'Sudan Goods',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
         ),
         leading: IconButton(
           icon: const Icon(Icons.location_searching, color: Colors.black),
@@ -28,8 +29,8 @@ class HomePage extends StatelessWidget {
           },
         ),
         centerTitle: true,
-        backgroundColor: Colors.orange,
-        foregroundColor: Colors.black,
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.white,
         elevation: 1,
         actions: [
           IconButton(
@@ -106,8 +107,8 @@ class HomePage extends StatelessWidget {
             clipBehavior: Clip.none,
             children: [
               SizedBox(
-                height: 80,
-                width: 80,
+                height: 65,
+                width: 65,
                 child: FloatingActionButton(
                   shape: const CircleBorder(),
                   onPressed: () {
@@ -156,46 +157,65 @@ class HomePage extends StatelessWidget {
       // ⬇ Bottom Bar with SafeArea for safe padding
       bottomNavigationBar: SafeArea(
         bottom: false,
-
         child: BottomAppBar(
-          color: Colors.orange,
+          color: Colors.white,
           shape: const CircularNotchedRectangle(),
           surfaceTintColor: Colors.white,
           notchMargin: 8.0,
           elevation: 8,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                IconButton(
-                  iconSize: 30,
-                  icon: const Icon(Icons.home, color: Colors.black),
-                  onPressed: () {
+                InkWell(
+                  onTap: () {
                     // TODO: Navigate to Home
                   },
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: const [
+                      Icon(Icons.home, color: Colors.black, size: 22),
+                      Text("Home", style: TextStyle(fontSize: 12)),
+                    ],
+                  ),
                 ),
-                IconButton(
-                  iconSize: 30,
-                  icon: const Icon(Icons.list_alt, color: Colors.black),
-                  onPressed: () {
+                InkWell(
+                  onTap: () {
                     // TODO: Navigate to Orders
                   },
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: const [
+                      Icon(Icons.list_alt, color: Colors.black, size: 22),
+                      Text("Orders", style: TextStyle(fontSize: 12)),
+                    ],
+                  ),
                 ),
-                const SizedBox(width: 40), // Space for FAB in the middle
-                IconButton(
-                  iconSize: 30,
-                  icon: const Icon(Icons.settings, color: Colors.black),
-                  onPressed: () {
+                const SizedBox(width: 40), // Space for FAB
+                InkWell(
+                  onTap: () {
+                    // TODO: Navigate to Settings
+                  },
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: const [
+                      Icon(Icons.settings, color: Colors.black, size: 22),
+                      Text("Settings", style: TextStyle(fontSize: 12)),
+                    ],
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
                     // TODO: Navigate to Profile
                   },
-                ),
-                IconButton(
-                  iconSize: 30,
-                  icon: const Icon(Icons.person, color: Colors.black),
-                  onPressed: () {
-                    // TODO: Navigate to Profile
-                  },
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: const [
+                      Icon(Icons.person, color: Colors.black, size: 22),
+                      Text("Profile", style: TextStyle(fontSize: 12)),
+                    ],
+                  ),
                 ),
               ],
             ),

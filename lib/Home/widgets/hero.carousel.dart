@@ -13,6 +13,7 @@ class HeroCarousel extends StatefulWidget {
 
 class _HeroCarouselState extends State<HeroCarousel> {
   int _currentIndex = 0;
+  
 
   final List<String> _carouselItems = [
     'https://firebasestorage.googleapis.com/v0/b/sudan-mall-a458a.firebasestorage.app/o/hero_mobile_app%2Fhero1.png?alt=media&token=0c6ee3f0-a38e-4bae-b9d0-f4580e6d5038',
@@ -25,6 +26,8 @@ class _HeroCarouselState extends State<HeroCarousel> {
 
   @override
   Widget build(BuildContext context) {
+    final isTablet = MediaQuery.of(context).size.width >= 600;
+
     return Column(
       children: [
         CarouselSlider.builder(
@@ -52,7 +55,8 @@ class _HeroCarouselState extends State<HeroCarousel> {
             );
           },
           options: CarouselOptions(
-            height: 250,
+           height: isTablet ? 400 : 250,
+
             animateToClosest: true,
            scrollDirection: Axis.horizontal,
             autoPlay: true,

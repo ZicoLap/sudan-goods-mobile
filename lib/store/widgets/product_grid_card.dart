@@ -21,101 +21,109 @@ class ProductGridCard extends StatelessWidget {
         product.discountPrice != null && product.discountPrice! > 0;
     final isOutOfStock = product.quantity == 0;
 
-    return Material(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(16),
-      elevation: 1,
-      child: InkWell(
+    return SizedBox(
+      height: 260, // Fixed card height to prevent overflow
+      child: Material(
+        color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        onTap: onTap,
-        child: Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  // 🖼️ Product Image
-                  Expanded(
-                    child: Center(
-                      child: Image.network(
-                        product.images.isNotEmpty ? product.images.first : '',
-                        fit: BoxFit.contain,
-                        errorBuilder:
-                            (_, __, ___) => const Icon(Icons.image, size: 48),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  // 🏷️ Product Name
-                  Text(
-                    product.name,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
-                    ),
-                  ),
-
-                  const SizedBox(height: 16),
-                  Text(
-                    ' ${product.quantity > 0 ? '${product.quantity} In Stock' : 'Out of Stock'}',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: isOutOfStock ? Colors.red : Colors.black87,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // 💰 Price + Discount
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        '€${(hasDiscount ? product.discountPrice! : product.price).toStringAsFixed(2)}',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                          color: hasDiscount ? Colors.red : Colors.black,
+        elevation: 1,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: onTap,
+          child: Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // 🖼️ Product Image
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: AspectRatio(
+                        aspectRatio: 1,
+                        child: Image.network(
+                          product.images.isNotEmpty ? product.images.first : '',
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) =>
+                              const Icon(Icons.image, size: 48),
                         ),
                       ),
-                      if (hasDiscount) ...[
-                        const SizedBox(width: 6),
-                        Text(
-                          '€${product.price.toStringAsFixed(2)}',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey,
-                            decoration: TextDecoration.lineThrough,
+                    ),
+
+                    const SizedBox(height: 8),
+
+                    // 📦 Info: name, stock, price
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Text(
+                            product.name,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14,
+                            ),
                           ),
-                        ),
-                      ],
-                    ],
-                  ),
-                ],
+                          Text(
+                            product.quantity > 0
+                                ? '${product.quantity} In Stock'
+                                : 'Out of Stock',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color:
+                                  isOutOfStock ? Colors.red : Colors.black87,
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                '€${(hasDiscount ? product.discountPrice! : product.price).toStringAsFixed(2)}',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                  color:
+                                      hasDiscount ? Colors.red : Colors.black,
+                                ),
+                              ),
+                              if (hasDiscount) ...[
+                                const SizedBox(width: 6),
+                                Text(
+                                  '€${product.price.toStringAsFixed(2)}',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey,
+                                    decoration: TextDecoration.lineThrough,
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
 
-            // ➕ Add Button
-            // ➕ or 🔘 Add/Quantity Button
-            Positioned(
-              top: 8,
-              right: 8,
-              child: GestureDetector(
-                onTap: product.quantity == 0 ? null : onAdd,
-                child: Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: cartQuantity > 0 ? Colors.black87 : Colors.orange,
-                  ),
-
-                  child:
-                      cartQuantity > 0
-                          ? Container(
+              // ➕ Add to cart button
+              Positioned(
+                top: 8,
+                right: 8,
+                child: GestureDetector(
+                  onTap: product.quantity == 0 ? null : onAdd,
+                  child: Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color:
+                          cartQuantity > 0 ? Colors.black87 : Colors.orange,
+                    ),
+                    child: cartQuantity > 0
+                        ? Container(
                             width: 20,
                             height: 20,
                             alignment: Alignment.center,
@@ -128,15 +136,16 @@ class ProductGridCard extends StatelessWidget {
                               ),
                             ),
                           )
-                          : const Icon(
+                        : const Icon(
                             Icons.add,
                             size: 20,
                             color: Colors.white,
                           ),
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

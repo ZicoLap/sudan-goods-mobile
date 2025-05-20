@@ -15,6 +15,7 @@ class StoreDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         leading: IconButton(
@@ -26,7 +27,16 @@ class StoreDetailsPage extends StatelessWidget {
             Navigator.of(context).pop();
           },
         ),
-        title: const TextField(
+        title: const Text(
+          'Store Details',
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        centerTitle: true,
+    /*     title: const TextField(
           decoration: InputDecoration(
             hintText: 'Search',
             border: OutlineInputBorder(
@@ -34,7 +44,7 @@ class StoreDetailsPage extends StatelessWidget {
               borderSide: BorderSide.none,
             ),
           ),
-        ),
+        ), */
       ),
       body: StreamBuilder<DocumentSnapshot>(
         stream:
@@ -70,7 +80,7 @@ class StoreDetailsPage extends StatelessWidget {
         },
       ),
       bottomNavigationBar: SafeArea(
-        minimum: const EdgeInsets.only(bottom: 32),
+       // minimum: const EdgeInsets.only(bottom: 32),
         child: FloatingCartBar(storeId: storeId),
       ),
     );

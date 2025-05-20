@@ -8,6 +8,7 @@ class StoreCoverSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isTablet = MediaQuery.of(context).size.width > 600;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
       child: ClipRRect(
@@ -16,7 +17,7 @@ class StoreCoverSection extends StatelessWidget {
           children: [
             // Cover Image
             Container(
-              height: 250,
+              height: isTablet ? 400 : 250,
               width: double.infinity,
               decoration: BoxDecoration(
                 image: DecorationImage(

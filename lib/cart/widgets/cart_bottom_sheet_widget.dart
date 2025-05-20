@@ -159,7 +159,7 @@ class CartBottomSheet extends StatelessWidget {
               SafeArea(
                 top: false, // don't pad top
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 8.0, bottom: 28),
+                  padding: const EdgeInsets.only(top: 8.0, bottom: 12),
                   child: Row(
                     children: [
                     /*   Expanded(

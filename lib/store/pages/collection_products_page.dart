@@ -9,6 +9,7 @@ import 'package:sudan_goods/models/store/product_model.dart';
 import 'package:sudan_goods/store/widgets/product_detail_bottom_sheet.dart';
 import 'package:sudan_goods/store/widgets/product_grid_card.dart';
 import 'package:sudan_goods/store/widgets/shimmer_product_grid_card.dart';
+import 'package:sudan_goods/theme/app_theme.dart';
 
 class CollectionProductsPage extends StatelessWidget {
   final Collection collection;
@@ -18,35 +19,29 @@ class CollectionProductsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<CartController>(context);
+    
 
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(),
-        title: InkWell(
-          onTap: () {
-            // TODO: Later implement search logic
+          backgroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: AppColors.primary,
+          ),
+          onPressed: () {
+            Navigator.of(context).pop();
           },
-          borderRadius: BorderRadius.circular(8),
-          child: Container(
-            height: 42,
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            decoration: BoxDecoration(
-              color: Colors.grey.shade200,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            alignment: Alignment.centerLeft,
-            child: Row(
-              children: const [
-                Icon(Icons.search, color: Colors.grey, size: 20),
-                SizedBox(width: 8),
-                Text(
-                  'Search in ${ /* collection.name */ 'this collection'}',
-                  style: TextStyle(color: Colors.grey, fontSize: 14),
-                ),
-              ],
-            ),
+        ),
+        title: Text(
+          collection.name,
+          style: const TextStyle(
+            color: Colors.black,
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
           ),
         ),
+        centerTitle: true,
       ),
 
       body: StreamBuilder<QuerySnapshot>(
@@ -63,7 +58,7 @@ class CollectionProductsPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
                   child: Text(
                     collection.name,
                     style: const TextStyle(
@@ -97,14 +92,14 @@ class CollectionProductsPage extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
                   child: Center(
-                    child: Text(
+                    /* child: Text(
                       collection.name,
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
-                    ),
+                    ), */
                   ),
                 ),
                 const Expanded(
@@ -124,23 +119,23 @@ class CollectionProductsPage extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                child: Text(
+                /* child: Text(
                   collection.name,
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
-                ),
+                ), */
               ),
               Expanded(
                 child: GridView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   itemCount: products.length,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     mainAxisSpacing: 12,
                     crossAxisSpacing: 12,
-                    childAspectRatio: 2.5 / 3,
+                    childAspectRatio: 0.62,
                   ),
                   itemBuilder: (context, index) {
                     final product = products[index];
@@ -176,7 +171,7 @@ class CollectionProductsPage extends StatelessWidget {
         },
       ),
       bottomNavigationBar: SafeArea(
-        minimum: const EdgeInsets.only(bottom: 32),
+       // minimum: const EdgeInsets.only(bottom: 32),
         child:  FloatingCartBar(storeId: collection.storeId,),
       ),
     );
