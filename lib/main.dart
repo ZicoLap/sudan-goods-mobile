@@ -17,8 +17,9 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => CartController()..loadCartsFromFirestore()),
-        
+        ChangeNotifierProvider(
+          create: (_) => CartController()..loadCartsFromFirestore(),
+        ),
       ],
       child: const MyApp(),
     ),
