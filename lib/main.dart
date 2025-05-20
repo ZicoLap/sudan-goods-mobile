@@ -15,10 +15,13 @@ void main() async {
     print("Firebase initialized successfully");
   }
   runApp(
-    MultiProvider(providers: [
-      ChangeNotifierProvider(create: (_) => CartController()),
-    ],
-    child: const MyApp()),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => CartController()..loadCartsFromFirestore()),
+        
+      ],
+      child: const MyApp(),
+    ),
   );
 }
 
