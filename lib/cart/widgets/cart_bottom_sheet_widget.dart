@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sudan_goods/cart/cart_controller.dart';
+import 'package:sudan_goods/checkout/pages/checkout_page.dart';
 import 'package:sudan_goods/models/store/cart_item_model.dart';
 import 'package:sudan_goods/models/store/store_model.dart';
 
@@ -194,6 +195,12 @@ class CartBottomSheet extends StatelessWidget {
                                 canCheckout
                                     ? () {
                                       // Proceed to checkout
+                                      Navigator.push(context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                            CheckoutPage(storeId: storeId),
+                                        ),
+                                      );
                                     }
                                     : null, // disabled if not eligible
                             child: const Text(
