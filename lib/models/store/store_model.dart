@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:sudan_goods/models/shared_models/address.dart';
+import 'package:sudan_goods/models/store/delivery_rules_model.dart';
 
 part 'store_model.g.dart';
 
@@ -27,6 +28,10 @@ class Store {
   final List<String> storeTypes;
   final bool isFeatured;
   final List<String> categoryIds;
+  final double? freeDeliveryOver;
+    final List<DeliveryRule> deliveryPricing;
+
+
 
 
   Store({
@@ -51,6 +56,8 @@ class Store {
     this.storeTypes = const [],
     this.isFeatured = false,
     this.categoryIds = const [],
+    this.freeDeliveryOver,
+    this.deliveryPricing = const [],
 
   });
 
@@ -79,6 +86,9 @@ class Store {
     storeTypes: storeTypes,
     isFeatured: isFeatured,
     categoryIds: categoryIds,
+    freeDeliveryOver: freeDeliveryOver ?? this.freeDeliveryOver,
+     deliveryPricing: deliveryPricing,
+
   );
 }
 

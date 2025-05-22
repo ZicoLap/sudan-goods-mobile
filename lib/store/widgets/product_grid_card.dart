@@ -67,6 +67,7 @@ class ProductGridCard extends StatelessWidget {
                               fontSize: 14,
                             ),
                           ),
+                          Text( '${product.weight.toString()} kg',),
                           Text(
                             product.quantity > 0
                                 ? '${product.quantity} In Stock'

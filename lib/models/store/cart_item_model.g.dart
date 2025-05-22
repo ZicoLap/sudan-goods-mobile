@@ -12,7 +12,7 @@ CartItem _$CartItemFromJson(Map<String, dynamic> json) => CartItem(
   name: json['name'] as String,
   price: (json['price'] as num).toDouble(),
   weight: (json['weight'] as num).toDouble(),
-  quantity: (json['quantity'] as num?)?.toInt() ?? 1,
+  quantity: (json['quantity'] as num).toInt(),
   imageUrl: json['imageUrl'] as String?,
 );
 

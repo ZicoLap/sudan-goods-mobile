@@ -41,6 +41,12 @@ Store _$StoreFromJson(Map<String, dynamic> json) => Store(
           ?.map((e) => e as String)
           .toList() ??
       const [],
+  freeDeliveryOver: (json['freeDeliveryOver'] as num?)?.toDouble(),
+  deliveryPricing:
+      (json['deliveryPricing'] as List<dynamic>?)
+          ?.map((e) => DeliveryRule.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
 );
 
 Map<String, dynamic> _$StoreToJson(Store instance) => <String, dynamic>{
@@ -65,4 +71,6 @@ Map<String, dynamic> _$StoreToJson(Store instance) => <String, dynamic>{
   'storeTypes': instance.storeTypes,
   'isFeatured': instance.isFeatured,
   'categoryIds': instance.categoryIds,
+  'freeDeliveryOver': instance.freeDeliveryOver,
+  'deliveryPricing': instance.deliveryPricing.map((e) => e.toJson()).toList(),
 };
