@@ -5,7 +5,6 @@ import 'package:sudan_goods/models/store/store_model.dart';
 import 'sections/checkout_user_info_section.dart';
 import 'sections/checkout_address_section.dart';
 import 'sections/checkout_note_section.dart';
-import 'sections/checkout_shipping_section.dart';
 import 'sections/checkout_payment_section.dart';
 import 'sections/checkout_store_section.dart';
 import 'sections/checkout_summary_section.dart';
