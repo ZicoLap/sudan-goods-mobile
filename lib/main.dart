@@ -4,7 +4,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:sudan_goods/authentication/auth_gate_page.dart';
 import 'package:sudan_goods/cart/cart_controller.dart';
+import 'package:sudan_goods/checkout/controller/checkout_controller.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
+import 'package:sudan_goods/user/user_provider.dart';
 
 import 'firebase_options.dart';
 
@@ -20,6 +22,12 @@ void main() async {
         ChangeNotifierProvider(
           create: (_) => CartController()..loadCartsFromFirestore(),
         ),
+          ChangeNotifierProvider(
+        create: (_) => UserProvider(),
+      ),
+      ChangeNotifierProvider(
+  create: (_) => CheckoutController(),
+),
       ],
       child: const MyApp(),
     ),

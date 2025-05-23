@@ -3,27 +3,32 @@
 import 'package:flutter/material.dart';
 
 class CheckoutNoteSection extends StatefulWidget {
-  const CheckoutNoteSection({super.key});
+  final TextEditingController controller;
+
+  const CheckoutNoteSection({super.key, required this.controller});
 
   @override
   State<CheckoutNoteSection> createState() => _CheckoutNoteSectionState();
 }
 
+
 class _CheckoutNoteSectionState extends State<CheckoutNoteSection> {
   String note = "Add delivery notes";
 
-  void _editNote() async {
-    final updated = await showModalBottomSheet<String>(
-      context: context,
-      isScrollControlled: true,
-      builder: (_) => const _NoteBottomSheet(),
-    );
-    if (updated != null && updated.trim().isNotEmpty) {
-      setState(() {
-        note = updated.trim();
-      });
-    }
+void _editNote() async {
+  final updated = await showModalBottomSheet<String>(
+    context: context,
+    isScrollControlled: true,
+    builder: (_) => _NoteBottomSheet(initialValue: widget.controller.text),
+  );
+  if (updated != null && updated.trim().isNotEmpty) {
+    setState(() {
+      widget.controller.text = updated.trim();
+      note = widget.controller.text;
+    });
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -53,14 +58,25 @@ class _CheckoutNoteSectionState extends State<CheckoutNoteSection> {
 }
 
 class _NoteBottomSheet extends StatefulWidget {
-  const _NoteBottomSheet();
+  final String initialValue;
+
+  const _NoteBottomSheet({required this.initialValue});
 
   @override
   State<_NoteBottomSheet> createState() => _NoteBottomSheetState();
 }
 
+
 class _NoteBottomSheetState extends State<_NoteBottomSheet> {
-  final TextEditingController _controller = TextEditingController();
+
+  late final TextEditingController _controller;
+
+@override
+void initState() {
+  super.initState();
+  _controller = TextEditingController(text: widget.initialValue);
+}
+
 
   @override
   void dispose() {

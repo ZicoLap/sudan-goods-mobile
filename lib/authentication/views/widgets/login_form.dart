@@ -1,11 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:sudan_goods/Home/pages/home_page.dart';
 import 'package:sudan_goods/authentication/controller/login_controller.dart';
 import 'package:sudan_goods/authentication/data/login_form_data.dart';
 import 'package:sudan_goods/authentication/views/register_page.dart';
 import 'package:sudan_goods/authentication/views/widgets/password_reset_dialog.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
+import 'package:sudan_goods/user/user_provider.dart';
 
 class LoginForm extends StatefulWidget {
   final LoginFormData formData;
@@ -38,14 +41,17 @@ class _LoginFormState extends State<LoginForm> {
         return;
       }
 
+      final uid = FirebaseAuth.instance.currentUser!.uid;
+      await Provider.of<UserProvider>(context, listen: false).fetchUser(uid);
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const HomePage()),
       );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Login failed: $e")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Login failed: $e")));
     } finally {
       setState(() => _isLoading = false);
     }
@@ -100,9 +106,10 @@ class _LoginFormState extends State<LoginForm> {
             height: 56,
             child: ElevatedButton(
               onPressed: _isLoading ? null : _login,
-              child: _isLoading
-                  ? const CircularProgressIndicator(color: Colors.white)
-                  : const Text("LOGIN", style: TextStyle(fontSize: 16)),
+              child:
+                  _isLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text("LOGIN", style: TextStyle(fontSize: 16)),
             ),
           ),
           const SizedBox(height: 36),
@@ -111,7 +118,10 @@ class _LoginFormState extends State<LoginForm> {
               Expanded(child: Divider(color: Colors.black, thickness: 2)),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 8),
-                child: Text("OR", style: TextStyle(fontWeight: FontWeight.bold)),
+                child: Text(
+                  "OR",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
               ),
               Expanded(child: Divider(color: Colors.black, thickness: 2)),
             ],
@@ -121,13 +131,15 @@ class _LoginFormState extends State<LoginForm> {
             width: double.infinity,
             height: 56,
             child: ElevatedButton(
-              onPressed: () => Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (_) => const RegisterPage()),
-              ),
-              child: _isLoading
-                  ? const CircularProgressIndicator(color: Colors.white)
-                  : const Text("REGISTER", style: TextStyle(fontSize: 16)),
+              onPressed:
+                  () => Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (_) => const RegisterPage()),
+                  ),
+              child:
+                  _isLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text("REGISTER", style: TextStyle(fontSize: 16)),
             ),
           ),
           const SizedBox(height: 12),
@@ -140,8 +152,12 @@ class _LoginFormState extends State<LoginForm> {
     );
   }
 
-  Widget _textField(TextEditingController controller, String label,
-      {bool obscure = false, IconData? icon}) {
+  Widget _textField(
+    TextEditingController controller,
+    String label, {
+    bool obscure = false,
+    IconData? icon,
+  }) {
     return TextFormField(
       controller: controller,
       obscureText: obscure,
@@ -170,9 +186,10 @@ class _LoginFormState extends State<LoginForm> {
       child: CircleAvatar(
         backgroundColor: AppColors.inputField,
         radius: 42,
-        child: assetPath != null
-            ? Image.asset(assetPath, width: 24, height: 24)
-            : Icon(icon, size: 30, color: Colors.black),
+        child:
+            assetPath != null
+                ? Image.asset(assetPath, width: 24, height: 24)
+                : Icon(icon, size: 30, color: Colors.black),
       ),
     );
   }
