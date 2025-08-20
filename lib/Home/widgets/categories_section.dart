@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sudan_goods/Home/widgets/category_chip.dart';
+import 'package:sudan_goods/Home/widgets/shimmer_components.dart';
 import 'package:sudan_goods/models/store/category_model.dart';
+import 'package:sudan_goods/theme/design_tokens.dart';
 
 class CategoriesSection extends StatelessWidget {
   final List<Category> categories;
@@ -10,31 +12,29 @@ class CategoriesSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (categories.isEmpty) {
-      return const SizedBox.shrink(); // Or loading spinner
+      return ShimmerComponents.categoriesSectionShimmer();
     }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        /*   child: Text(
-            'Categories',
-            style: GoogleFonts.poppins(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+          padding: DesignTokens.paddingPageHorizontal,
+          child: Text(
+            'Browse Categories',
+            style: AppTypography.sectionTitle.copyWith(
               color: Colors.black,
             ),
-          ), */
+          ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: DesignTokens.space16),
         SizedBox(
-          height: 90,
+          height: 100,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 30),
+            padding: DesignTokens.paddingPageHorizontal,
             itemCount: categories.length,
-            separatorBuilder: (_, __) => const SizedBox(width: 28),
+            separatorBuilder: (_, __) => const SizedBox(width: DesignTokens.space20),
             itemBuilder: (context, index) {
               final category = categories[index];
               return CategoryChip(

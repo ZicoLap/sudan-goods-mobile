@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sudan_goods/Home/pages/home_page.dart';
+import 'package:sudan_goods/Home/pages/home_page_new.dart';
 
 class OrderSuccessPage extends StatelessWidget {
   const OrderSuccessPage({super.key});

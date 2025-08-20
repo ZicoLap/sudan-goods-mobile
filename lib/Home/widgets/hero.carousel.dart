@@ -1,8 +1,8 @@
 
 
-
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:sudan_goods/Home/widgets/shimmer_components.dart';
 
 class HeroCarousel extends StatefulWidget {
   const HeroCarousel({super.key});
@@ -13,8 +13,8 @@ class HeroCarousel extends StatefulWidget {
 
 class _HeroCarouselState extends State<HeroCarousel> {
   int _currentIndex = 0;
+  bool _isLoading = true;
   
-
   final List<String> _carouselItems = [
     'https://firebasestorage.googleapis.com/v0/b/sudan-mall-a458a.firebasestorage.app/o/hero_mobile_app%2Fhero1.png?alt=media&token=0c6ee3f0-a38e-4bae-b9d0-f4580e6d5038',
     'https://firebasestorage.googleapis.com/v0/b/sudan-mall-a458a.firebasestorage.app/o/hero_mobile_app%2Fhero2.png?alt=media&token=5e4b6520-38a4-4359-a513-00dd1d82a719',
@@ -23,10 +23,27 @@ class _HeroCarouselState extends State<HeroCarousel> {
     'https://firebasestorage.googleapis.com/v0/b/sudan-mall-a458a.firebasestorage.app/o/hero_mobile_app%2Fhero6.png?alt=media&token=5f55d1a1-3229-4298-80e5-acd3f52091fb',
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    // Simulate initial loading delay
+    Future.delayed(const Duration(milliseconds: 800), () {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
     final isTablet = MediaQuery.of(context).size.width >= 600;
+
+    if (_isLoading) {
+      return ShimmerComponents.heroCarouselShimmer();
+    }
 
     return Column(
       children: [
@@ -51,6 +68,27 @@ class _HeroCarouselState extends State<HeroCarousel> {
                 imageUrl,
                 fit: BoxFit.cover,
                 width: double.infinity,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return ShimmerComponents.shimmerWrapper(
+                    child: Container(
+                      width: double.infinity,
+                      height: double.infinity,
+                      color: Colors.white,
+                    ),
+                  );
+                },
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    width: double.infinity,
+                    color: Colors.grey[300],
+                    child: const Icon(
+                      Icons.image_not_supported,
+                      size: 50,
+                      color: Colors.grey,
+                    ),
+                  );
+                },
               ),
             );
           },

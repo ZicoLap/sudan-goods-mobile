@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:sudan_goods/Home/widgets/shimmer_components.dart';
 import 'package:sudan_goods/models/store/store_model.dart';
+import 'package:sudan_goods/theme/design_tokens.dart';
 
 class StoreCard extends StatelessWidget {
   final Store store;
@@ -13,102 +15,100 @@ class StoreCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
 
-        width: 140,
-        height: 180,
+        width: 150,
+        height: 190,
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey.shade300),
           color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ],
+          borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
+          boxShadow: DesignTokens.shadowSmall,
+          border: Border.all(
+            color: Colors.grey.shade200,
+            width: 1,
+          ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Store Image
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: AspectRatio(
-                aspectRatio: 1,
-                child:
-                    store.coverImageUrl != null
-                        ? Image.network(store.coverImageUrl!, fit: BoxFit.cover)
-                        : Container(
-                          color: Colors.grey.shade300,
-                          child: const Icon(Icons.store, size: 40),
+            Expanded(
+              flex: 3,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
+                child: store.coverImageUrl != null
+                    ? Image.network(
+                        store.coverImageUrl!,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return ShimmerComponents.shimmerWrapper(
+                            child: Container(
+                              width: double.infinity,
+                              height: double.infinity,
+                              color: Colors.white,
+                            ),
+                          );
+                        },
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            color: Colors.grey.shade300,
+                            child: const Icon(Icons.store, size: 40),
+                          );
+                        },
+                      )
+                    : Container(
+                        color: Colors.grey.shade300,
+                        child: const Icon(Icons.store, size: 40),
+                      ),
+              ),
+            ),
+
+            // Store Name and Location
+            Expanded(
+              flex: 2,
+              child: Padding(
+                padding: DesignTokens.paddingCardSmall,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      _truncateText(store.name, 16),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTypography.cardTitle.copyWith(
+                        fontSize: DesignTokens.fontSizeBody,
+                      ),
+                    ),
+                    const SizedBox(height: DesignTokens.space4),
+                    Row(
+                      children: [
+                        const Icon(Icons.location_on, size: 14, color: Colors.red),
+                        const SizedBox(width: 2),
+                        Expanded(
+                          child: Text(
+                            _truncateText(store.address.city, 18),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: AppTypography.small.copyWith(
+                              color: Colors.black87,
+                            ),
+                          ),
                         ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
-            const SizedBox(height: 6),
-
-            // Store Name
-           Container(
-  padding: const EdgeInsets.all(8),
-  decoration: BoxDecoration(
-    color: Colors.white,
-    border: Border(
-      left: BorderSide(color: Colors.grey.shade300),
-      right: BorderSide(color: Colors.grey.shade300),
-      bottom: BorderSide(color: Colors.grey.shade300),
-    ),
-    borderRadius: const BorderRadius.only(
-      bottomLeft: Radius.circular(12),
-      bottomRight: Radius.circular(12),
-    ),
-    boxShadow: [
-      BoxShadow(
-        color: Colors.black.withOpacity(0.05),
-        blurRadius: 4,
-        offset: const Offset(0, 2),
-      ),
-    ],
-  ),
-  child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        _truncateText(store.name, 14),
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        style: const TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 14,
+          ],
         ),
       ),
-      Row(
-        children: [
-          const Icon(Icons.location_on, size: 14, color: Colors.red),
-          const SizedBox(width: 2),
-          Expanded(
-            child: Text(
-              _truncateText(store.address.city, 16),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                fontSize: 12,
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          ]
-        ),
-        ],
-      ),
-    ),
-  ],
-  ),
-));
-
+    );
   }
-  
-    String _truncateText(String text, int maxChars) {
+
+  String _truncateText(String text, int maxChars) {
     if (text.length <= maxChars) return text;
     return '${text.substring(0, maxChars)}...';
   }
-  }
+}

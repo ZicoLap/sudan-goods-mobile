@@ -5,7 +5,6 @@ import 'package:sudan_goods/authentication/views/login_page.dart';
 import 'package:sudan_goods/authentication/views/widgets/register_form_address.dart';
 import 'package:sudan_goods/authentication/views/widgets/register_form_user.dart';
 import 'package:sudan_goods/models/shared_models/address.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -60,7 +59,9 @@ class _RegisterPageState extends State<RegisterPage> {
     if (result == "success") {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text("Your registration was successful. Please verify your email."),
+          content: Text(
+            "Your registration was successful. Please verify your email.",
+          ),
           backgroundColor: Colors.green,
         ),
       );
@@ -69,9 +70,9 @@ class _RegisterPageState extends State<RegisterPage> {
         MaterialPageRoute(builder: (_) => const LoginPage()),
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Registration failed: $result")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Registration failed: $result")));
     }
 
     setState(() => _isLoading = false);
@@ -82,48 +83,52 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
       body: Stack(
         children: [
-          
-
           Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 500),
               child: Container(
                 margin: const EdgeInsets.symmetric(vertical: 36),
                 padding: const EdgeInsets.all(36),
-              
+
                 child: AnimatedSwitcher(
                   duration: const Duration(milliseconds: 500),
-                  transitionBuilder: (child, animation) =>
-                      FadeTransition(opacity: animation, child: child),
-                  child: _showAddressForm
-                      ? RegisterFormAddress(
-                          formData: _formData,
-                          formKey: _formKeyAddress,
-                          isLoading: _isLoading,
-                          onSubmit: _submitRegistration,
-                          onBack: () => setState(() => _showAddressForm = false),
-                        )
-                      : RegisterFormUser(
-                          formData: _formData,
-                          formKey: _formKeyUser,
-                          gender: _gender,
-                          birthday: _birthday,
-                          onGenderChanged: (val) => setState(() => _gender = val),
-                          onBirthdayChanged: (val) =>
-                              setState(() => _birthday = val),
-                          onNext: () {
-                            if (_formKeyUser.currentState!.validate()) {
-                              if (_formData.password.text != _formData.confirmPassword.text) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text("Passwords do not match")),
-                                );
-                                return;
+                  transitionBuilder:
+                      (child, animation) =>
+                          FadeTransition(opacity: animation, child: child),
+                  child:
+                      _showAddressForm
+                          ? RegisterFormAddress(
+                            formData: _formData,
+                            formKey: _formKeyAddress,
+                            isLoading: _isLoading,
+                            onSubmit: _submitRegistration,
+                            onBack:
+                                () => setState(() => _showAddressForm = false),
+                          )
+                          : RegisterFormUser(
+                            formData: _formData,
+                            formKey: _formKeyUser,
+                            gender: _gender,
+                            birthday: _birthday,
+                            onGenderChanged:
+                                (val) => setState(() => _gender = val),
+                            onBirthdayChanged:
+                                (val) => setState(() => _birthday = val),
+                            onNext: () {
+                              if (_formKeyUser.currentState!.validate()) {
+                                if (_formData.password.text !=
+                                    _formData.confirmPassword.text) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text("Passwords do not match"),
+                                    ),
+                                  );
+                                  return;
+                                }
+                                setState(() => _showAddressForm = true);
                               }
-                              setState(() => _showAddressForm = true);
-                            }
-                          },
-                        ),
+                            },
+                          ),
                 ),
               ),
             ),
