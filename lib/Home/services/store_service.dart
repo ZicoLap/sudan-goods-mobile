@@ -13,9 +13,11 @@ class StoreServices {
               .limit(10)
               .get();
 
+      
       return querySnapshot.docs.map((doc) => Store.fromDocument(doc)).toList();
     } catch (e) {
-      print('Error fetching featured stores: $e');
+
+      print('Error fetching featured stores: ${e.toString()}');
       throw Exception('Failed to fetch featured stores');
     }
   }

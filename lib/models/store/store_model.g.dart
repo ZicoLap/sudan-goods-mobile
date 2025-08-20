@@ -24,10 +24,7 @@ Store _$StoreFromJson(Map<String, dynamic> json) => Store(
   isApproved: json['isApproved'] as bool? ?? false,
   rating: (json['rating'] as num?)?.toDouble() ?? 0.0,
   ratingCount: (json['ratingCount'] as num?)?.toInt() ?? 0,
-  updatedAt:
-      json['updatedAt'] == null
-          ? null
-          : DateTime.parse(json['updatedAt'] as String),
+  updatedAt: const TimestampConverter().fromJson(json['updatedAt']),
   isOpen: json['isOpen'] as bool? ?? true,
   minimumOrderAmount: (json['minimumOrderAmount'] as num?)?.toDouble() ?? 0.0,
   storeTypes:
@@ -65,7 +62,7 @@ Map<String, dynamic> _$StoreToJson(Store instance) => <String, dynamic>{
   'rating': instance.rating,
   'ratingCount': instance.ratingCount,
   'createdAt': instance.createdAt.toIso8601String(),
-  'updatedAt': instance.updatedAt?.toIso8601String(),
+  'updatedAt': const TimestampConverter().toJson(instance.updatedAt),
   'isOpen': instance.isOpen,
   'minimumOrderAmount': instance.minimumOrderAmount,
   'storeTypes': instance.storeTypes,

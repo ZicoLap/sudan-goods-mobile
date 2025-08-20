@@ -37,7 +37,6 @@ class _RegisterPageState extends State<RegisterPage> {
     setState(() => _isLoading = true);
 
     final address = Address(
-      id: FirebaseFirestore.instance.collection('dummy').doc().id,
       label: _formData.addressLabel.text.trim(),
       street: _formData.street.text.trim(),
       city: _formData.city.text.trim(),

@@ -35,7 +35,9 @@ class CheckoutController with ChangeNotifier {
       subtotal: subtotal,
       total: total,
       paymentStatus: paymentStatus,
-    )) return;
+    )) {
+      return;
+    }
 
     try {
       isLoading = true;

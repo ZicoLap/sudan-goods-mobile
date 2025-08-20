@@ -3,33 +3,39 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:sudan_goods/models/shared_models/address.dart';
 import 'package:sudan_goods/models/store/delivery_rules_model.dart';
 
+import '../../core/utils/date_time_converter_version4.dart';
+
 part 'store_model.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class Store {
-  final String id;
-  final String name;
-  final String? description;
+  final String id; //
+  final String name; //
+  final String? description; //
   final String storeOwnerId;
-  final String? email;
-  final String? phoneNumber;
-  final String? logoUrl;
-  final String? coverImageUrl;
-  final Address address;
-  final List<String> tags;
-  final bool isActive;
-  final bool isApproved;
+  final String? email; //
+  final String? phoneNumber; //
+  final String? logoUrl; //
+  final String? coverImageUrl; //
+  final Address address; //
+  final List<String> tags; //
+  final bool isActive; //
+  final bool isApproved; //
   final double rating; // average rating like 4.5
-  final int ratingCount;
-  final DateTime createdAt;
-  final DateTime? updatedAt;
-  final bool isOpen;
-  final double minimumOrderAmount;
-  final List<String> storeTypes;
+  final int ratingCount; //
+
+  @TimestampConverter()
+  final DateTime createdAt; //
+
+  @TimestampConverter()
+  final DateTime? updatedAt; //
+  final bool isOpen; //
+  final double minimumOrderAmount; //
+  final List<String> storeTypes; //
   final bool isFeatured;
-  final List<String> categoryIds;
-  final double? freeDeliveryOver;
-    final List<DeliveryRule> deliveryPricing;
+  final List<String> categoryIds; //
+  final double? freeDeliveryOver; //
+  final List<DeliveryRule> deliveryPricing; //
 
 
 
@@ -86,7 +92,7 @@ class Store {
     storeTypes: storeTypes,
     isFeatured: isFeatured,
     categoryIds: categoryIds,
-    freeDeliveryOver: freeDeliveryOver ?? this.freeDeliveryOver,
+    freeDeliveryOver: freeDeliveryOver ?? freeDeliveryOver,
      deliveryPricing: deliveryPricing,
 
   );
@@ -94,6 +100,9 @@ class Store {
 
 factory Store.fromDocument(DocumentSnapshot doc) {
   final data = doc.data() as Map<String, dynamic>;
+  
+  // Debug print
+  print('Store document data: $data');
   return Store.fromJson(data).copyWith(id: doc.id);
 }
 
