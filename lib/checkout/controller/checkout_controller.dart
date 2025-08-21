@@ -6,9 +6,26 @@ import 'package:sudan_goods/models/store/order_model.dart' as order_model;
 import 'package:sudan_goods/order/order_service.dart';
 import 'package:sudan_goods/order/order_success_page.dart';
 
+/// Controller responsible for validating checkout inputs,
+/// creating orders, and handling checkout navigation UX.
 class CheckoutController with ChangeNotifier {
   bool isLoading = false;
 
+  /// Validates input, creates an order, clears the cart and navigates
+  /// to success screen. Shows a snackbar on failure.
+  ///
+  /// Parameters:
+  /// - [context]: Build context used for snackbar and navigation.
+  /// - [userId]: ID of the customer placing the order.
+  /// - [storeId]: ID of the store for which the order is placed.
+  /// - [cartItems]: Line items to be included in the order.
+  /// - [subtotal]: Items subtotal before delivery fee.
+  /// - [deliveryFee]: Delivery cost calculated for this order.
+  /// - [total]: Final order total (subtotal + deliveryFee).
+  /// - [totalWeight]: Total weight used for delivery pricing.
+  /// - [name], [phone], [address]: Customer contact and delivery info.
+  /// - [orderNote]: Optional note provided by the customer.
+  /// - [paymentStatus], [paymentMethod]: Payment info used for validation.
   Future<void> placeOrder({
     required BuildContext context,
     required String userId,
@@ -73,6 +90,9 @@ class CheckoutController with ChangeNotifier {
     }
   }
 
+  /// Validates the checkout form and order data before placing an order.
+  /// Returns `true` if all checks pass; otherwise shows a snackbar and
+  /// returns `false`.
   bool validateCheckoutInputs({
     required BuildContext context,
     required List<CartItem> cartItems,
@@ -121,12 +141,14 @@ class CheckoutController with ChangeNotifier {
     return true;
   }
 
+  /// Shows a red snackbar with the provided [message].
   void showError(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message), backgroundColor: Colors.redAccent),
     );
   }
 
+  /// Navigates to the success screen and clears the navigation stack.
   void showSuccessScreen(BuildContext context) {
     Navigator.pushAndRemoveUntil(
       context,
@@ -135,6 +157,7 @@ class CheckoutController with ChangeNotifier {
     );
   }
 
+  /// Placeholder for clearing cart logic (integrate with [CartController]).
   void clearCart() {
     // Clear your cart logic here (e.g., call CartController)
     print('🛒 Cart cleared');

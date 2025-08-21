@@ -7,14 +7,31 @@ import '../../core/utils/date_time_converter_version4.dart';
 
 part 'store_model.g.dart';
 
+/// Store domain model representing a merchant listed in the app.
+///
+/// This model maps Firestore documents to strongly-typed Dart objects
+/// and supports JSON serialization via json_serializable.
 @JsonSerializable(explicitToJson: true)
 class Store {
+  /// Unique identifier for the store.
   final String id; //
+
+  /// Name of the store.
   final String name; //
+
+  /// Optional description of the store.
   final String? description; //
+
+  /// ID of the store owner.
   final String storeOwnerId;
+
+  /// Optional email address of the store.
   final String? email; //
+
+  /// Optional phone number of the store.
   final String? phoneNumber; //
+
+  /// Optional logo URL of the store.
   final String? logoUrl; //
   final String? coverImageUrl; //
   final Address address; //
@@ -37,6 +54,10 @@ class Store {
   final double? freeDeliveryOver; //
   final List<DeliveryRule> deliveryPricing; //
 
+  /// Creates a new [Store] instance.
+  ///
+  /// Only a subset of fields are required; others have sensible defaults
+  /// or are optional depending on the business configuration.
   Store({
     required this.id,
     required this.name,
@@ -63,6 +84,10 @@ class Store {
     this.deliveryPricing = const [],
   });
 
+  /// Returns a copy of this [Store] with the provided overrides.
+  ///
+  /// Currently only [id] can be overridden because other fields are
+  /// considered immutable after creation in this context.
   Store copyWith({String? id}) {
     return Store(
       id: id ?? this.id,
@@ -91,6 +116,9 @@ class Store {
     );
   }
 
+  /// Builds a [Store] from a Firestore [DocumentSnapshot].
+  ///
+  /// The document ID is injected into the model's [id] field.
   factory Store.fromDocument(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
 
@@ -99,6 +127,9 @@ class Store {
     return Store.fromJson(data).copyWith(id: doc.id);
   }
 
+  /// Deserializes a [Store] from JSON/Map, usually from Firestore data.
   factory Store.fromJson(Map<String, dynamic> json) => _$StoreFromJson(json);
+
+  /// Serializes this [Store] to a JSON/Map for persistence.
   Map<String, dynamic> toJson() => _$StoreToJson(this);
 }

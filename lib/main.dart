@@ -10,6 +10,10 @@ import 'package:sudan_goods/user/user_provider.dart';
 
 import 'firebase_options.dart';
 
+/// Entry point of the Sudan Goods application.
+///
+/// Ensures Flutter bindings are initialized, initializes Firebase with
+/// platform-specific options, and bootstraps the widget tree with providers.
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -30,10 +34,12 @@ void main() async {
   );
 }
 
+/// Root widget of the application.
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
+  /// Builds the [MaterialApp] with global theme and the authentication gate.
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Sudan Goods',

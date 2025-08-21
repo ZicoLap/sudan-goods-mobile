@@ -4,9 +4,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sudan_goods/models/store/cart_item_model.dart';
 import 'package:sudan_goods/models/store/store_model.dart';
 
+/// Manages carts per store, syncing with Firestore and notifying listeners
+/// on changes. Each store has its own list of [CartItem]s.
 class CartController extends ChangeNotifier {
   final Map<String, List<CartItem>> _storeCarts = {};
 
+  /// Exposes the in-memory carts keyed by [storeId].
   Map<String, List<CartItem>> get storeCarts => _storeCarts;
 
   /// 🔢 Get all cart item count across all stores
@@ -25,12 +28,14 @@ class CartController extends ChangeNotifier {
   /// 💡 Get cart for a store
   List<CartItem> getItemsByStore(String storeId) => _storeCarts[storeId] ?? [];
 
+  /// Calculates the subtotal for all items in the cart for the given [storeId].
   double getSubtotal(String storeId) {
     return getItemsByStore(
       storeId,
     ).fold(0, (sum, item) => sum + item.totalPrice);
   }
 
+  /// Calculates the total weight for the current cart of [storeId].
   double getTotalWeight(String storeId) {
     return getItemsByStore(
       storeId,
@@ -53,6 +58,8 @@ class CartController extends ChangeNotifier {
     syncCartToFirestore(item.storeId);
   }
 
+  /// Sets a new [newQuantity] for a [productId] in a specific [storeId] cart.
+  /// Removes the item if [newQuantity] is 0 or less, and removes the cart if empty.
   void updateQuantity(String storeId, String productId, int newQuantity) {
     final cart = _storeCarts[storeId];
     if (cart == null) return;
@@ -73,6 +80,7 @@ class CartController extends ChangeNotifier {
     syncCartToFirestore(storeId);
   }
 
+  /// Removes a product from a [storeId] cart by its [productId].
   void removeItem(String storeId, String productId) {
     final cart = _storeCarts[storeId];
     if (cart == null) return;
@@ -87,12 +95,14 @@ class CartController extends ChangeNotifier {
     syncCartToFirestore(storeId);
   }
 
+  /// Clears an entire cart for the given [storeId].
   void clearCart(String storeId) {
     _storeCarts.remove(storeId);
     notifyListeners();
     syncCartToFirestore(storeId);
   }
 
+  /// Fetches store details from Firestore for the provided [storeId].
   Future<Store> getStoreDetails(String storeId) async {
     final storeDoc =
         await FirebaseFirestore.instance

@@ -10,11 +10,18 @@ import 'package:sudan_goods/store/widgets/store_info_section.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 
+/// Displays details for a single store, including cover, info, featured
+/// products, and collections. Listens to the `stores/{storeId}` document for
+/// live updates and shows skeletons while loading.
 class StoreDetailsPage extends StatelessWidget {
+  /// The Firestore document ID of the store to display.
   final String storeId;
+  /// Creates a store details page for the provided [storeId].
   const StoreDetailsPage({super.key, required this.storeId});
 
   @override
+  /// Builds the page and wires a [StreamBuilder] to `stores/{storeId}`, rendering
+  /// loading, error/not-found, or the full store details layout.
   Widget build(BuildContext context) {
     return StreamBuilder<DocumentSnapshot>(
       stream: FirebaseFirestore.instance
@@ -105,10 +112,12 @@ class StoreDetailsPage extends StatelessWidget {
   }
 }
 
+/// Shimmer-based placeholder shown while store details are loading.
 class _StoreDetailsSkeleton extends StatelessWidget {
   const _StoreDetailsSkeleton();
 
   @override
+  /// Builds a scaffold skeleton UI for the store details using Shimmer.
   Widget build(BuildContext context) {
     final isTablet = MediaQuery.of(context).size.width > 600;
     return Shimmer.fromColors(
@@ -144,10 +153,12 @@ class _StoreDetailsSkeleton extends StatelessWidget {
   }
 }
 
+/// Simple info section skeleton used inside the shimmer placeholder.
 class _InfoSkeleton extends StatelessWidget {
   const _InfoSkeleton();
 
   @override
+  /// Builds placeholder rows for the store name, tags and meta information.
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

@@ -19,11 +19,17 @@ import 'sections/checkout_summary_section.dart';
 
 import 'package:sudan_goods/models/store/order_model.dart' as order_model;
 
+/// Checkout screen that reviews the order, captures payment method and note,
+/// and places an order for a specific [Store].
+///
+/// Requires the [store], current [subtotal], and [totalWeight] which are used
+/// to calculate delivery fee and total at the time of placing the order.
 class CheckoutPage extends StatefulWidget {
   final Store store;
   final double subtotal;
   final double totalWeight;
 
+  /// Creates a [CheckoutPage] bound to a particular [store].
   const CheckoutPage({
     super.key,
     required this.store,
@@ -35,17 +41,23 @@ class CheckoutPage extends StatefulWidget {
   State<CheckoutPage> createState() => _CheckoutPageState();
 }
 
+/// State for [CheckoutPage] managing local UI state like payment method,
+/// note input, and loading indicator.
 class _CheckoutPageState extends State<CheckoutPage> {
   String selectedPaymentMethod = "Card";
   final TextEditingController noteController = TextEditingController();
   bool isLoading = false;
 
   @override
+  /// Disposes text controllers to avoid memory leaks.
   void dispose() {
     noteController.dispose();
     super.dispose();
   }
 
+  /// Validates required user and cart data, computes delivery fee and total,
+  /// creates an [order_model.Order], writes it to Firestore, clears the cart,
+  /// and navigates to the success page. Shows a snackbar on failure.
   Future<void> _placeOrder() async {
     final user = FirebaseAuth.instance.currentUser;
     final uid = user?.uid;
@@ -131,12 +143,14 @@ class _CheckoutPageState extends State<CheckoutPage> {
     }
   }
 
+  /// Shows a red snackbar with the provided [message].
   void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message), backgroundColor: Colors.red),
     );
   }
 
+  /// Updates the selected payment method and rebuilds the UI.
   void _updatePaymentMethod(String method) {
     setState(() {
       selectedPaymentMethod = method;
@@ -144,6 +158,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
   }
 
   @override
+  /// Builds the checkout UI composed of user info, address, note, payment,
+  /// store items, and order summary sections, with a primary action button to
+  /// place the order.
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(

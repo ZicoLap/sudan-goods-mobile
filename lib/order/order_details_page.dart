@@ -3,11 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 
+/// Displays a read-only view of an order with live updates from Firestore.
+///
+/// Shows header, item list, delivery details, payment/status info,
+/// and a cost summary. Provides a delete action for pending orders.
 class OrderDetailsPage extends StatelessWidget {
+  /// The Firestore document ID for the order to display.
   final String orderId;
+  /// Creates an [OrderDetailsPage] for the given [orderId].
   const OrderDetailsPage({super.key, required this.orderId});
 
   @override
+  /// Builds the order details scaffold, listening to `orders/{orderId}` and
+  /// rendering loading/error states and the full details on success.
   Widget build(BuildContext context) {
     final docRef = FirebaseFirestore.instance.collection('orders').doc(orderId);
 
@@ -281,6 +289,10 @@ class OrderDetailsPage extends StatelessWidget {
     );
   }
 
+  /// Asks the user to confirm deletion and removes the order document.
+  ///
+  /// Intended for pending orders only; shows snackbar feedback and pops the
+  /// page when deletion succeeds.
   Future<void> _confirmAndDelete(BuildContext context) async {
     final confirmed = await showDialog<bool>(
       context: context,
@@ -323,6 +335,7 @@ class OrderDetailsPage extends StatelessWidget {
     }
   }
 
+  /// Formats a plain address map [a] to a single comma-separated line.
   String _formatAddress(Map<String, dynamic> a) {
     final parts = [
       a['label'],
@@ -334,6 +347,8 @@ class OrderDetailsPage extends StatelessWidget {
     return parts.whereType<String>().where((s) => s.trim().isNotEmpty).join(', ');
   }
 
+  /// Renders a two-column row with [label] on the left and [value] aligned
+  /// to the right. Long values wrap gracefully.
   Widget _twoCol(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6.0),
@@ -353,6 +368,7 @@ class OrderDetailsPage extends StatelessWidget {
     );
   }
 
+  /// Returns an icon container reflecting the current [status].
   Widget _statusIcon(String status) {
     switch (status.toLowerCase()) {
       case 'pending':
@@ -373,6 +389,7 @@ class OrderDetailsPage extends StatelessWidget {
     }
   }
 
+  /// Creates a rounded container with the given [icon] and accent [color].
   Widget _iconBox(IconData icon, Color color) {
     return Container(
       height: 44,
@@ -385,6 +402,7 @@ class OrderDetailsPage extends StatelessWidget {
     );
   }
 
+  /// Builds a small colored chip describing the order [status].
   Widget _buildStatusChip(String status) {
     MaterialColor color;
     switch (status.toLowerCase()) {
@@ -427,6 +445,7 @@ class OrderDetailsPage extends StatelessWidget {
     );
   }
 
+  /// Inline store preview that listens to `stores/{storeId}` to show name/logo.
   Widget _storeInline(String storeId) {
     return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
       stream: FirebaseFirestore.instance.collection('stores').doc(storeId).snapshots(),
