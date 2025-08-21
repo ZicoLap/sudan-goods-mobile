@@ -22,12 +22,8 @@ void main() async {
         ChangeNotifierProvider(
           create: (_) => CartController()..loadCartsFromFirestore(),
         ),
-          ChangeNotifierProvider(
-        create: (_) => UserProvider(),
-      ),
-      ChangeNotifierProvider(
-  create: (_) => CheckoutController(),
-),
+        ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => CheckoutController()),
       ],
       child: const MyApp(),
     ),

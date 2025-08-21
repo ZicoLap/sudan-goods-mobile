@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:sudan_goods/Home/pages/home_page_new.dart';
 import 'package:sudan_goods/authentication/views/login_page.dart';
+import 'package:sudan_goods/Home/pages/main_shell.dart';
 
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});
@@ -35,7 +35,7 @@ class AuthGate extends StatelessWidget {
             final role = data?['role'];
 
             if (role == 'customer') {
-              return const HomePage();
+              return const MainShell();
             }
 
             // Default return statement to handle other cases

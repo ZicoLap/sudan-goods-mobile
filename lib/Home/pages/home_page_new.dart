@@ -123,66 +123,7 @@ class HomePage extends StatelessWidget {
         ),
       ),
 
-      // 🛒 Floating Cart Button with Badge
-
-
-/* 
-      floatingActionButton: Consumer<CartController>(
-        builder: (context, cart, child) {
-          final cartCount = cart.storeCarts.length;
-
-          return Stack(
-            clipBehavior: Clip.none,
-            children: [
-              SizedBox(
-                height: 65,
-                width: 65,
-                child: FloatingActionButton(
-                  shape: const CircleBorder(),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const CartOverviewPage(),
-                      ),
-                    );
-                  },
-                  backgroundColor: Colors.orange,
-                  child: const Icon(
-                    Icons.shopping_cart,
-                    size: 30,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-              if (cartCount > 0)
-                Positioned(
-                  top: -6,
-                  right: -2,
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: const BoxDecoration(
-                      color: Colors.red,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Text(
-                      '$cartCount',
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-            ],
-          );
-        },
-      ),
-
- */
-
-  // 🛒 Enhanced Floating Cart Button with Modern Design
+      // Floating Cart Button with Modern Design
       floatingActionButton: Consumer<CartController>(
         builder: (context, cart, child) {
           final cartCount = cart.storeCarts.length;
@@ -280,75 +221,8 @@ class HomePage extends StatelessWidget {
       ),
 
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
-
-      // ⬇ Bottom Bar with SafeArea for safe padding
-      bottomNavigationBar: SafeArea(
-        bottom: false,
-        child: BottomAppBar(
-          color: Colors.white,
-          shape: const CircularNotchedRectangle(),
-          surfaceTintColor: Colors.white,
-          notchMargin: 8.0,
-          elevation: 8,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                InkWell(
-                  onTap: () {
-                    // TODO: Navigate to Home
-                  },
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: const [
-                      Icon(Icons.home, color: Colors.black, size: 22),
-                      Text("Home", style: TextStyle(fontSize: 12)),
-                    ],
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    // TODO: Navigate to Orders
-                  },
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: const [
-                      Icon(Icons.list_alt, color: Colors.black, size: 22),
-                      Text("Orders", style: TextStyle(fontSize: 12)),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 40), // Space for FAB
-                InkWell(
-                  onTap: () {
-                    // TODO: Navigate to Settings
-                  },
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: const [
-                      Icon(Icons.settings, color: Colors.black, size: 22),
-                      Text("Settings", style: TextStyle(fontSize: 12)),
-                    ],
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    // TODO: Navigate to Profile
-                  },
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: const [
-                      Icon(Icons.person, color: Colors.black, size: 22),
-                      Text("Profile", style: TextStyle(fontSize: 12)),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
     );
   }
 }
+
+
