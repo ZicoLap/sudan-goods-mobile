@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:sudan_goods/models/store/product_model.dart';
+import 'package:sudan_goods/cart/cart_controller.dart';
+import 'package:sudan_goods/models/store/cart_item_model.dart';
 import 'package:sudan_goods/store/widgets/product_detail_bottom_sheet.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 import 'featured_product_card.dart';
@@ -69,13 +72,32 @@ class FeaturedProductsSection extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final product = products[index];
 
-                  return InkWell(
-                    onTap: () {
-                      // TODO: Navigate to product detail page
-                      showProductDetailsBottomSheet(context, products[index]);
-                      print('Tapped on product: ${product.name}');
+                  return Selector<CartController, int>(
+                    selector: (_, c) => c.getProductQuantity(product.storeId, product.id),
+                    builder: (context, qty, _) {
+                      return InkWell(
+                        onTap: () {
+                          showProductDetailsBottomSheet(context, products[index]);
+                        },
+                        child: FeaturedProductCard(
+                          product: product,
+                          cartQuantity: qty,
+                          onAdd: () {
+                            context.read<CartController>().addItem(
+                                  CartItem(
+                                    productId: product.id,
+                                    storeId: product.storeId,
+                                    name: product.name,
+                                    price: product.discountPrice ?? product.price,
+                                    weight: product.weight,
+                                    imageUrl: product.images.isNotEmpty ? product.images.first : null,
+                                    quantity: 1,
+                                  ),
+                                );
+                          },
+                        ),
+                      );
                     },
-                    child: FeaturedProductCard(product: product),
                   );
                 },
               ),

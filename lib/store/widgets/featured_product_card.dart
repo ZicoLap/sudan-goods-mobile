@@ -6,8 +6,15 @@ import 'package:sudan_goods/theme/app_theme.dart';
 
 class FeaturedProductCard extends StatelessWidget {
   final Product product;
+  final VoidCallback onAdd;
+  final int cartQuantity;
 
-  const FeaturedProductCard({super.key, required this.product});
+  const FeaturedProductCard({
+    super.key,
+    required this.product,
+    required this.onAdd,
+    this.cartQuantity = 0,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -107,19 +114,16 @@ class FeaturedProductCard extends StatelessWidget {
 
           // ➕ Add Button (top-right corner)
           Positioned(
-            top: -4,
-            right: -4,
+            top: 8,
+            right: 8,
             child: IgnorePointer(
               ignoring: isOutOfStock,
               child: Opacity(
                 opacity: isOutOfStock ? 0.5 : 1,
                 child: GestureDetector(
-                  onTap: () {
-                    // TODO: Add to cart logic
-                  },
+                  onTap: isOutOfStock ? null : onAdd,
                   child: Container(
-                    width: 32,
-                    height: 32,
+                    padding: const EdgeInsets.all(6),
                     decoration: const BoxDecoration(
                       color: AppColors.primary,
                       shape: BoxShape.circle,
@@ -131,7 +135,21 @@ class FeaturedProductCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child: const Icon(Icons.add, color: Colors.white, size: 18),
+                    child: cartQuantity > 0
+                        ? Container(
+                            width: 20,
+                            height: 20,
+                            alignment: Alignment.center,
+                            child: Text(
+                              '$cartQuantity',
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          )
+                        : const Icon(Icons.add, color: Colors.white, size: 20),
                   ),
                 ),
               ),
