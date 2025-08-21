@@ -37,9 +37,6 @@ class Store {
   final double? freeDeliveryOver; //
   final List<DeliveryRule> deliveryPricing; //
 
-
-
-
   Store({
     required this.id,
     required this.name,
@@ -64,53 +61,44 @@ class Store {
     this.categoryIds = const [],
     this.freeDeliveryOver,
     this.deliveryPricing = const [],
-
   });
 
-  Store copyWith({
-  String? id,
-}) {
-  return Store(
-    id: id ?? this.id,
-    name: name,
-    storeOwnerId: storeOwnerId,
-    address: address,
-    createdAt: createdAt,
-    description: description,
-    email: email,
-    phoneNumber: phoneNumber,
-    logoUrl: logoUrl,
-    coverImageUrl: coverImageUrl,
-    tags: tags,
-    isActive: isActive,
-    isApproved: isApproved,
-    rating: rating,
-    ratingCount: ratingCount,
-    updatedAt: updatedAt,
-    isOpen: isOpen,
-    minimumOrderAmount: minimumOrderAmount,
-    storeTypes: storeTypes,
-    isFeatured: isFeatured,
-    categoryIds: categoryIds,
-    freeDeliveryOver: freeDeliveryOver ?? freeDeliveryOver,
-     deliveryPricing: deliveryPricing,
+  Store copyWith({String? id}) {
+    return Store(
+      id: id ?? this.id,
+      name: name,
+      storeOwnerId: storeOwnerId,
+      address: address,
+      createdAt: createdAt,
+      description: description,
+      email: email,
+      phoneNumber: phoneNumber,
+      logoUrl: logoUrl,
+      coverImageUrl: coverImageUrl,
+      tags: tags,
+      isActive: isActive,
+      isApproved: isApproved,
+      rating: rating,
+      ratingCount: ratingCount,
+      updatedAt: updatedAt,
+      isOpen: isOpen,
+      minimumOrderAmount: minimumOrderAmount,
+      storeTypes: storeTypes,
+      isFeatured: isFeatured,
+      categoryIds: categoryIds,
+      freeDeliveryOver: freeDeliveryOver ?? freeDeliveryOver,
+      deliveryPricing: deliveryPricing,
+    );
+  }
 
-  );
-}
+  factory Store.fromDocument(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
 
-factory Store.fromDocument(DocumentSnapshot doc) {
-  final data = doc.data() as Map<String, dynamic>;
-  
-  // Debug print
-  print('Store document data: $data');
-  return Store.fromJson(data).copyWith(id: doc.id);
-}
-
+    // Debug print
+    print('Store document data: $data');
+    return Store.fromJson(data).copyWith(id: doc.id);
+  }
 
   factory Store.fromJson(Map<String, dynamic> json) => _$StoreFromJson(json);
   Map<String, dynamic> toJson() => _$StoreToJson(this);
-
- 
-
-
 }

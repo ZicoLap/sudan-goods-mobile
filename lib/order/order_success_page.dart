@@ -7,7 +7,11 @@ class OrderSuccessPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Order Confirmed'), centerTitle: true, automaticallyImplyLeading: false,),
+      appBar: AppBar(
+        title: const Text('Order Confirmed'),
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+      ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(24.0),

@@ -23,17 +23,18 @@ class CartController extends ChangeNotifier {
   bool get isEmpty => _storeCarts.isEmpty;
 
   /// 💡 Get cart for a store
-  List<CartItem> getItemsByStore(String storeId) =>
-      _storeCarts[storeId] ?? [];
+  List<CartItem> getItemsByStore(String storeId) => _storeCarts[storeId] ?? [];
 
   double getSubtotal(String storeId) {
-    return getItemsByStore(storeId)
-        .fold(0, (sum, item) => sum + item.totalPrice);
+    return getItemsByStore(
+      storeId,
+    ).fold(0, (sum, item) => sum + item.totalPrice);
   }
 
   double getTotalWeight(String storeId) {
-    return getItemsByStore(storeId)
-        .fold(0, (sum, item) => sum + item.totalWeight);
+    return getItemsByStore(
+      storeId,
+    ).fold(0, (sum, item) => sum + item.totalWeight);
   }
 
   /// 🔄 Add or update item
@@ -93,10 +94,11 @@ class CartController extends ChangeNotifier {
   }
 
   Future<Store> getStoreDetails(String storeId) async {
-    final storeDoc = await FirebaseFirestore.instance
-        .collection('stores')
-        .doc(storeId)
-        .get();
+    final storeDoc =
+        await FirebaseFirestore.instance
+            .collection('stores')
+            .doc(storeId)
+            .get();
 
     if (!storeDoc.exists) {
       throw Exception('Store not found');
@@ -135,11 +137,12 @@ class CartController extends ChangeNotifier {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
 
-    final cartCollection = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(user.uid)
-        .collection('carts')
-        .get();
+    final cartCollection =
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .collection('carts')
+            .get();
 
     _storeCarts.clear();
 
@@ -147,8 +150,7 @@ class CartController extends ChangeNotifier {
       final storeId = doc.id;
       final data = doc.data();
       final List itemsJson = data['items'] ?? [];
-      final items =
-          itemsJson.map((e) => CartItem.fromJson(e)).toList();
+      final items = itemsJson.map((e) => CartItem.fromJson(e)).toList();
       _storeCarts[storeId] = items;
     }
 
@@ -160,8 +162,15 @@ class CartController extends ChangeNotifier {
     return _storeCarts[storeId]
             ?.firstWhere(
               (e) => e.productId == productId,
-              orElse: () => CartItem(
-                  productId: '', storeId: '', name: '', price: 0, weight: 0, quantity: 0),
+              orElse:
+                  () => CartItem(
+                    productId: '',
+                    storeId: '',
+                    name: '',
+                    price: 0,
+                    weight: 0,
+                    quantity: 0,
+                  ),
             )
             .quantity ??
         0;

@@ -11,12 +11,16 @@ class TimestampConverter implements JsonConverter<DateTime?, Object?> {
     if (json is Timestamp) return json.toDate();
     // Handle Map-like serialized timestamps (defensive)
     if (json is Map && json['_seconds'] != null) {
-      return Timestamp(json['_seconds'] as int, (json['_nanoseconds'] ?? 0) as int).toDate();
+      return Timestamp(
+        json['_seconds'] as int,
+        (json['_nanoseconds'] ?? 0) as int,
+      ).toDate();
     }
     // Fallback for ISO 8601 string (your existing data)
     return DateTime.tryParse(json.toString());
   }
 
   @override
-  Object? toJson(DateTime? date) => date == null ? null : Timestamp.fromDate(date);
+  Object? toJson(DateTime? date) =>
+      date == null ? null : Timestamp.fromDate(date);
 }

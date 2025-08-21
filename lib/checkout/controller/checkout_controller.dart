@@ -6,7 +6,6 @@ import 'package:sudan_goods/models/store/order_model.dart' as order_model;
 import 'package:sudan_goods/order/order_service.dart';
 import 'package:sudan_goods/order/order_success_page.dart';
 
-
 class CheckoutController with ChangeNotifier {
   bool isLoading = false;
 
@@ -66,7 +65,6 @@ class CheckoutController with ChangeNotifier {
 
       clearCart(); // Call your cart clear logic
       showSuccessScreen(context);
-
     } catch (e) {
       showError(context, 'Failed to place order. Please try again.');
     } finally {
@@ -110,7 +108,7 @@ class CheckoutController with ChangeNotifier {
       return false;
     }
 
- /*    if (address.trim().isEmpty) {
+    /*    if (address.trim().isEmpty) {
       showError(context, 'Please enter your delivery address.');
       return false;
     } */
@@ -125,20 +123,18 @@ class CheckoutController with ChangeNotifier {
 
   void showError(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.redAccent,
-      ),
+      SnackBar(content: Text(message), backgroundColor: Colors.redAccent),
     );
   }
 
- void showSuccessScreen(BuildContext context) {
-  Navigator.pushAndRemoveUntil(
-    context,
-    MaterialPageRoute(builder: (_) => const OrderSuccessPage()),
-    (route) => false,
-  );
-}
+  void showSuccessScreen(BuildContext context) {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (_) => const OrderSuccessPage()),
+      (route) => false,
+    );
+  }
+
   void clearCart() {
     // Clear your cart logic here (e.g., call CartController)
     print('🛒 Cart cleared');
