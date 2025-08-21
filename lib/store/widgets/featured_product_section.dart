@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:sudan_goods/models/store/product_model.dart';
 import 'package:sudan_goods/store/widgets/product_detail_bottom_sheet.dart';
+import 'package:sudan_goods/theme/design_tokens.dart';
 import 'featured_product_card.dart';
 
 class FeaturedProductsSection extends StatelessWidget {
@@ -18,6 +20,29 @@ class FeaturedProductsSection extends StatelessWidget {
           .where('isFeatured', isEqualTo: true)
           .snapshots(),
       builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                padding: DesignTokens.paddingPageHorizontal,
+                child: Text('Featured Products', style: AppTypography.sectionTitle),
+              ),
+              const SizedBox(height: DesignTokens.space8),
+              SizedBox(
+                height: 110,
+                child: ListView.separated(
+                  padding: const EdgeInsets.symmetric(horizontal: DesignTokens.space20),
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (_, __) => const _ShimmerFeaturedItem(),
+                  separatorBuilder: (_, __) => const SizedBox(width: DesignTokens.space12),
+                  itemCount: 3,
+                ),
+              ),
+            ],
+          );
+        }
+
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
           return const SizedBox(); // 🔕 Don't show the section if empty
         }
@@ -30,27 +55,24 @@ class FeaturedProductsSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
-              child: Text(
-                'Featured Products',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
+              padding: DesignTokens.paddingPageHorizontal,
+              child: Text('Featured Products', style: AppTypography.sectionTitle),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: DesignTokens.space8),
             SizedBox(
-              height: 100,
+              height: 110,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: DesignTokens.space20),
                 itemCount: products.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 12),
+                separatorBuilder: (_, __) => const SizedBox(width: DesignTokens.space12),
                 itemBuilder: (context, index) {
                   final product = products[index];
 
                   return InkWell(
                     onTap: () {
                       // TODO: Navigate to product detail page
-                       showProductDetailsBottomSheet(context, products[index]);
+                      showProductDetailsBottomSheet(context, products[index]);
                       print('Tapped on product: ${product.name}');
                     },
                     child: FeaturedProductCard(product: product),
@@ -75,4 +97,44 @@ class FeaturedProductsSection extends StatelessWidget {
   );
 }
 
+}
+
+class _ShimmerFeaturedItem extends StatelessWidget {
+  const _ShimmerFeaturedItem();
+
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey.shade300,
+      highlightColor: Colors.grey.shade100,
+      child: Container(
+        width: 260,
+        padding: const EdgeInsets.all(DesignTokens.space12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(height: 14, width: 120, color: Colors.white),
+                  const SizedBox(height: DesignTokens.space8),
+                  Container(height: 12, width: 160, color: Colors.white),
+                  const SizedBox(height: DesignTokens.space12),
+                  Container(height: 14, width: 60, color: Colors.white),
+                ],
+              ),
+            ),
+            const SizedBox(width: DesignTokens.space12),
+            Container(width: 80, height: 80, color: Colors.white),
+          ],
+        ),
+      ),
+    );
+  }
 }

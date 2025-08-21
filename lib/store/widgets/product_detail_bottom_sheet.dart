@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:sudan_goods/cart/cart_controller.dart';
+import 'package:sudan_goods/models/store/cart_item_model.dart';
 import 'package:sudan_goods/models/store/product_model.dart';
+import 'package:sudan_goods/theme/app_theme.dart';
+import 'package:sudan_goods/theme/design_tokens.dart';
 
 class ProductDetailsBottomSheet extends StatefulWidget {
   final Product product;
@@ -20,138 +26,165 @@ class _ProductDetailsBottomSheetState
   Widget build(BuildContext context) {
     final product = widget.product;
     final isOutOfStock = product.quantity == 0;
-    final price = product.discountPrice != null && product.discountPrice! > 0
-        ? product.discountPrice!
-        : product.price;
+    final hasDiscount = product.discountPrice != null && product.discountPrice! > 0;
+    final price = hasDiscount ? product.discountPrice! : product.price;
 
     return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 24, 16, 24),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(DesignTokens.space20, DesignTokens.space16, DesignTokens.space20, DesignTokens.space24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // 🖼️ Image Carousel
-            Column(
-              children: [
-                SizedBox(
-                  height: 450,
-                  child: PageView.builder(
-                    itemCount: product.images.isNotEmpty
-                        ? product.images.length
-                        : 1,
-                    onPageChanged: (index) {
-                      setState(() {
-                        currentImageIndex = index;
-                      });
-                    },
-                    itemBuilder: (context, index) {
-                      final imageUrl = product.images.isNotEmpty
-                          ? product.images[index]
-                          : null;
+            // Drag handle
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
+                ),
+              ),
+            ),
 
-                      return ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
-                        child: imageUrl != null
+            const SizedBox(height: DesignTokens.space16),
+
+            // 🖼️ Image Carousel
+            ClipRRect(
+              borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
+              child: SizedBox(
+                height: MediaQuery.of(context).size.width,
+                child: Stack(
+                  children: [
+                    PageView.builder(
+                      itemCount: product.images.isNotEmpty ? product.images.length : 1,
+                      onPageChanged: (index) {
+                        setState(() {
+                          currentImageIndex = index;
+                        });
+                      },
+                      itemBuilder: (context, index) {
+                        final imageUrl = product.images.isNotEmpty ? product.images[index] : null;
+                        return imageUrl != null
                             ? Image.network(
                                 imageUrl,
                                 width: double.infinity,
                                 fit: BoxFit.cover,
-                                errorBuilder: (_, __, ___) => const Icon(
-                                  Icons.broken_image,
-                                  size: 80,
+                                loadingBuilder: (context, child, loadingProgress) {
+                                  if (loadingProgress == null) return child;
+                                  return Shimmer.fromColors(
+                                    baseColor: Colors.grey.shade300,
+                                    highlightColor: Colors.grey.shade100,
+                                    child: Container(color: Colors.white),
+                                  );
+                                },
+                                errorBuilder: (_, __, ___) => Container(
+                                  color: Colors.grey.shade100,
+                                  alignment: Alignment.center,
+                                  child: const Icon(Icons.broken_image, size: 64, color: Colors.grey),
                                 ),
                               )
-                            : const Center(
-                                child: Icon(
-                                  Icons.image_not_supported,
-                                  size: 80,
-                                ),
+                            : Container(
+                                color: Colors.grey.shade100,
+                                alignment: Alignment.center,
+                                child: const Icon(Icons.image_not_supported, size: 64, color: Colors.grey),
+                              );
+                      },
+                    ),
+                    if (product.images.length > 1)
+                      Positioned(
+                        bottom: 12,
+                        left: 0,
+                        right: 0,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: List.generate(
+                            product.images.length,
+                            (index) => Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 4),
+                              width: currentImageIndex == index ? 10 : 6,
+                              height: currentImageIndex == index ? 10 : 6,
+                              decoration: BoxDecoration(
+                                color: currentImageIndex == index ? AppColors.primary : Colors.white70,
+                                shape: BoxShape.circle,
+                                boxShadow: currentImageIndex == index
+                                    ? [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.2),
+                                          blurRadius: 4,
+                                        ),
+                                      ]
+                                    : null,
                               ),
-                      );
-                    },
-                  ),
-                ),
-
-                const SizedBox(height: 8),
-
-                // 🔘 Dots Indicator
-                if (product.images.length > 1)
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(
-                      product.images.length,
-                      (index) => Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 4),
-                        width: currentImageIndex == index ? 10 : 6,
-                        height: currentImageIndex == index ? 10 : 6,
-                        decoration: BoxDecoration(
-                          color: currentImageIndex == index
-                              ? Colors.orange
-                              : Colors.grey.shade400,
-                          shape: BoxShape.circle,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-              ],
+                  ],
+                ),
+              ),
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: DesignTokens.space16),
 
             // 📦 Product Name
             Text(
               product.name,
-              style:
-                  const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: AppTypography.heading6,
               textAlign: TextAlign.center,
             ),
 
-            const SizedBox(height: 6),
+            const SizedBox(height: DesignTokens.space8),
+
+            // Meta chips
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Chip(
+                  label: Text('${product.weight} kg', style: AppTypography.small),
+                  visualDensity: VisualDensity.compact,
+                ),
+                const SizedBox(width: DesignTokens.space8),
+                Chip(
+                  label: Text(isOutOfStock ? 'Out of stock' : 'In stock: ${product.quantity}', style: AppTypography.small),
+                  backgroundColor: isOutOfStock ? Colors.red.shade50 : Colors.green.shade50,
+                  labelStyle: AppTypography.small.copyWith(color: isOutOfStock ? Colors.red : Colors.green.shade700),
+                  visualDensity: VisualDensity.compact,
+                ),
+              ],
+            ),
+
+            const SizedBox(height: DesignTokens.space12),
 
             // 💰 Price and Discount
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (product.discountPrice != null &&
-                    product.discountPrice! > 0)
-                  Text(
-                    '€${product.discountPrice!.toStringAsFixed(2)}',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.red,
-                    ),
-                  ),
-                if (product.discountPrice != null &&
-                    product.discountPrice! > 0)
-                  const SizedBox(width: 8),
                 Text(
-                  '€${product.price.toStringAsFixed(2)}',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: product.discountPrice != null &&
-                            product.discountPrice! > 0
-                        ? Colors.grey
-                        : Colors.black,
-                    decoration: product.discountPrice != null &&
-                            product.discountPrice! > 0
-                        ? TextDecoration.lineThrough
-                        : null,
-                  ),
+                  '€${price.toStringAsFixed(2)}',
+                  style: AppTypography.bodyBold.copyWith(color: hasDiscount ? Colors.red : Colors.black),
                 ),
+                if (hasDiscount) ...[
+                  const SizedBox(width: DesignTokens.space8),
+                  Text(
+                    '€${product.price.toStringAsFixed(2)}',
+                    style: AppTypography.small.copyWith(color: Colors.grey, decoration: TextDecoration.lineThrough),
+                  ),
+                ],
               ],
             ),
 
-            const SizedBox(height: 12),
+            const SizedBox(height: DesignTokens.space16),
 
             // 📃 Description
             Text(
               product.description,
-              style: const TextStyle(fontSize: 14),
+              style: AppTypography.body,
               textAlign: TextAlign.center,
             ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: DesignTokens.space24),
 
             // ➖➕ Quantity + Add Button
             Row(
@@ -159,30 +192,25 @@ class _ProductDetailsBottomSheetState
                 // Quantity stepper
                 Container(
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey.shade400),
-                    borderRadius: BorderRadius.circular(32),
+                    border: Border.all(color: Colors.grey.shade300),
+                    borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
                   ),
                   child: Row(
                     children: [
                       IconButton(
-                        onPressed: quantity > 1
-                            ? () => setState(() => quantity--)
-                            : null,
+                        onPressed: quantity > 1 ? () => setState(() => quantity--) : null,
                         icon: const Icon(Icons.remove),
                       ),
-                      Text(quantity.toString(),
-                          style: const TextStyle(fontSize: 16)),
+                      Text(quantity.toString(), style: AppTypography.bodyBold),
                       IconButton(
-                        onPressed: () {
-                          setState(() => quantity++);
-                        },
+                        onPressed: () => setState(() => quantity++),
                         icon: const Icon(Icons.add),
                       ),
                     ],
                   ),
                 ),
 
-                const SizedBox(width: 16),
+                const SizedBox(width: DesignTokens.space16),
 
                 // Add to Cart Button
                 Expanded(
@@ -190,22 +218,33 @@ class _ProductDetailsBottomSheetState
                     onPressed: isOutOfStock
                         ? null
                         : () {
-                            // TODO: Add to cart logic
+                            final cart = Provider.of<CartController>(context, listen: false);
+                            cart.addItem(
+                              CartItem(
+                                productId: product.id,
+                                storeId: product.storeId,
+                                name: product.name,
+                                price: price,
+                                weight: product.weight,
+                                imageUrl: product.images.isNotEmpty ? product.images.first : null,
+                                quantity: quantity,
+                              ),
+                            );
                             Navigator.of(context).pop();
                           },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          isOutOfStock ? Colors.grey : Colors.orange,
+                      backgroundColor: isOutOfStock ? Colors.grey : AppColors.primary,
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(32),
+                        borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
                       ),
+                      elevation: 1,
                     ),
                     child: Text(
                       isOutOfStock
-                          ? 'Out of Stock'
+                          ? 'Out of stock'
                           : 'Add €${(price * quantity).toStringAsFixed(2)}',
-                      style: const TextStyle(fontSize: 16),
+                      style: AppTypography.bodyLarge.copyWith(color: Colors.white),
                     ),
                   ),
                 ),

@@ -1,6 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:sudan_goods/models/store/store_model.dart';
+import 'package:sudan_goods/theme/design_tokens.dart';
 
 class StoreCoverSection extends StatelessWidget {
   final Store store;
@@ -10,7 +10,10 @@ class StoreCoverSection extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isTablet = MediaQuery.of(context).size.width > 600;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+      padding: const EdgeInsets.symmetric(
+        horizontal: DesignTokens.space20,
+        vertical: DesignTokens.space12,
+      ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
         child: Stack(
@@ -23,8 +26,25 @@ class StoreCoverSection extends StatelessWidget {
                 image: DecorationImage(
                   image: store.coverImageUrl != null && store.coverImageUrl!.isNotEmpty
                       ? NetworkImage(store.coverImageUrl!)
-                      : const AssetImage('assets/images/placeholder.jpg') as ImageProvider,
+                      : const AssetImage('assets/images/sudanese_spices.png') as ImageProvider,
                   fit: BoxFit.cover,
+                ),
+              ),
+            ),
+
+            // Gradient overlay for better contrast
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.transparent,
+                      Colors.black.withOpacity(0.08),
+                      Colors.black.withOpacity(0.18),
+                    ],
+                  ),
                 ),
               ),
             ),

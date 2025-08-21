@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:sudan_goods/theme/design_tokens.dart';
 
 class ShimmerProductGridCard extends StatelessWidget {
   const ShimmerProductGridCard({super.key});
@@ -12,24 +13,25 @@ class ShimmerProductGridCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
           border: Border.all(color: Colors.grey.shade200),
         ),
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(DesignTokens.space12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Image placeholder
-            Expanded(
+            AspectRatio(
+              aspectRatio: 1,
               child: Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
                 ),
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: DesignTokens.space8),
 
             // Name line
             Container(
@@ -37,7 +39,7 @@ class ShimmerProductGridCard extends StatelessWidget {
               width: double.infinity,
               color: Colors.white,
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: DesignTokens.space8),
 
             // Price line
             Container(
@@ -45,6 +47,7 @@ class ShimmerProductGridCard extends StatelessWidget {
               width: 80,
               color: Colors.white,
             ),
+            const Spacer(),
           ],
         ),
       ),

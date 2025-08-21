@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:sudan_goods/theme/design_tokens.dart';
+import 'package:sudan_goods/theme/app_theme.dart';
 
 class StoreCartCard extends StatelessWidget {
   final String storeId;
@@ -22,82 +24,63 @@ class StoreCartCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onTap: onTap,
-      child: Card(
-        color: Colors.white,
-        margin: const EdgeInsets.only(bottom: 12),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        elevation: 2,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 🏪 Store Logo + Name
-              Row(
-                children: [
-                  storeLogoUrl != null && storeLogoUrl!.isNotEmpty
-                      ? CircleAvatar(
-                          radius: 20,
-                          backgroundImage: NetworkImage(storeLogoUrl!),
-                        )
-                      : const CircleAvatar(
-                          radius: 20,
-                          backgroundColor: Colors.orange,
-                          child: Icon(Icons.store, color: Colors.white),
-                        ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      storeName,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+      borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: DesignTokens.space12),
+        padding: DesignTokens.paddingCard,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
+          boxShadow: DesignTokens.shadowMedium,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                storeLogoUrl != null && storeLogoUrl!.isNotEmpty
+                    ? CircleAvatar(radius: 20, backgroundImage: NetworkImage(storeLogoUrl!))
+                    : const CircleAvatar(
+                        radius: 20,
+                        backgroundColor: AppColors.primary,
+                        child: Icon(Icons.store_rounded, color: Colors.white),
                       ),
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 12),
-
-              // 🛍️ Item Count + Subtotal
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("🛍️ $itemCount items"),
-                  Text(
-                    "€${subtotal.toStringAsFixed(2)}",
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 16),
-
-              // ✅ Checkout Button (full-width)
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: onCheckout,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orange.shade700,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: const Text(
-                    "Checkout This Store",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
+                const SizedBox(width: DesignTokens.space12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(storeName, style: AppTypography.cardTitle),
+                      Text('$itemCount items', style: AppTypography.small.copyWith(color: Colors.black54)),
+                    ],
                   ),
                 ),
-              )
-            ],
-          ),
+                const Icon(Icons.chevron_right_rounded, color: Colors.black45),
+              ],
+            ),
+
+            const SizedBox(height: DesignTokens.space16),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Subtotal', style: AppTypography.small.copyWith(color: Colors.black54)),
+                Text('€${subtotal.toStringAsFixed(2)}', style: AppTypography.bodyBold),
+              ],
+            ),
+
+            const SizedBox(height: DesignTokens.space16),
+
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: onCheckout,
+                child: const Text('Checkout This Store'),
+              ),
+            ),
+          ],
         ),
       ),
     );
