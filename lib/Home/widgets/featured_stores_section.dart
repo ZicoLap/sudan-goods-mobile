@@ -5,6 +5,7 @@ import 'package:sudan_goods/Home/widgets/store_card.dart';
 import 'package:sudan_goods/models/store/store_model.dart';
 import 'package:sudan_goods/store/pages/store_details_page.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
+import 'package:sudan_goods/l10n/app_localizations.dart';
 
 class FeaturedStoresSection extends StatelessWidget {
   const FeaturedStoresSection({super.key});
@@ -20,7 +21,7 @@ class FeaturedStoresSection extends StatelessWidget {
           child: Row(
             children: [
               Text(
-                'Featured Stores',
+                AppLocalizations.of(context)!.featuredStores,
                 style: AppTypography.sectionTitle.copyWith(
                   color: Colors.black,
                 ),
@@ -36,7 +37,7 @@ class FeaturedStoresSection extends StatelessWidget {
                   borderRadius: BorderRadius.circular(DesignTokens.radiusSmall),
                 ),
                 child: Text(
-                  '⭐ Top picks',
+                  AppLocalizations.of(context)!.topPicksBadge,
                   style: AppTypography.caption.copyWith(
                     color: Colors.orange.shade700,
                     fontWeight: FontWeight.w600,
@@ -63,9 +64,9 @@ class FeaturedStoresSection extends StatelessWidget {
                   itemBuilder: (context, index) => ShimmerComponents.storeCardShimmer(),
                 );
               } else if (snapshot.hasError) {
-                return const Center(child: Text('Failed to load stores'));
+                return Center(child: Text(AppLocalizations.of(context)!.failedToLoadStores));
               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const Center(child: Text('No featured stores'));
+                return Center(child: Text(AppLocalizations.of(context)!.noFeaturedStores));
               }
 
               final stores = snapshot.data!;

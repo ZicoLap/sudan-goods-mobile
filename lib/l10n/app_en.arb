@@ -1,0 +1,289 @@
+{
+  "@@locale": "en",
+  "appTitle": "Sudan Goods",
+  "greeting": "Hello, {name}!",
+  "@greeting": {
+    "description": "Greets the user by name",
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "itemsCount": "{count, plural, =0{No items} =1{1 item} other{{count} items}}",
+  "@itemsCount": {
+    "description": "Item count label with pluralization",
+    "placeholders": {
+      "count": { "type": "num" }
+    }
+  }
+,
+  "settingsTitle": "Settings",
+  "sectionAccount": "Account",
+  "changeEmail": "Change email",
+  "changePassword": "Change password",
+  "manageAddresses": "Manage addresses",
+
+  "sectionNotifications": "Notifications",
+  "pushNotifications": "Push notifications",
+  "pushNotificationsSubtitle": "Receive updates and promotions",
+  "emailNotifications": "Email notifications",
+  "emailNotificationsSubtitle": "Get messages to your inbox",
+  "orderStatusUpdates": "Order status updates",
+  "orderStatusUpdatesSubtitle": "Track your orders in real time",
+
+  "sectionPrivacySecurity": "Privacy & Security",
+  "twoFactorAuth": "Two-factor authentication",
+  "twoFactorAuthSubtitle": "Add extra protection to your account",
+  "blockedUsers": "Blocked users",
+  "dataAndPrivacy": "Data & privacy",
+  "dataAndPrivacySubtitle": "Manage your data and preferences",
+
+  "sectionGeneral": "General",
+  "language": "Language",
+  "languageEnglish": "English",
+  "languageArabic": "Arabic",
+  "selectLanguage": "Select language",
+  "theme": "Theme",
+  "themeSubtitle": "Choose system, light, or dark",
+  "selectTheme": "Select theme",
+  "themeLight": "Light",
+  "themeDark": "Dark",
+  "themeSystem": "System",
+  "regionAndCurrency": "Region & currency",
+  "selectRegionCurrency": "Select region & currency",
+
+  "sectionHelpSupport": "Help & Support",
+  "faqs": "FAQs",
+  "contactSupport": "Contact support",
+  "appVersion": "App version",
+
+  "dangerZone": "Danger zone",
+  "logout": "Log out",
+  "deleteAccount": "Delete account",
+
+  "regionUAE": "United Arab Emirates",
+  "regionUS": "United States",
+  "regionSudan": "Sudan",
+  "regionCurrencyFormat": "{region} ({currency})",
+  "@regionCurrencyFormat": {
+    "description": "Formats region and currency together",
+    "placeholders": {
+      "region": { "type": "String" },
+      "currency": { "type": "String" }
+    }
+  },
+
+  "comingSoonWithFeature": "{feature} coming soon",
+  "@comingSoonWithFeature": {
+    "description": "Shown in a snackbar for features not yet implemented",
+    "placeholders": {
+      "feature": { "type": "String" }
+    }
+  },
+
+  "confirmActionTitle": "{action}?",
+  "@confirmActionTitle": {
+    "description": "Dialog title asking to confirm an action",
+    "placeholders": {
+      "action": { "type": "String" }
+    }
+  },
+  
+  "confirmActionMessage": "Are you sure you want to proceed with {action}?",
+  "@confirmActionMessage": {
+    "description": "Dialog message asking to confirm an action",
+    "placeholders": {
+      "action": { "type": "String" }
+    }
+  },
+
+  "cancel": "Cancel",
+  "failedToLoadSettings": "Failed to load settings. Please try again.",
+  "retry": "Retry",
+
+  "searchTitle": "Search",
+  "searchHint": "Search for products or stores",
+  "searchEmptyPrompt": "Type a query and press search",
+  "searchResultsFor": "Results for: \"{query}\"",
+  "@searchResultsFor": {
+    "description": "Label shown above results with the search query",
+    "placeholders": {
+      "query": { "type": "String" }
+    }
+  },
+
+  "allStoresTitle": "All Stores",
+  "viewAll": "View all",
+  "failedToLoadStores": "Failed to load stores",
+  "noStoresAvailable": "No stores available",
+
+  "browseCategories": "Browse Categories",
+  "featuredStores": "Featured Stores",
+  "topPicksBadge": "⭐ Top picks",
+  "noFeaturedStores": "No featured stores",
+  "popularProducts": "Popular Products",
+  "homeGreeting": "Good day! 👋",
+  "deliveringTo": "Delivering to {place}",
+  "@deliveringTo": {
+    "description": "Indicates current delivery location",
+    "placeholders": {
+      "place": { "type": "String" }
+    }
+  },
+  "failedToLoadCategories": "Failed to load categories",
+  "navHome": "Home",
+  "navOrders": "Orders",
+  "navSearch": "Search",
+  "navMessages": "Messages",
+  "navProfile": "Profile",
+  "storeOpen": "Open",
+  "storeClosed": "Closed",
+  "minOrderWithAmount": "Min. Order: {amount}",
+  "@minOrderWithAmount": {
+    "description": "Minimum order amount label",
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "editProfile": "Edit Profile",
+  "profilePhoto": "Profile photo",
+  "tapToChangePhoto": "Tap to change photo",
+  "change": "Change",
+  "name": "Name",
+  "handle": "Handle",
+  "bio": "Bio",
+  "saveChanges": "Save changes",
+  "changePhoto": "Change photo",
+  "takePhoto": "Take a photo",
+  "chooseFromGallery": "Choose from gallery",
+
+  "searchMessagesHint": "Search messages",
+  "newMessage": "New message",
+  "noMessagesYet": "No messages yet",
+  "startConversationPrompt": "Start a conversation with a store or support",
+  "failedToLoadMessages": "Failed to load messages. Please try again.",
+  "startNewMessage": "Start new message",
+  "messageAStore": "Message a store",
+  "chatWith": "Chat with {name}",
+  "@chatWith": {
+    "description": "Label for starting chat with an entity",
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+
+  "mustLoginToViewOrders": "You need to be logged in to view orders.",
+  "myOrders": "My Orders",
+  "failedToLoadOrders": "Failed to load orders.",
+  "deleteOrderQuestion": "Delete Order?",
+  "deleteOrderExplanation": "This order has not been confirmed yet. Do you want to delete it?",
+  "delete": "Delete",
+  "orderDeleted": "Order deleted",
+  "failedToDeleteOrder": "Failed to delete order.",
+  "noOrdersYet": "No orders yet",
+  "ordersEmptyHint": "Your orders will appear here. Start shopping to place your first order!",
+  "orderNumber": "Order #{id}",
+  "@orderNumber": {
+    "description": "Order number label with short id",
+    "placeholders": {
+      "id": { "type": "String" }
+    }
+  },
+  "deleteOrder": "Delete order",
+  "unknownStore": "Unknown store",
+  "orderStatusPending": "Pending",
+  "orderStatusConfirmed": "Confirmed",
+  "orderStatusPreparing": "Preparing",
+  "orderStatusProcessing": "Processing",
+  "orderStatusShipped": "Shipped",
+  "orderStatusDelivered": "Delivered",
+  "orderStatusCancelled": "Cancelled",
+  "failedToLoadProfile": "Failed to load profile. Please try again.",
+  "recentActivity": "Recent activity",
+  "addShortBioPrompt": "Add a short bio to personalize your profile",
+  "showLess": "Show less",
+  "readMore": "Read more",
+  "favorites": "Favorites",
+  "reviews": "Reviews",
+  "recentOrder": "Recent order",
+  "viewedAStore": "Viewed a store",
+  "leftAReview": "Left a review",
+  "email": "Email",
+  "password": "Password",
+  "login": "Login",
+  "register": "Register",
+  "or": "OR",
+  "forgotPassword": "Forgot password?",
+  "pleaseEnterField": "Please enter {field}",
+  "@pleaseEnterField": {
+    "description": "Validation message asking user to enter a field value",
+    "placeholders": {
+      "field": { "type": "String" }
+    }
+  },
+  "loginFailedWithError": "Login failed: {error}",
+  "@loginFailedWithError": {
+    "description": "Login failure message with error details",
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "verifyEmailPrompt": "Please verify your email.",
+  "send": "Send",
+  "resetPassword": "Reset Password",
+  "resetPasswordInstructions": "Enter your registered email. We will send you a reset link.",
+  "resetLinkSent": "Reset link sent to your email.",
+  "errorWithMessage": "Error: {message}",
+  "@errorWithMessage": {
+    "description": "Generic error message with details",
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  },
+  "firstName": "First Name",
+  "lastName": "Last Name",
+  "phone": "Phone",
+  "confirmPassword": "Confirm Password",
+  "next": "Next",
+  "genderLabel": "Gender:",
+  "male": "Male",
+  "female": "Female",
+  "birthdayLabel": "Birthday:",
+  "addressTitle": "Address",
+  "addressLabelPlaceholder": "Label (e.g. Home)",
+  "street": "Street",
+  "city": "City",
+  "country": "Country",
+  "postalCode": "Postal Code",
+  "back": "Back",
+  "registrationSuccessVerifyEmail": "Your registration was successful. Please verify your email.",
+  "registrationFailedWithError": "Registration failed: {error}",
+  "@registrationFailedWithError": {
+    "description": "Registration failure message with error details",
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "passwordsDoNotMatch": "Passwords do not match",
+  "cartTitle": "Cart",
+  "cartEmpty": "Your cart is empty",
+  "cartsAllTitle": "All Carts",
+  "failedToLoadStoreData": "Failed to load store data",
+  "removeCart": "Remove cart",
+  "removeCartConfirmation": "Are you sure you want to remove this cart?",
+  "remove": "Remove",
+  "cartRemoved": "Cart removed",
+  "checkoutAllCarts": "Checkout all carts",
+  "cartIsEmptyTitle": "Your cart is empty",
+  "addItemsToBeginCheckout": "Add items to begin checkout",
+  "failedToLoadStore": "Failed to load store",
+  "cartCleared": "Cart cleared",
+  "clear": "Clear",
+  "subtotal": "Subtotal",
+  "totalWeight": "Total weight",
+  "deliveryFee": "Delivery fee",
+  "total": "Total",
+  "kg": "kg",
+  "checkout": "Checkout",
+  "viewCart": "View cart",
+  "checkoutThisStore": "Checkout this store"
+}

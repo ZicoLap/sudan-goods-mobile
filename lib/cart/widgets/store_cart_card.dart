@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
+import 'package:sudan_goods/l10n/app_localizations.dart';
 
 class StoreCartCard extends StatelessWidget {
   final String storeId;
@@ -24,6 +25,7 @@ class StoreCartCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
@@ -53,7 +55,7 @@ class StoreCartCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(storeName, style: AppTypography.cardTitle),
-                      Text('$itemCount items', style: AppTypography.small.copyWith(color: Colors.black54)),
+                      Text(l10n.itemsCount(itemCount), style: AppTypography.small.copyWith(color: Colors.black54)),
                     ],
                   ),
                 ),
@@ -66,7 +68,7 @@ class StoreCartCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Subtotal', style: AppTypography.small.copyWith(color: Colors.black54)),
+                Text(l10n.subtotal, style: AppTypography.small.copyWith(color: Colors.black54)),
                 Text('€${subtotal.toStringAsFixed(2)}', style: AppTypography.bodyBold),
               ],
             ),
@@ -77,7 +79,7 @@ class StoreCartCard extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: onCheckout,
-                child: const Text('Checkout This Store'),
+                child: Text(l10n.checkoutThisStore),
               ),
             ),
           ],

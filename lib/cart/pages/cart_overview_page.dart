@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:sudan_goods/cart/cart_controller.dart';
 import 'package:sudan_goods/cart/widgets/cart_bottom_sheet_widget.dart';
 import 'package:sudan_goods/cart/widgets/store_cart_card.dart';
+import 'package:sudan_goods/l10n/app_localizations.dart';
 
 class CartOverviewPage extends StatelessWidget {
   const CartOverviewPage({super.key});
@@ -11,19 +12,20 @@ class CartOverviewPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final cartController = Provider.of<CartController>(context);
     final storeCarts = cartController.storeCarts;
+    final l10n = AppLocalizations.of(context)!;
 
     if (storeCarts.isEmpty) {
       return Scaffold(
-        appBar: AppBar(title: const Text("Your Cart")),
-        body: const Center(child: Text("Your cart is empty.")),
+        appBar: AppBar(title: Text(l10n.cartTitle)),
+        body: Center(child: Text(l10n.cartEmpty)),
       );
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "🛒 All Carts",
-          style: TextStyle(fontWeight: FontWeight.bold),
+        title: Text(
+          '🛒 ${l10n.cartsAllTitle}',
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
@@ -52,9 +54,9 @@ class CartOverviewPage extends StatelessWidget {
               }
 
               if (snapshot.hasError || !snapshot.hasData) {
-                return const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 18),
-                  child: Text("Failed to load store data"),
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 18),
+                  child: Text(l10n.failedToLoadStoreData),
                 );
               }
 
@@ -74,18 +76,18 @@ class CartOverviewPage extends StatelessWidget {
                     context: context,
                     builder:
                         (_) => AlertDialog(
-                          title: const Text("Remove Cart"),
-                          content: const Text(
-                            "Are you sure you want to remove this store's cart?",
+                          title: Text(l10n.removeCart),
+                          content: Text(
+                            l10n.removeCartConfirmation,
                           ),
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.pop(context, false),
-                              child: const Text("Cancel"),
+                              child: Text(l10n.cancel),
                             ),
                             ElevatedButton(
                               onPressed: () => Navigator.pop(context, true),
-                              child: const Text("Remove"),
+                              child: Text(l10n.remove),
                             ),
                           ],
                         ),
@@ -95,7 +97,7 @@ class CartOverviewPage extends StatelessWidget {
                   cartController.clearCart(storeId);
                   ScaffoldMessenger.of(
                     context,
-                  ).showSnackBar(const SnackBar(content: Text("Cart removed")));
+                  ).showSnackBar(SnackBar(content: Text(l10n.cartRemoved)));
                 },
                 child: StoreCartCard(
                   storeId: storeId,
@@ -135,9 +137,9 @@ class CartOverviewPage extends StatelessWidget {
             onPressed: () {
               // TODO: handle "checkout all"
             },
-            child: const Text(
-              "Checkout All Carts",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            child: Text(
+              l10n.checkoutAllCarts,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
           ),
         ),

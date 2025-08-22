@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:sudan_goods/l10n/app_localizations.dart';
 
 class PasswordResetDialog extends StatefulWidget {
   const PasswordResetDialog({super.key});
@@ -17,7 +18,12 @@ class _PasswordResetDialogState extends State<PasswordResetDialog> {
 
     if (email.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter your email.')),
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context)!
+                .pleaseEnterField(AppLocalizations.of(context)!.email),
+          ),
+        ),
       );
       return;
     }
@@ -27,12 +33,16 @@ class _PasswordResetDialogState extends State<PasswordResetDialog> {
     try {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Reset link sent to your email.')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.resetLinkSent)),
       );
       Navigator.of(context).pop(); // close dialog
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context)!.errorWithMessage(e.toString()),
+          ),
+        ),
       );
     } finally {
       setState(() => _isLoading = false);
@@ -41,21 +51,19 @@ class _PasswordResetDialogState extends State<PasswordResetDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return AlertDialog(
-      title: const Text('Reset Password'),
+      title: Text(l10n.resetPassword),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text(
-            'Enter your registered email. We will send you a reset link.',
-            textAlign: TextAlign.center,
-          ),
+          Text(l10n.resetPasswordInstructions, textAlign: TextAlign.center),
           const SizedBox(height: 12),
           TextField(
             controller: _emailController,
-            decoration: const InputDecoration(
-              labelText: 'Email',
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              labelText: l10n.email,
+              border: const OutlineInputBorder(),
             ),
           ),
         ],
@@ -63,7 +71,7 @@ class _PasswordResetDialogState extends State<PasswordResetDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(l10n.cancel),
         ),
         ElevatedButton(
           onPressed: _isLoading ? null : _resetPassword,
@@ -73,7 +81,7 @@ class _PasswordResetDialogState extends State<PasswordResetDialog> {
                   height: 16,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : const Text('Send'),
+              : Text(l10n.send),
         ),
       ],
     );

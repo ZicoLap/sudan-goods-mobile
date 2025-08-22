@@ -7,6 +7,7 @@ import 'package:sudan_goods/models/store/cart_item_model.dart';
 import 'package:sudan_goods/models/store/store_model.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
+import 'package:sudan_goods/l10n/app_localizations.dart';
 
 class CartBottomSheet extends StatefulWidget {
   final String storeId;
@@ -30,6 +31,7 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<CartController>(context, listen: true);
+    final l10n = AppLocalizations.of(context)!;
     final List<CartItem> items = cart.getItemsByStore(widget.storeId);
     final double subtotal = cart.getSubtotal(widget.storeId);
     final double totalWeight = cart.getTotalWeight(widget.storeId);
@@ -56,9 +58,9 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
             const SizedBox(height: 24),
             const Icon(Icons.shopping_bag_outlined, size: 40, color: Colors.black54),
             const SizedBox(height: 12),
-            Text('Cart is empty', style: AppTypography.bodyBold),
+            Text(l10n.cartIsEmptyTitle, style: AppTypography.bodyBold),
             const SizedBox(height: 4),
-            Text('Add items to begin checkout', style: AppTypography.small.copyWith(color: Colors.black54)),
+            Text(l10n.addItemsToBeginCheckout, style: AppTypography.small.copyWith(color: Colors.black54)),
             const SizedBox(height: 16),
           ],
         ),
@@ -100,7 +102,7 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
                         return const Center(child: CircularProgressIndicator());
                       }
                       if (snapshot.hasError || !snapshot.hasData) {
-                        return Center(child: Text('Failed to load store', style: AppTypography.body));
+                        return Center(child: Text(l10n.failedToLoadStore, style: AppTypography.body));
                       }
 
                       final store = snapshot.data!;
@@ -135,18 +137,18 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(store.name, style: AppTypography.heading6),
-                                          Text('${items.fold<int>(0, (s, i) => s + i.quantity)} items', style: AppTypography.small.copyWith(color: Colors.black54)),
+                                          Text(l10n.itemsCount(items.fold<int>(0, (s, i) => s + i.quantity)), style: AppTypography.small.copyWith(color: Colors.black54)),
                                         ],
                                       ),
                                     ),
                                     TextButton.icon(
                                       onPressed: () {
                                         cart.clearCart(store.id);
-                                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Cart cleared')));
+                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.cartCleared)));
                                         Navigator.of(context).maybePop();
                                       },
                                       icon: const Icon(Icons.delete_outline),
-                                      label: const Text('Clear'),
+                                      label: Text(l10n.clear),
                                       style: TextButton.styleFrom(foregroundColor: Colors.redAccent),
                                     ),
                                   ],
@@ -186,11 +188,11 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
                                   ),
                                   child: Column(
                                     children: [
-                                      _priceRow('Subtotal', subtotal),
-                                      _weightRow('Total weight', totalWeight),
-                                      _priceRow('Delivery fee', deliveryFee),
+                                      _priceRow(l10n.subtotal, subtotal),
+                                      _weightRow(l10n.totalWeight, totalWeight),
+                                      _priceRow(l10n.deliveryFee, deliveryFee),
                                       const Divider(height: 24),
-                                      _priceRow('Total', total, isBold: true),
+                                      _priceRow(l10n.total, total, isBold: true),
                                     ],
                                   ),
                                 ),
@@ -206,7 +208,7 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
                                       border: Border.all(color: Colors.orange.shade200),
                                     ),
                                     child: Text(
-                                      'Minimum order is €${store.minimumOrderAmount.toStringAsFixed(2)}',
+                                      l10n.minOrderWithAmount('€${store.minimumOrderAmount.toStringAsFixed(2)}'),
                                       style: AppTypography.small.copyWith(color: Colors.orange.shade800),
                                       textAlign: TextAlign.center,
                                     ),
@@ -232,7 +234,7 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
                                               );
                                             }
                                           : null,
-                                      child: const Text('Checkout'),
+                                      child: Text(l10n.checkout),
                                     ),
                                   ),
                                 ),
@@ -272,7 +274,7 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(label, style: AppTypography.body),
-          Text('${weight.toStringAsFixed(2)} kg', style: AppTypography.body),
+          Text('${weight.toStringAsFixed(2)} ${AppLocalizations.of(context)!.kg}', style: AppTypography.body),
         ],
       ),
     );
@@ -303,7 +305,7 @@ class _CartItemRow extends StatelessWidget {
                   IconButton(
                     icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
                     onPressed: () => context.read<CartController>().removeItem(storeId, item.productId),
-                    tooltip: 'Remove',
+                    tooltip: AppLocalizations.of(context)!.remove,
                   ),
                 ],
               ),
@@ -313,7 +315,7 @@ class _CartItemRow extends StatelessWidget {
                   Text('€${item.price.toStringAsFixed(2)}', style: AppTypography.small.copyWith(color: Colors.black54)),
                   if (item.weight > 0) ...[
                     const SizedBox(width: 8),
-                    Text('· ${item.weight.toStringAsFixed(2)} kg', style: AppTypography.small.copyWith(color: Colors.black45)),
+                    Text('· ${item.weight.toStringAsFixed(2)} ${AppLocalizations.of(context)!.kg}', style: AppTypography.small.copyWith(color: Colors.black45)),
                   ]
                 ],
               ),

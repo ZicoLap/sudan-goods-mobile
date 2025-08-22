@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sudan_goods/l10n/app_localizations.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -21,7 +22,7 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Search'),
+        title: Text(AppLocalizations.of(context)!.searchTitle),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -33,7 +34,7 @@ class _SearchPageState extends State<SearchPage> {
               textInputAction: TextInputAction.search,
               onSubmitted: (value) => setState(() => _query = value.trim()),
               decoration: InputDecoration(
-                hintText: 'Search for products or stores',
+                hintText: AppLocalizations.of(context)!.searchHint,
                 prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -42,11 +43,11 @@ class _SearchPageState extends State<SearchPage> {
             ),
             const SizedBox(height: 16),
             if (_query.isEmpty)
-              const Text('Type a query and press search')
+              Text(AppLocalizations.of(context)!.searchEmptyPrompt)
             else
               Expanded(
                 child: Center(
-                  child: Text('Results for: "$_query"'),
+                  child: Text(AppLocalizations.of(context)!.searchResultsFor(_query)),
                 ),
               ),
           ],

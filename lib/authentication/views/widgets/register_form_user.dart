@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:sudan_goods/authentication/data/register_form_data.dart';
 import 'package:sudan_goods/authentication/views/login_page.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
+import 'package:sudan_goods/l10n/app_localizations.dart';
 import 'gender_picker.dart';
 import 'birthday_picker.dart';
 
@@ -28,6 +29,7 @@ class RegisterFormUser extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return SingleChildScrollView(
       key: const ValueKey('user_form'),
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -35,7 +37,7 @@ class RegisterFormUser extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            "Register",
+            l10n.register,
             style: GoogleFonts.staatliches(
               fontSize: 48,
               fontWeight: FontWeight.bold,
@@ -47,24 +49,26 @@ class RegisterFormUser extends StatelessWidget {
             key: formKey,
             child: Column(
               children: [
-                _textField(formData.firstName, "First Name"),
+                _textField(context, formData.firstName, l10n.firstName),
                 const SizedBox(height: 16),
-                _textField(formData.lastName, "Last Name"),
+                _textField(context, formData.lastName, l10n.lastName),
                 const SizedBox(height: 16),
-                _textField(formData.email, "Email", icon: Icons.email),
+                _textField(context, formData.email, l10n.email, icon: Icons.email),
                 const SizedBox(height: 16),
-                _textField(formData.phone, "Phone", icon: Icons.phone),
+                _textField(context, formData.phone, l10n.phone, icon: Icons.phone),
                 const SizedBox(height: 16),
                 _textField(
+                  context,
                   formData.password,
-                  "Password",
+                  l10n.password,
                   obscure: true,
                   icon: Icons.lock_outline,
                 ),
                 const SizedBox(height: 16),
                 _textField(
+                  context,
                   formData.confirmPassword,
-                  "Confirm Password",
+                  l10n.confirmPassword,
                   obscure: true,
                   icon: Icons.lock,
                 ),
@@ -96,9 +100,9 @@ class RegisterFormUser extends StatelessWidget {
                   borderRadius: BorderRadius.circular(36),
                 ),
               ),
-              child: const Text(
-                "NEXT",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              child: Text(
+                l10n.next,
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
           ),
@@ -121,9 +125,9 @@ class RegisterFormUser extends StatelessWidget {
                   side: const BorderSide(color: AppColors.primary),
                 ),
               ),
-              child: const Text(
-                "CANCEL",
-                style: TextStyle(fontWeight: FontWeight.bold),
+              child: Text(
+                l10n.cancel,
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
           ),
@@ -133,6 +137,7 @@ class RegisterFormUser extends StatelessWidget {
   }
 
   Widget _textField(
+    BuildContext context,
     TextEditingController controller,
     String label, {
     bool obscure = false,
@@ -152,7 +157,9 @@ class RegisterFormUser extends StatelessWidget {
           horizontal: 16,
         ),
       ),
-      validator: (val) => val == null || val.isEmpty ? 'Enter $label' : null,
+      validator: (val) => val == null || val.isEmpty
+          ? AppLocalizations.of(context)!.pleaseEnterField(label)
+          : null,
     );
   }
 }

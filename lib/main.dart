@@ -7,6 +7,9 @@ import 'package:sudan_goods/cart/cart_controller.dart';
 import 'package:sudan_goods/checkout/controller/checkout_controller.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
 import 'package:sudan_goods/user/user_provider.dart';
+import 'package:sudan_goods/l10n/app_localizations.dart';
+import 'package:sudan_goods/l10n/locale_controller.dart';
+import 'package:sudan_goods/l10n/locale_persistence_service.dart';
 
 import 'firebase_options.dart';
 
@@ -28,6 +31,9 @@ void main() async {
         ),
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => CheckoutController()),
+        Provider<LocaleController>(
+          create: (_) => LocaleController(LocalePersistenceService())..loadSavedLocale(),
+        ),
       ],
       child: const MyApp(),
     ),
@@ -41,10 +47,31 @@ class MyApp extends StatelessWidget {
   @override
   /// Builds the [MaterialApp] with global theme and the authentication gate.
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Sudan Goods',
-      theme: AppTheme.lightTheme,
-      home: AuthGate(), // We'll create this next
+    final localeController = Provider.of<LocaleController>(context, listen: false);
+    return ValueListenableBuilder<Locale?>(
+      valueListenable: localeController.locale,
+      builder: (context, locale, _) {
+        return MaterialApp(
+          onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: locale,
+          localeResolutionCallback: (deviceLocale, supportedLocales) {
+            // If user selected a locale, use it.
+            if (locale != null) return locale;
+            // Otherwise try to match device language code; fallback to English.
+            if (deviceLocale != null) {
+              for (final l in supportedLocales) {
+                if (l.languageCode == deviceLocale.languageCode) return l;
+              }
+            }
+            return const Locale('en');
+          },
+          theme: AppTheme.lightTheme,
+          debugShowCheckedModeBanner: false,
+          home: const AuthGate(), // Auth gate for routing based on auth state
+        );
+      },
     );
   }
 }

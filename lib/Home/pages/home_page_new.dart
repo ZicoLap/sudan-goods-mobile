@@ -10,6 +10,7 @@ import 'package:sudan_goods/cart/pages/cart_overview_page.dart';
 import 'package:sudan_goods/models/store/category_model.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
+import 'package:sudan_goods/l10n/app_localizations.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -18,7 +19,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sudan Goods'),
+        title: Text(AppLocalizations.of(context)!.appTitle),
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
         elevation: 0,
@@ -57,7 +58,7 @@ class HomePage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Good day! 👋',
+                        AppLocalizations.of(context)!.homeGreeting,
                         style: AppTypography.small.copyWith(
                           color: Colors.black54,
                         ),
@@ -72,7 +73,7 @@ class HomePage extends StatelessWidget {
                           ),
                           const SizedBox(width: DesignTokens.space4),
                           Text(
-                            'Delivering to Gießen',
+                            AppLocalizations.of(context)!.deliveringTo('Gießen'),
                             style: AppTypography.locationText.copyWith(
                               color: Colors.black,
                             ),
@@ -100,8 +101,8 @@ class HomePage extends StatelessWidget {
                     }
 
                     if (snapshot.hasError) {
-                      return const Center(
-                        child: Text('Failed to load categories'),
+                      return Center(
+                        child: Text(AppLocalizations.of(context)!.failedToLoadCategories),
                       );
                     }
 

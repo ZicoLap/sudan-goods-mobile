@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sudan_goods/authentication/data/register_form_data.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
+import 'package:sudan_goods/l10n/app_localizations.dart';
 
 class RegisterFormAddress extends StatelessWidget {
   final RegisterFormData formData;
@@ -21,6 +22,7 @@ class RegisterFormAddress extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return SingleChildScrollView(
       key: const ValueKey('address_form'),
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -28,7 +30,7 @@ class RegisterFormAddress extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            "Address",
+            l10n.addressTitle,
             style: GoogleFonts.staatliches(
               fontSize: 48,
               fontWeight: FontWeight.bold,
@@ -40,15 +42,15 @@ class RegisterFormAddress extends StatelessWidget {
             key: formKey,
             child: Column(
               children: [
-                _textField(formData.addressLabel, "Label (e.g. Home)"),
+                _textField(context, formData.addressLabel, l10n.addressLabelPlaceholder),
                 const SizedBox(height: 16),
-                _textField(formData.street, "Street"),
+                _textField(context, formData.street, l10n.street),
                 const SizedBox(height: 16),
-                _textField(formData.city, "City"),
+                _textField(context, formData.city, l10n.city),
                 const SizedBox(height: 16),
-                _textField(formData.country, "Country"),
+                _textField(context, formData.country, l10n.country),
                 const SizedBox(height: 16),
-                _textField(formData.postalCode, "Postal Code"),
+                _textField(context, formData.postalCode, l10n.postalCode),
               ],
             ),
           ),
@@ -68,7 +70,7 @@ class RegisterFormAddress extends StatelessWidget {
                 ),
                 child: isLoading
                     ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text("Register"),
+                    : Text(l10n.register),
               ),
               const SizedBox(height: 24),
               OutlinedButton(
@@ -84,7 +86,7 @@ class RegisterFormAddress extends StatelessWidget {
                 ),
                 child: isLoading
                     ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text("Back"),
+                    : Text(l10n.back),
               ),
             ],
           ),
@@ -93,7 +95,7 @@ class RegisterFormAddress extends StatelessWidget {
     );
   }
 
-  Widget _textField(TextEditingController controller, String label) {
+  Widget _textField(BuildContext context, TextEditingController controller, String label) {
     return TextFormField(
       controller: controller,
       decoration: InputDecoration(
@@ -106,7 +108,9 @@ class RegisterFormAddress extends StatelessWidget {
           horizontal: 16,
         ),
       ),
-      validator: (val) => val == null || val.isEmpty ? 'Enter $label' : null,
+      validator: (val) => val == null || val.isEmpty
+          ? AppLocalizations.of(context)!.pleaseEnterField(label)
+          : null,
     );
   }
 }

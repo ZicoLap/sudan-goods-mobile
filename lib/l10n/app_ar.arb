@@ -1,0 +1,289 @@
+{
+  "@@locale": "ar",
+  "appTitle": "سلع السودان",
+  "greeting": "مرحباً، {name}!",
+  "@greeting": {
+    "description": "تحية للمستخدم بالاسم",
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "itemsCount": "{count, plural, =0{لا توجد عناصر} =1{عنصر واحد} other{{count} عناصر}}",
+  "@itemsCount": {
+    "description": "تعبير بعدد العناصر مع جمع",
+    "placeholders": {
+      "count": { "type": "num" }
+    }
+  }
+,
+  "settingsTitle": "الإعدادات",
+  "sectionAccount": "الحساب",
+  "changeEmail": "تغيير البريد الإلكتروني",
+  "changePassword": "تغيير كلمة المرور",
+  "manageAddresses": "إدارة العناوين",
+
+  "sectionNotifications": "الإشعارات",
+  "pushNotifications": "إشعارات الدفع",
+  "pushNotificationsSubtitle": "استلام التحديثات والعروض",
+  "emailNotifications": "إشعارات البريد الإلكتروني",
+  "emailNotificationsSubtitle": "استلام الرسائل في بريدك",
+  "orderStatusUpdates": "تحديثات حالة الطلب",
+  "orderStatusUpdatesSubtitle": "تتبع طلباتك في الوقت الفعلي",
+
+  "sectionPrivacySecurity": "الخصوصية والأمان",
+  "twoFactorAuth": "التحقق بخطوتين",
+  "twoFactorAuthSubtitle": "أضف حماية إضافية لحسابك",
+  "blockedUsers": "المستخدمون المحظورون",
+  "dataAndPrivacy": "البيانات والخصوصية",
+  "dataAndPrivacySubtitle": "إدارة بياناتك وتفضيلاتك",
+
+  "sectionGeneral": "عام",
+  "language": "اللغة",
+  "languageEnglish": "الإنجليزية",
+  "languageArabic": "العربية",
+  "selectLanguage": "اختر اللغة",
+  "theme": "المظهر",
+  "themeSubtitle": "اختر النظام أو الفاتح أو الداكن",
+  "selectTheme": "اختر المظهر",
+  "themeLight": "فاتح",
+  "themeDark": "داكن",
+  "themeSystem": "النظام",
+  "regionAndCurrency": "المنطقة والعملة",
+  "selectRegionCurrency": "اختر المنطقة والعملة",
+
+  "sectionHelpSupport": "المساعدة والدعم",
+  "faqs": "الأسئلة الشائعة",
+  "contactSupport": "تواصل مع الدعم",
+  "appVersion": "إصدار التطبيق",
+
+  "dangerZone": "منطقة الخطر",
+  "logout": "تسجيل الخروج",
+  "deleteAccount": "حذف الحساب",
+
+  "regionUAE": "الإمارات العربية المتحدة",
+  "regionUS": "الولايات المتحدة",
+  "regionSudan": "السودان",
+  "regionCurrencyFormat": "{region} ({currency})",
+  "@regionCurrencyFormat": {
+    "description": "تنسيق اسم المنطقة مع العملة",
+    "placeholders": {
+      "region": { "type": "String" },
+      "currency": { "type": "String" }
+    }
+  },
+
+  "comingSoonWithFeature": "{feature} قادم قريباً",
+  "@comingSoonWithFeature": {
+    "description": "يظهر في شريط التنبيه للميزات غير المتاحة بعد",
+    "placeholders": {
+      "feature": { "type": "String" }
+    }
+  },
+
+  "confirmActionTitle": "{action}؟",
+  "@confirmActionTitle": {
+    "description": "عنوان مربع الحوار لتأكيد الإجراء",
+    "placeholders": {
+      "action": { "type": "String" }
+    }
+  },
+  
+  "confirmActionMessage": "هل أنت متأكد أنك تريد المتابعة في {action}؟",
+  "@confirmActionMessage": {
+    "description": "نص مربع الحوار لتأكيد الإجراء",
+    "placeholders": {
+      "action": { "type": "String" }
+    }
+  },
+
+  "cancel": "إلغاء",
+  "failedToLoadSettings": "فشل تحميل الإعدادات. يرجى المحاولة مرة أخرى.",
+  "retry": "إعادة المحاولة",
+
+  "searchTitle": "البحث",
+  "searchHint": "ابحث عن المنتجات أو المتاجر",
+  "searchEmptyPrompt": "اكتب عبارة ثم اضغط بحث",
+  "searchResultsFor": "النتائج عن: \"{query}\"",
+  "@searchResultsFor": {
+    "description": "نص يظهر فوق النتائج ويحتوي على عبارة البحث",
+    "placeholders": {
+      "query": { "type": "String" }
+    }
+  },
+
+  "allStoresTitle": "جميع المتاجر",
+  "viewAll": "عرض الكل",
+  "failedToLoadStores": "فشل تحميل المتاجر",
+  "noStoresAvailable": "لا توجد متاجر متاحة",
+
+  "browseCategories": "تصفح الفئات",
+  "featuredStores": "متاجر مميزة",
+  "topPicksBadge": "⭐ اختيارات مميزة",
+  "noFeaturedStores": "لا توجد متاجر مميزة",
+  "popularProducts": "المنتجات الشائعة",
+  "homeGreeting": "يوم سعيد! 👋",
+  "deliveringTo": "التوصيل إلى {place}",
+  "@deliveringTo": {
+    "description": "يشير إلى موقع التوصيل الحالي",
+    "placeholders": {
+      "place": { "type": "String" }
+    }
+  },
+  "failedToLoadCategories": "فشل تحميل الفئات",
+  "navHome": "الرئيسية",
+  "navOrders": "الطلبات",
+  "navSearch": "البحث",
+  "navMessages": "الرسائل",
+  "navProfile": "الملف الشخصي",
+  "storeOpen": "مفتوح",
+  "storeClosed": "مغلق",
+  "minOrderWithAmount": "الحد الأدنى للطلب: {amount}",
+  "@minOrderWithAmount": {
+    "description": "نص الحد الأدنى لمبلغ الطلب",
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "editProfile": "تعديل الملف الشخصي",
+  "profilePhoto": "صورة الملف الشخصي",
+  "tapToChangePhoto": "انقر لتغيير الصورة",
+  "change": "تغيير",
+  "name": "الاسم",
+  "handle": "المعرف",
+  "bio": "نبذة",
+  "saveChanges": "حفظ التغييرات",
+  "changePhoto": "تغيير الصورة",
+  "takePhoto": "التقاط صورة",
+  "chooseFromGallery": "اختر من المعرض",
+
+  "searchMessagesHint": "ابحث في الرسائل",
+  "newMessage": "رسالة جديدة",
+  "noMessagesYet": "لا توجد رسائل بعد",
+  "startConversationPrompt": "ابدأ محادثة مع متجر أو الدعم",
+  "failedToLoadMessages": "فشل تحميل الرسائل. يرجى المحاولة مرة أخرى.",
+  "startNewMessage": "بدء رسالة جديدة",
+  "messageAStore": "مراسلة متجر",
+  "chatWith": "الدردشة مع {name}",
+  "@chatWith": {
+    "description": "نص لبدء الدردشة مع جهة ما",
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+
+  "mustLoginToViewOrders": "يجب تسجيل الدخول لعرض الطلبات.",
+  "myOrders": "طلباتي",
+  "failedToLoadOrders": "فشل تحميل الطلبات.",
+  "deleteOrderQuestion": "حذف الطلب؟",
+  "deleteOrderExplanation": "لم يتم تأكيد هذا الطلب بعد. هل تريد حذفه؟",
+  "delete": "حذف",
+  "orderDeleted": "تم حذف الطلب",
+  "failedToDeleteOrder": "فشل حذف الطلب.",
+  "noOrdersYet": "لا توجد طلبات بعد",
+  "ordersEmptyHint": "ستظهر طلباتك هنا. ابدأ التسوق لوضع أول طلب!",
+  "orderNumber": "طلب #{id}",
+  "@orderNumber": {
+    "description": "معرّف الطلب المختصر",
+    "placeholders": {
+      "id": { "type": "String" }
+    }
+  },
+  "deleteOrder": "حذف الطلب",
+  "unknownStore": "متجر غير معروف",
+  "orderStatusPending": "قيد الانتظار",
+  "orderStatusConfirmed": "مؤكد",
+  "orderStatusPreparing": "قيد التحضير",
+  "orderStatusProcessing": "قيد المعالجة",
+  "orderStatusShipped": "تم الشحن",
+  "orderStatusDelivered": "تم التسليم",
+  "orderStatusCancelled": "ملغي",
+  "failedToLoadProfile": "فشل تحميل الملف الشخصي. يرجى المحاولة مرة أخرى.",
+  "recentActivity": "النشاط الأخير",
+  "addShortBioPrompt": "أضف نبذة قصيرة لتخصيص ملفك الشخصي",
+  "showLess": "عرض أقل",
+  "readMore": "قراءة المزيد",
+  "favorites": "المفضلات",
+  "reviews": "المراجعات",
+  "recentOrder": "طلب حديث",
+  "viewedAStore": "تم عرض متجر",
+  "leftAReview": "ترك مراجعة",
+  "email": "البريد الإلكتروني",
+  "password": "كلمة المرور",
+  "login": "تسجيل الدخول",
+  "register": "تسجيل",
+  "or": "أو",
+  "forgotPassword": "هل نسيت كلمة المرور؟",
+  "pleaseEnterField": "يرجى إدخال {field}",
+  "@pleaseEnterField": {
+    "description": "رسالة تحقق تطلب إدخال قيمة الحقل",
+    "placeholders": {
+      "field": { "type": "String" }
+    }
+  },
+  "loginFailedWithError": "فشل تسجيل الدخول: {error}",
+  "@loginFailedWithError": {
+    "description": "رسالة فشل تسجيل الدخول مع تفاصيل الخطأ",
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "verifyEmailPrompt": "يرجى التحقق من بريدك الإلكتروني.",
+  "send": "إرسال",
+  "resetPassword": "إعادة تعيين كلمة المرور",
+  "resetPasswordInstructions": "أدخل بريدك الإلكتروني المسجل. سنرسل لك رابط إعادة التعيين.",
+  "resetLinkSent": "تم إرسال رابط إعادة التعيين إلى بريدك الإلكتروني.",
+  "errorWithMessage": "خطأ: {message}",
+  "@errorWithMessage": {
+    "description": "رسالة خطأ عامة مع التفاصيل",
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  },
+  "firstName": "الاسم الأول",
+  "lastName": "اسم العائلة",
+  "phone": "الهاتف",
+  "confirmPassword": "تأكيد كلمة المرور",
+  "next": "التالي",
+  "genderLabel": "الجنس:",
+  "male": "ذكر",
+  "female": "أنثى",
+  "birthdayLabel": "تاريخ الميلاد:",
+  "addressTitle": "العنوان",
+  "addressLabelPlaceholder": "التسمية (مثال: المنزل)",
+  "street": "الشارع",
+  "city": "المدينة",
+  "country": "الدولة",
+  "postalCode": "الرمز البريدي",
+  "back": "رجوع",
+  "registrationSuccessVerifyEmail": "تم التسجيل بنجاح. يرجى التحقق من بريدك الإلكتروني.",
+  "registrationFailedWithError": "فشل التسجيل: {error}",
+  "@registrationFailedWithError": {
+    "description": "رسالة فشل التسجيل مع تفاصيل الخطأ",
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "passwordsDoNotMatch": "كلمتا المرور غير متطابقتين",
+  "cartTitle": "سلة التسوق",
+  "cartEmpty": "سلة التسوق فارغة",
+  "cartsAllTitle": "جميع السلال",
+  "failedToLoadStoreData": "فشل تحميل بيانات المتجر",
+  "removeCart": "إزالة السلة",
+  "removeCartConfirmation": "هل أنت متأكد من إزالة هذه السلة؟",
+  "remove": "إزالة",
+  "cartRemoved": "تمت إزالة السلة",
+  "checkoutAllCarts": "الدفع لكل السلال",
+  "cartIsEmptyTitle": "سلة التسوق فارغة",
+  "addItemsToBeginCheckout": "أضف عناصر لبدء عملية الدفع",
+  "failedToLoadStore": "فشل تحميل المتجر",
+  "cartCleared": "تم تفريغ السلة",
+  "clear": "إفراغ",
+  "subtotal": "الإجمالي الفرعي",
+  "totalWeight": "الوزن الكلي",
+  "deliveryFee": "رسوم التوصيل",
+  "total": "الإجمالي",
+  "kg": "كجم",
+  "checkout": "الدفع",
+  "viewCart": "عرض السلة",
+  "checkoutThisStore": "الدفع لهذا المتجر"
+}

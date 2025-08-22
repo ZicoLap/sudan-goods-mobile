@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
+import 'package:sudan_goods/l10n/app_localizations.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
@@ -25,7 +26,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit Profile'),
+        title: Text(AppLocalizations.of(context)!.editProfile),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -56,16 +57,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Profile photo', style: AppTypography.bodyBold),
+                              Text(AppLocalizations.of(context)!.profilePhoto, style: AppTypography.bodyBold),
                               const SizedBox(height: 6),
-                              Text('Tap to change photo', style: AppTypography.small.copyWith(color: Colors.black54)),
+                              Text(AppLocalizations.of(context)!.tapToChangePhoto, style: AppTypography.small.copyWith(color: Colors.black54)),
                             ],
                           ),
                         ),
                         TextButton.icon(
                           onPressed: _changePhoto,
                           icon: const Icon(Icons.photo_camera_outlined),
-                          label: const Text('Change'),
+                          label: Text(AppLocalizations.of(context)!.change),
                         ),
                       ],
                     ),
@@ -82,11 +83,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 ),
                 child: Column(
                   children: [
-                    _textField('Name', _nameController, TextInputType.name),
+                    _textField(AppLocalizations.of(context)!.name, _nameController, TextInputType.name),
                     const SizedBox(height: DesignTokens.space12),
-                    _textField('Handle', _handleController, TextInputType.text, prefixText: '@'),
+                    _textField(AppLocalizations.of(context)!.handle, _handleController, TextInputType.text, prefixText: '@'),
                     const SizedBox(height: DesignTokens.space12),
-                    _textField('Bio', _bioController, TextInputType.multiline, maxLines: 3),
+                    _textField(AppLocalizations.of(context)!.bio, _bioController, TextInputType.multiline, maxLines: 3),
                   ],
                 ),
               ),
@@ -94,9 +95,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
-                  onPressed: () => _comingSoon('Save changes'),
+                  onPressed: () => _comingSoon(AppLocalizations.of(context)!.saveChanges),
                   icon: const Icon(Icons.save_outlined),
-                  label: const Text('Save changes'),
+                  label: Text(AppLocalizations.of(context)!.saveChanges),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(
@@ -148,16 +149,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             const SizedBox(height: 12),
-            Text('Change photo', style: AppTypography.cardTitle),
+            Text(AppLocalizations.of(context)!.changePhoto, style: AppTypography.cardTitle),
             const SizedBox(height: 8),
             ListTile(
               leading: const Icon(Icons.photo_camera_outlined),
-              title: const Text('Take a photo'),
+              title: Text(AppLocalizations.of(context)!.takePhoto),
               onTap: () => Navigator.pop(ctx),
             ),
             ListTile(
               leading: const Icon(Icons.photo_library_outlined),
-              title: const Text('Choose from gallery'),
+              title: Text(AppLocalizations.of(context)!.chooseFromGallery),
               onTap: () => Navigator.pop(ctx),
             ),
             const SizedBox(height: 12),
@@ -168,8 +169,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   void _comingSoon(String feature) {
+    final l10n = AppLocalizations.of(context)!;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('$feature coming soon')),
+      SnackBar(content: Text(l10n.comingSoonWithFeature(feature))),
     );
   }
 }

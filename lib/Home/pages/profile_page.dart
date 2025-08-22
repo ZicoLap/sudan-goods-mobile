@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:sudan_goods/l10n/app_localizations.dart';
 import 'package:sudan_goods/Home/pages/edit_profile_page.dart';
 import 'package:sudan_goods/Home/pages/settings_page.dart';
 
@@ -16,13 +17,13 @@ class _ProfilePageState extends State<ProfilePage> {
   bool _hasError = false;
   bool _bioExpanded = false;
 
-  String _displayName = 'John Doe';
-  String _handle = '@john_doe';
-  String _bio = 'Loves Sudanese spices and coffee.';
+  final String _displayName = 'John Doe';
+  final String _handle = '@john_doe';
+  final String _bio = 'Loves Sudanese spices and coffee.';
 
-  int _orders = 12;
-  int _favorites = 5;
-  int _reviews = 3;
+  final int _orders = 12;
+  final int _favorites = 5;
+  final int _reviews = 3;
 
   @override
   void initState() {
@@ -37,11 +38,11 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
+        title: Text(AppLocalizations.of(context)!.navProfile),
         centerTitle: true,
         actions: [
           IconButton(
-            tooltip: 'Settings',
+            tooltip: AppLocalizations.of(context)!.settingsTitle,
             icon: const Icon(Icons.settings_outlined),
             onPressed: () {
               Navigator.of(
@@ -71,7 +72,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               horizontal: 4.0,
                             ),
                             child: Text(
-                              'Recent activity',
+                              AppLocalizations.of(context)!.recentActivity,
                               style: AppTypography.cardTitle,
                             ),
                           ),
@@ -102,7 +103,7 @@ class _ProfilePageState extends State<ProfilePage> {
               const SizedBox(width: DesignTokens.space12),
               Expanded(
                 child: Text(
-                  'Failed to load profile. Please try again.',
+                  AppLocalizations.of(context)!.failedToLoadProfile,
                   style: AppTypography.body,
                 ),
               ),
@@ -116,7 +117,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     if (mounted) setState(() => _isLoading = false);
                   });
                 },
-                child: const Text('Retry'),
+                child: Text(AppLocalizations.of(context)!.retry),
               ),
             ],
           ),
@@ -204,7 +205,7 @@ class _ProfilePageState extends State<ProfilePage> {
           GestureDetector(
             onTap: _showChangePhotoSheet,
             child: Semantics(
-              label: 'Profile picture',
+              label: AppLocalizations.of(context)!.profilePhoto,
               child: const CircleAvatar(
                 radius: 42,
                 backgroundImage: AssetImage(
@@ -230,7 +231,7 @@ class _ProfilePageState extends State<ProfilePage> {
           const SizedBox(height: DesignTokens.space12),
           Semantics(
             button: true,
-            label: 'Edit Profile',
+            label: AppLocalizations.of(context)!.editProfile,
             child: SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
@@ -240,7 +241,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   );
                 },
                 icon: const Icon(Icons.edit_outlined),
-                label: const Text('Edit Profile'),
+                label: Text(AppLocalizations.of(context)!.editProfile),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(
@@ -260,7 +261,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget _buildBio() {
     if (_bio.trim().isEmpty) {
       return Text(
-        'Add a short bio to personalize your profile',
+        AppLocalizations.of(context)!.addShortBioPrompt,
         style: AppTypography.small.copyWith(color: Colors.black54),
         textAlign: TextAlign.center,
       );
@@ -290,7 +291,11 @@ class _ProfilePageState extends State<ProfilePage> {
         if (canExpand)
           TextButton(
             onPressed: () => setState(() => _bioExpanded = !_bioExpanded),
-            child: Text(_bioExpanded ? 'Show less' : 'Read more'),
+            child: Text(
+              _bioExpanded
+                  ? AppLocalizations.of(context)!.showLess
+                  : AppLocalizations.of(context)!.readMore,
+            ),
           ),
       ],
     );
@@ -299,11 +304,11 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget _buildStatsRow() {
     return Row(
       children: [
-        _statChip(Icons.receipt_long_outlined, 'Orders', _orders),
+        _statChip(Icons.receipt_long_outlined, AppLocalizations.of(context)!.navOrders, _orders),
         const SizedBox(width: DesignTokens.space12),
-        _statChip(Icons.favorite_border, 'Favorites', _favorites),
+        _statChip(Icons.favorite_border, AppLocalizations.of(context)!.favorites, _favorites),
         const SizedBox(width: DesignTokens.space12),
-        _statChip(Icons.reviews_outlined, 'Reviews', _reviews),
+        _statChip(Icons.reviews_outlined, AppLocalizations.of(context)!.reviews, _reviews),
       ],
     );
   }
@@ -345,26 +350,26 @@ class _ProfilePageState extends State<ProfilePage> {
         children: [
           ListTile(
             leading: const Icon(Icons.receipt_long_outlined),
-            title: const Text('Recent order'),
-            subtitle: Text('#ORD-2301 • 2 items', style: AppTypography.small),
+            title: Text(AppLocalizations.of(context)!.recentOrder),
+            subtitle: Text('#ORD-2301 • ${AppLocalizations.of(context)!.itemsCount(2)}', style: AppTypography.small),
             trailing: const Icon(Icons.chevron_right),
-            onTap: () => _comingSoon('Recent order'),
+            onTap: () => _comingSoon(AppLocalizations.of(context)!.recentOrder),
           ),
           const Divider(height: 1),
           ListTile(
             leading: const Icon(Icons.storefront_outlined),
-            title: const Text('Viewed a store'),
+            title: Text(AppLocalizations.of(context)!.viewedAStore),
             subtitle: Text('Spices of Sudan', style: AppTypography.small),
             trailing: const Icon(Icons.chevron_right),
-            onTap: () => _comingSoon('Viewed store'),
+            onTap: () => _comingSoon(AppLocalizations.of(context)!.viewedAStore),
           ),
           const Divider(height: 1),
           ListTile(
             leading: const Icon(Icons.star_border),
-            title: const Text('Left a review'),
+            title: Text(AppLocalizations.of(context)!.leftAReview),
             subtitle: Text('Coffee beans • 4★', style: AppTypography.small),
             trailing: const Icon(Icons.chevron_right),
-            onTap: () => _comingSoon('Review'),
+            onTap: () => _comingSoon(AppLocalizations.of(context)!.leftAReview),
           ),
         ],
       ),
@@ -383,16 +388,16 @@ class _ProfilePageState extends State<ProfilePage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const SizedBox(height: 12),
-                Text('Change photo', style: AppTypography.cardTitle),
+                Text(AppLocalizations.of(context)!.changePhoto, style: AppTypography.cardTitle),
                 const SizedBox(height: 8),
                 ListTile(
                   leading: const Icon(Icons.photo_camera_outlined),
-                  title: const Text('Take a photo'),
+                  title: Text(AppLocalizations.of(context)!.takePhoto),
                   onTap: () => Navigator.pop(ctx),
                 ),
                 ListTile(
                   leading: const Icon(Icons.photo_library_outlined),
-                  title: const Text('Choose from gallery'),
+                  title: Text(AppLocalizations.of(context)!.chooseFromGallery),
                   onTap: () => Navigator.pop(ctx),
                 ),
                 const SizedBox(height: 12),
@@ -403,8 +408,9 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void _comingSoon(String feature) {
+    final l10n = AppLocalizations.of(context)!;
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(SnackBar(content: Text('$feature coming soon')));
+    ).showSnackBar(SnackBar(content: Text(l10n.comingSoonWithFeature(feature))));
   }
 }

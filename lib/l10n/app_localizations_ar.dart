@@ -1,0 +1,584 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
+import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
+
+/// The translations for Arabic (`ar`).
+class AppLocalizationsAr extends AppLocalizations {
+  AppLocalizationsAr([String locale = 'ar']) : super(locale);
+
+  @override
+  String get appTitle => 'سلع السودان';
+
+  @override
+  String greeting(String name) {
+    return 'مرحباً، $name!';
+  }
+
+  @override
+  String itemsCount(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count عناصر',
+      one: 'عنصر واحد',
+      zero: 'لا توجد عناصر',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get settingsTitle => 'الإعدادات';
+
+  @override
+  String get sectionAccount => 'الحساب';
+
+  @override
+  String get changeEmail => 'تغيير البريد الإلكتروني';
+
+  @override
+  String get changePassword => 'تغيير كلمة المرور';
+
+  @override
+  String get manageAddresses => 'إدارة العناوين';
+
+  @override
+  String get sectionNotifications => 'الإشعارات';
+
+  @override
+  String get pushNotifications => 'إشعارات الدفع';
+
+  @override
+  String get pushNotificationsSubtitle => 'استلام التحديثات والعروض';
+
+  @override
+  String get emailNotifications => 'إشعارات البريد الإلكتروني';
+
+  @override
+  String get emailNotificationsSubtitle => 'استلام الرسائل في بريدك';
+
+  @override
+  String get orderStatusUpdates => 'تحديثات حالة الطلب';
+
+  @override
+  String get orderStatusUpdatesSubtitle => 'تتبع طلباتك في الوقت الفعلي';
+
+  @override
+  String get sectionPrivacySecurity => 'الخصوصية والأمان';
+
+  @override
+  String get twoFactorAuth => 'التحقق بخطوتين';
+
+  @override
+  String get twoFactorAuthSubtitle => 'أضف حماية إضافية لحسابك';
+
+  @override
+  String get blockedUsers => 'المستخدمون المحظورون';
+
+  @override
+  String get dataAndPrivacy => 'البيانات والخصوصية';
+
+  @override
+  String get dataAndPrivacySubtitle => 'إدارة بياناتك وتفضيلاتك';
+
+  @override
+  String get sectionGeneral => 'عام';
+
+  @override
+  String get language => 'اللغة';
+
+  @override
+  String get languageEnglish => 'الإنجليزية';
+
+  @override
+  String get languageArabic => 'العربية';
+
+  @override
+  String get selectLanguage => 'اختر اللغة';
+
+  @override
+  String get theme => 'المظهر';
+
+  @override
+  String get themeSubtitle => 'اختر النظام أو الفاتح أو الداكن';
+
+  @override
+  String get selectTheme => 'اختر المظهر';
+
+  @override
+  String get themeLight => 'فاتح';
+
+  @override
+  String get themeDark => 'داكن';
+
+  @override
+  String get themeSystem => 'النظام';
+
+  @override
+  String get regionAndCurrency => 'المنطقة والعملة';
+
+  @override
+  String get selectRegionCurrency => 'اختر المنطقة والعملة';
+
+  @override
+  String get sectionHelpSupport => 'المساعدة والدعم';
+
+  @override
+  String get faqs => 'الأسئلة الشائعة';
+
+  @override
+  String get contactSupport => 'تواصل مع الدعم';
+
+  @override
+  String get appVersion => 'إصدار التطبيق';
+
+  @override
+  String get dangerZone => 'منطقة الخطر';
+
+  @override
+  String get logout => 'تسجيل الخروج';
+
+  @override
+  String get deleteAccount => 'حذف الحساب';
+
+  @override
+  String get regionUAE => 'الإمارات العربية المتحدة';
+
+  @override
+  String get regionUS => 'الولايات المتحدة';
+
+  @override
+  String get regionSudan => 'السودان';
+
+  @override
+  String regionCurrencyFormat(String region, String currency) {
+    return '$region ($currency)';
+  }
+
+  @override
+  String comingSoonWithFeature(String feature) {
+    return '$feature قادم قريباً';
+  }
+
+  @override
+  String confirmActionTitle(String action) {
+    return '$action؟';
+  }
+
+  @override
+  String confirmActionMessage(String action) {
+    return 'هل أنت متأكد أنك تريد المتابعة في $action؟';
+  }
+
+  @override
+  String get cancel => 'إلغاء';
+
+  @override
+  String get failedToLoadSettings => 'فشل تحميل الإعدادات. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get retry => 'إعادة المحاولة';
+
+  @override
+  String get searchTitle => 'البحث';
+
+  @override
+  String get searchHint => 'ابحث عن المنتجات أو المتاجر';
+
+  @override
+  String get searchEmptyPrompt => 'اكتب عبارة ثم اضغط بحث';
+
+  @override
+  String searchResultsFor(String query) {
+    return 'النتائج عن: \"$query\"';
+  }
+
+  @override
+  String get allStoresTitle => 'جميع المتاجر';
+
+  @override
+  String get viewAll => 'عرض الكل';
+
+  @override
+  String get failedToLoadStores => 'فشل تحميل المتاجر';
+
+  @override
+  String get noStoresAvailable => 'لا توجد متاجر متاحة';
+
+  @override
+  String get browseCategories => 'تصفح الفئات';
+
+  @override
+  String get featuredStores => 'متاجر مميزة';
+
+  @override
+  String get topPicksBadge => '⭐ اختيارات مميزة';
+
+  @override
+  String get noFeaturedStores => 'لا توجد متاجر مميزة';
+
+  @override
+  String get popularProducts => 'المنتجات الشائعة';
+
+  @override
+  String get homeGreeting => 'يوم سعيد! 👋';
+
+  @override
+  String deliveringTo(String place) {
+    return 'التوصيل إلى $place';
+  }
+
+  @override
+  String get failedToLoadCategories => 'فشل تحميل الفئات';
+
+  @override
+  String get navHome => 'الرئيسية';
+
+  @override
+  String get navOrders => 'الطلبات';
+
+  @override
+  String get navSearch => 'البحث';
+
+  @override
+  String get navMessages => 'الرسائل';
+
+  @override
+  String get navProfile => 'الملف الشخصي';
+
+  @override
+  String get storeOpen => 'مفتوح';
+
+  @override
+  String get storeClosed => 'مغلق';
+
+  @override
+  String minOrderWithAmount(String amount) {
+    return 'الحد الأدنى للطلب: $amount';
+  }
+
+  @override
+  String get editProfile => 'تعديل الملف الشخصي';
+
+  @override
+  String get profilePhoto => 'صورة الملف الشخصي';
+
+  @override
+  String get tapToChangePhoto => 'انقر لتغيير الصورة';
+
+  @override
+  String get change => 'تغيير';
+
+  @override
+  String get name => 'الاسم';
+
+  @override
+  String get handle => 'المعرف';
+
+  @override
+  String get bio => 'نبذة';
+
+  @override
+  String get saveChanges => 'حفظ التغييرات';
+
+  @override
+  String get changePhoto => 'تغيير الصورة';
+
+  @override
+  String get takePhoto => 'التقاط صورة';
+
+  @override
+  String get chooseFromGallery => 'اختر من المعرض';
+
+  @override
+  String get searchMessagesHint => 'ابحث في الرسائل';
+
+  @override
+  String get newMessage => 'رسالة جديدة';
+
+  @override
+  String get noMessagesYet => 'لا توجد رسائل بعد';
+
+  @override
+  String get startConversationPrompt => 'ابدأ محادثة مع متجر أو الدعم';
+
+  @override
+  String get failedToLoadMessages => 'فشل تحميل الرسائل. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get startNewMessage => 'بدء رسالة جديدة';
+
+  @override
+  String get messageAStore => 'مراسلة متجر';
+
+  @override
+  String chatWith(String name) {
+    return 'الدردشة مع $name';
+  }
+
+  @override
+  String get mustLoginToViewOrders => 'يجب تسجيل الدخول لعرض الطلبات.';
+
+  @override
+  String get myOrders => 'طلباتي';
+
+  @override
+  String get failedToLoadOrders => 'فشل تحميل الطلبات.';
+
+  @override
+  String get deleteOrderQuestion => 'حذف الطلب؟';
+
+  @override
+  String get deleteOrderExplanation => 'لم يتم تأكيد هذا الطلب بعد. هل تريد حذفه؟';
+
+  @override
+  String get delete => 'حذف';
+
+  @override
+  String get orderDeleted => 'تم حذف الطلب';
+
+  @override
+  String get failedToDeleteOrder => 'فشل حذف الطلب.';
+
+  @override
+  String get noOrdersYet => 'لا توجد طلبات بعد';
+
+  @override
+  String get ordersEmptyHint => 'ستظهر طلباتك هنا. ابدأ التسوق لوضع أول طلب!';
+
+  @override
+  String orderNumber(String id) {
+    return 'طلب #$id';
+  }
+
+  @override
+  String get deleteOrder => 'حذف الطلب';
+
+  @override
+  String get unknownStore => 'متجر غير معروف';
+
+  @override
+  String get orderStatusPending => 'قيد الانتظار';
+
+  @override
+  String get orderStatusConfirmed => 'مؤكد';
+
+  @override
+  String get orderStatusPreparing => 'قيد التحضير';
+
+  @override
+  String get orderStatusProcessing => 'قيد المعالجة';
+
+  @override
+  String get orderStatusShipped => 'تم الشحن';
+
+  @override
+  String get orderStatusDelivered => 'تم التسليم';
+
+  @override
+  String get orderStatusCancelled => 'ملغي';
+
+  @override
+  String get failedToLoadProfile => 'فشل تحميل الملف الشخصي. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get recentActivity => 'النشاط الأخير';
+
+  @override
+  String get addShortBioPrompt => 'أضف نبذة قصيرة لتخصيص ملفك الشخصي';
+
+  @override
+  String get showLess => 'عرض أقل';
+
+  @override
+  String get readMore => 'قراءة المزيد';
+
+  @override
+  String get favorites => 'المفضلات';
+
+  @override
+  String get reviews => 'المراجعات';
+
+  @override
+  String get recentOrder => 'طلب حديث';
+
+  @override
+  String get viewedAStore => 'تم عرض متجر';
+
+  @override
+  String get leftAReview => 'ترك مراجعة';
+
+  @override
+  String get email => 'البريد الإلكتروني';
+
+  @override
+  String get password => 'كلمة المرور';
+
+  @override
+  String get login => 'تسجيل الدخول';
+
+  @override
+  String get register => 'تسجيل';
+
+  @override
+  String get or => 'أو';
+
+  @override
+  String get forgotPassword => 'هل نسيت كلمة المرور؟';
+
+  @override
+  String pleaseEnterField(String field) {
+    return 'يرجى إدخال $field';
+  }
+
+  @override
+  String loginFailedWithError(String error) {
+    return 'فشل تسجيل الدخول: $error';
+  }
+
+  @override
+  String get verifyEmailPrompt => 'يرجى التحقق من بريدك الإلكتروني.';
+
+  @override
+  String get send => 'إرسال';
+
+  @override
+  String get resetPassword => 'إعادة تعيين كلمة المرور';
+
+  @override
+  String get resetPasswordInstructions => 'أدخل بريدك الإلكتروني المسجل. سنرسل لك رابط إعادة التعيين.';
+
+  @override
+  String get resetLinkSent => 'تم إرسال رابط إعادة التعيين إلى بريدك الإلكتروني.';
+
+  @override
+  String errorWithMessage(String message) {
+    return 'خطأ: $message';
+  }
+
+  @override
+  String get firstName => 'الاسم الأول';
+
+  @override
+  String get lastName => 'اسم العائلة';
+
+  @override
+  String get phone => 'الهاتف';
+
+  @override
+  String get confirmPassword => 'تأكيد كلمة المرور';
+
+  @override
+  String get next => 'التالي';
+
+  @override
+  String get genderLabel => 'الجنس:';
+
+  @override
+  String get male => 'ذكر';
+
+  @override
+  String get female => 'أنثى';
+
+  @override
+  String get birthdayLabel => 'تاريخ الميلاد:';
+
+  @override
+  String get addressTitle => 'العنوان';
+
+  @override
+  String get addressLabelPlaceholder => 'التسمية (مثال: المنزل)';
+
+  @override
+  String get street => 'الشارع';
+
+  @override
+  String get city => 'المدينة';
+
+  @override
+  String get country => 'الدولة';
+
+  @override
+  String get postalCode => 'الرمز البريدي';
+
+  @override
+  String get back => 'رجوع';
+
+  @override
+  String get registrationSuccessVerifyEmail => 'تم التسجيل بنجاح. يرجى التحقق من بريدك الإلكتروني.';
+
+  @override
+  String registrationFailedWithError(String error) {
+    return 'فشل التسجيل: $error';
+  }
+
+  @override
+  String get passwordsDoNotMatch => 'كلمتا المرور غير متطابقتين';
+
+  @override
+  String get cartTitle => 'سلة التسوق';
+
+  @override
+  String get cartEmpty => 'سلة التسوق فارغة';
+
+  @override
+  String get cartsAllTitle => 'جميع السلال';
+
+  @override
+  String get failedToLoadStoreData => 'فشل تحميل بيانات المتجر';
+
+  @override
+  String get removeCart => 'إزالة السلة';
+
+  @override
+  String get removeCartConfirmation => 'هل أنت متأكد من إزالة هذه السلة؟';
+
+  @override
+  String get remove => 'إزالة';
+
+  @override
+  String get cartRemoved => 'تمت إزالة السلة';
+
+  @override
+  String get checkoutAllCarts => 'الدفع لكل السلال';
+
+  @override
+  String get cartIsEmptyTitle => 'سلة التسوق فارغة';
+
+  @override
+  String get addItemsToBeginCheckout => 'أضف عناصر لبدء عملية الدفع';
+
+  @override
+  String get failedToLoadStore => 'فشل تحميل المتجر';
+
+  @override
+  String get cartCleared => 'تم تفريغ السلة';
+
+  @override
+  String get clear => 'إفراغ';
+
+  @override
+  String get subtotal => 'الإجمالي الفرعي';
+
+  @override
+  String get totalWeight => 'الوزن الكلي';
+
+  @override
+  String get deliveryFee => 'رسوم التوصيل';
+
+  @override
+  String get total => 'الإجمالي';
+
+  @override
+  String get kg => 'كجم';
+
+  @override
+  String get checkout => 'الدفع';
+
+  @override
+  String get viewCart => 'عرض السلة';
+
+  @override
+  String get checkoutThisStore => 'الدفع لهذا المتجر';
+}

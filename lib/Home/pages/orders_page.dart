@@ -4,17 +4,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'package:sudan_goods/order/order_details_page.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
+import 'package:sudan_goods/l10n/app_localizations.dart';
 
 class OrdersPage extends StatelessWidget {
   const OrdersPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final uid = FirebaseAuth.instance.currentUser?.uid;
 
     if (uid == null) {
-      return const Scaffold(
-        body: Center(child: Text('You need to be logged in to view orders.')),
+      return Scaffold(
+        body: Center(child: Text(l10n.mustLoginToViewOrders)),
       );
     }
 
@@ -25,7 +27,7 @@ class OrdersPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Orders'),
+        title: Text(l10n.myOrders),
         centerTitle: true,
       ),
       body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
@@ -35,7 +37,7 @@ class OrdersPage extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasError) {
-            return Center(child: Text('Failed to load orders: ${snapshot.error}'));
+            return Center(child: Text(l10n.failedToLoadOrders));
           }
 
           final docs = snapshot.data?.docs ?? [];
@@ -83,23 +85,23 @@ class OrdersPage extends StatelessWidget {
   }
 
   Future<void> _confirmAndDelete(BuildContext context, String orderId) async {
+    final l10n = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Delete Order?'),
-          content: const Text(
-              'This order has not been confirmed yet. Do you want to delete it?'),
+          title: Text(l10n.deleteOrderQuestion),
+          content: Text(l10n.deleteOrderExplanation),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Cancel'),
+              child: Text(l10n.cancel),
             ),
             ElevatedButton.icon(
               icon: const Icon(Icons.delete),
               style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
               onPressed: () => Navigator.of(context).pop(true),
-              label: const Text('Delete'),
+              label: Text(l10n.delete),
             ),
           ],
         );
@@ -112,13 +114,13 @@ class OrdersPage extends StatelessWidget {
       await FirebaseFirestore.instance.collection('orders').doc(orderId).delete();
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Order deleted')),
+          SnackBar(content: Text(l10n.orderDeleted)),
         );
       }
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to delete order: $e')),
+          SnackBar(content: Text(l10n.failedToDeleteOrder)),
         );
       }
     }
@@ -128,20 +130,21 @@ class OrdersPage extends StatelessWidget {
 class _EmptyOrdersState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Icon(Icons.shopping_bag_outlined, size: 64, color: Colors.grey),
-            SizedBox(height: 12),
-            Text('No orders yet', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-            SizedBox(height: 6),
+          children: [
+            const Icon(Icons.shopping_bag_outlined, size: 64, color: Colors.grey),
+            const SizedBox(height: 12),
+            Text(l10n.noOrdersYet, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+            const SizedBox(height: 6),
             Text(
-              'Your orders will appear here. Start shopping to place your first order!',
+              l10n.ordersEmptyHint,
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.black54),
+              style: const TextStyle(color: Colors.black54),
             ),
           ],
         ),
@@ -173,10 +176,11 @@ class _OrderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     print(orderId);
     final dateStr = createdAt != null ? DateFormat('MMM d, yyyy • HH:mm').format(createdAt!) : '-';
     final shortId = orderId.length > 6 ? orderId.substring(orderId.length - 6).toUpperCase() : orderId;
-    final statusChip = _buildStatusChip(status);
+    final statusChip = _buildStatusChip(context, status);
 
     return Material(
       color: Colors.white,
@@ -209,7 +213,7 @@ class _OrderCard extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          'Order #$shortId',
+                          l10n.orderNumber(shortId),
                           style: AppTypography.body.copyWith(fontWeight: FontWeight.w600),
                         ),
                         const SizedBox(width: DesignTokens.space8),
@@ -220,7 +224,7 @@ class _OrderCard extends StatelessWidget {
                     _storeInline(),
                     const SizedBox(height: 4),
                     Text(
-                      '$itemCount items • $dateStr',
+                      '${l10n.itemsCount(itemCount)} • $dateStr',
                       style: AppTypography.caption.copyWith(color: Colors.black54),
                     ),
                   ],
@@ -237,7 +241,7 @@ class _OrderCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   if (onDelete != null)
                     IconButton(
-                      tooltip: 'Delete order',
+                      tooltip: l10n.deleteOrder,
                       onPressed: onDelete,
                       icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
                     ),
@@ -282,30 +286,39 @@ class _OrderCard extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusChip(String status) {
+  Widget _buildStatusChip(BuildContext context, String status) {
+    final l10n = AppLocalizations.of(context)!;
     MaterialColor color;
+    String label;
     switch (status.toLowerCase()) {
       case 'pending':
         color = Colors.amber;
+        label = l10n.orderStatusPending;
         break;
       case 'confirmed':
         color = Colors.green;
+        label = l10n.orderStatusConfirmed;
         break;
       case 'preparing':
       case 'processing':
         color = Colors.blueGrey;
+        label = status.toLowerCase() == 'preparing' ? l10n.orderStatusPreparing : l10n.orderStatusProcessing;
         break;
       case 'shipped':
         color = Colors.blue;
+        label = l10n.orderStatusShipped;
         break;
       case 'delivered':
         color = Colors.green;
+        label = l10n.orderStatusDelivered;
         break;
       case 'cancelled':
         color = Colors.red;
+        label = l10n.orderStatusCancelled;
         break;
       default:
         color = Colors.grey;
+        label = status;
     }
 
     return Container(
@@ -315,7 +328,7 @@ class _OrderCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(100),
       ),
       child: Text(
-        status,
+        label,
         style: AppTypography.caption.copyWith(
           color: color.shade700,
           fontWeight: FontWeight.w600,
@@ -329,6 +342,7 @@ class _OrderCard extends StatelessWidget {
     return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
       stream: FirebaseFirestore.instance.collection('stores').doc(storeId).snapshots(),
       builder: (context, snapshot) {
+        final l10n = AppLocalizations.of(context)!;
         if (!snapshot.hasData || !(snapshot.data?.exists ?? false)) {
           return Row(
             children: [
@@ -338,13 +352,13 @@ class _OrderCard extends StatelessWidget {
                 child: const Icon(Icons.storefront, size: 16, color: Colors.black38),
               ),
               const SizedBox(width: DesignTokens.space8),
-              Text('Unknown store', style: AppTypography.smallBold),
+              Text(l10n.unknownStore, style: AppTypography.smallBold),
             ],
           );
         }
 
         final store = snapshot.data!.data();
-        final name = (store?['name'] as String?) ?? 'Unknown store';
+        final name = (store?['name'] as String?) ?? l10n.unknownStore;
         final logoUrl = (store?['logoUrl'] as String?);
 
         return Row(

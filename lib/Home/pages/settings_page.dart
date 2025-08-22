@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:sudan_goods/l10n/app_localizations.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:provider/provider.dart';
+import 'package:sudan_goods/l10n/locale_controller.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -19,14 +23,15 @@ class _SettingsPageState extends State<SettingsPage> {
 
   bool _twoFactorAuth = false;
 
-  String _language = 'English';
-  String _theme = 'System';
-  String _region = 'Sudan';
-  String _currency = 'SDG';
+  String _themeKey = 'system';
+  String _regionCode = 'SD';
+  String _currencyCode = 'SDG';
+  String _appVersion = '';
 
   @override
   void initState() {
     super.initState();
+    _fetchAppVersion();
     Future.delayed(const Duration(milliseconds: 700), () {
       if (!mounted) return;
       setState(() => _isLoading = false);
@@ -37,7 +42,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Settings'),
+        title: Text(AppLocalizations.of(context)!.settingsTitle),
         centerTitle: true,
       ),
       body: _isLoading
@@ -48,27 +53,27 @@ class _SettingsPageState extends State<SettingsPage> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   if (_hasError) _errorBanner(),
-            _sectionHeader('Account'),
+            _sectionHeader(AppLocalizations.of(context)!.sectionAccount),
             _card(
               children: [
-                _navTile(Icons.alternate_email, 'Change Email'),
+                _navTile(Icons.alternate_email, AppLocalizations.of(context)!.changeEmail),
                 const Divider(height: 1),
-                _navTile(Icons.lock_outline, 'Change Password'),
+                _navTile(Icons.lock_outline, AppLocalizations.of(context)!.changePassword),
                 const Divider(height: 1),
-                _navTile(Icons.location_city_outlined, 'Manage Addresses'),
+                _navTile(Icons.location_city_outlined, AppLocalizations.of(context)!.manageAddresses),
               ],
             ),
 
             const SizedBox(height: DesignTokens.space16),
 
-            _sectionHeader('Notifications'),
+            _sectionHeader(AppLocalizations.of(context)!.sectionNotifications),
             _card(
               children: [
                 SwitchListTile.adaptive(
                   value: _pushNotifications,
                   onChanged: (v) => setState(() => _pushNotifications = v),
-                  title: Text('Push notifications', style: AppTypography.body),
-                  subtitle: Text('Order updates and promotions', style: AppTypography.small),
+                  title: Text(AppLocalizations.of(context)!.pushNotifications, style: AppTypography.body),
+                  subtitle: Text(AppLocalizations.of(context)!.pushNotificationsSubtitle, style: AppTypography.small),
                   secondary: const Icon(Icons.notifications_active_outlined),
                   contentPadding: const EdgeInsets.symmetric(horizontal: DesignTokens.space16),
                 ),
@@ -76,8 +81,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 SwitchListTile.adaptive(
                   value: _emailNotifications,
                   onChanged: (v) => setState(() => _emailNotifications = v),
-                  title: Text('Email notifications', style: AppTypography.body),
-                  subtitle: Text('News and recommendations', style: AppTypography.small),
+                  title: Text(AppLocalizations.of(context)!.emailNotifications, style: AppTypography.body),
+                  subtitle: Text(AppLocalizations.of(context)!.emailNotificationsSubtitle, style: AppTypography.small),
                   secondary: const Icon(Icons.mark_email_unread_outlined),
                   contentPadding: const EdgeInsets.symmetric(horizontal: DesignTokens.space16),
                 ),
@@ -85,8 +90,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 SwitchListTile.adaptive(
                   value: _orderStatusUpdates,
                   onChanged: (v) => setState(() => _orderStatusUpdates = v),
-                  title: Text('Order status updates', style: AppTypography.body),
-                  subtitle: Text('Get notified about your order progress', style: AppTypography.small),
+                  title: Text(AppLocalizations.of(context)!.orderStatusUpdates, style: AppTypography.body),
+                  subtitle: Text(AppLocalizations.of(context)!.orderStatusUpdatesSubtitle, style: AppTypography.small),
                   secondary: const Icon(Icons.local_shipping_outlined),
                   contentPadding: const EdgeInsets.symmetric(horizontal: DesignTokens.space16),
                 ),
@@ -95,53 +100,53 @@ class _SettingsPageState extends State<SettingsPage> {
 
             const SizedBox(height: DesignTokens.space16),
 
-            _sectionHeader('Privacy & Security'),
+            _sectionHeader(AppLocalizations.of(context)!.sectionPrivacySecurity),
             _card(
               children: [
                 SwitchListTile.adaptive(
                   value: _twoFactorAuth,
                   onChanged: (v) => setState(() => _twoFactorAuth = v),
-                  title: Text('Two-factor authentication', style: AppTypography.body),
-                  subtitle: Text('Add an extra layer of security', style: AppTypography.small),
+                  title: Text(AppLocalizations.of(context)!.twoFactorAuth, style: AppTypography.body),
+                  subtitle: Text(AppLocalizations.of(context)!.twoFactorAuthSubtitle, style: AppTypography.small),
                   secondary: const Icon(Icons.verified_user_outlined),
                   contentPadding: const EdgeInsets.symmetric(horizontal: DesignTokens.space16),
                 ),
                 const Divider(height: 1),
-                _navTile(Icons.block_outlined, 'Blocked users'),
+                _navTile(Icons.block_outlined, AppLocalizations.of(context)!.blockedUsers),
                 const Divider(height: 1),
                 _navTile(
                   Icons.privacy_tip_outlined,
-                  'Data & privacy',
-                  subtitle: 'How we protect your data',
+                  AppLocalizations.of(context)!.dataAndPrivacy,
+                  subtitle: AppLocalizations.of(context)!.dataAndPrivacySubtitle,
                 ),
               ],
             ),
 
             const SizedBox(height: DesignTokens.space16),
 
-            _sectionHeader('General'),
+            _sectionHeader(AppLocalizations.of(context)!.sectionGeneral),
             _card(
               children: [
                 ListTile(
                   leading: const Icon(Icons.language_outlined),
-                  title: Text('Language', style: AppTypography.body),
-                  subtitle: Text(_language, style: AppTypography.small),
+                  title: Text(AppLocalizations.of(context)!.language, style: AppTypography.body),
+                  subtitle: Text(_languageLabel(AppLocalizations.of(context)!), style: AppTypography.small),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: _selectLanguage,
                 ),
                 const Divider(height: 1),
                 ListTile(
                   leading: const Icon(Icons.brightness_6_outlined),
-                  title: Text('Theme', style: AppTypography.body),
-                  subtitle: const Text('Light, Dark, or System', style: AppTypography.small),
-                  trailing: Text(_theme, style: AppTypography.smallBold),
+                  title: Text(AppLocalizations.of(context)!.theme, style: AppTypography.body),
+                  subtitle: Text(AppLocalizations.of(context)!.themeSubtitle, style: AppTypography.small),
+                  trailing: Text(_themeLabel(AppLocalizations.of(context)!), style: AppTypography.smallBold),
                   onTap: _selectTheme,
                 ),
                 const Divider(height: 1),
                 ListTile(
                   leading: const Icon(Icons.public_outlined),
-                  title: Text('Region & currency', style: AppTypography.body),
-                  subtitle: Text('$_region ($_currency)', style: AppTypography.small),
+                  title: Text(AppLocalizations.of(context)!.regionAndCurrency, style: AppTypography.body),
+                  subtitle: Text(_regionCurrencyLabel(AppLocalizations.of(context)!), style: AppTypography.small),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: _selectRegionCurrency,
                 ),
@@ -150,17 +155,17 @@ class _SettingsPageState extends State<SettingsPage> {
 
             const SizedBox(height: DesignTokens.space16),
 
-            _sectionHeader('Help & Support'),
+            _sectionHeader(AppLocalizations.of(context)!.sectionHelpSupport),
             _card(
               children: [
-                _navTile(Icons.help_outline, 'FAQs'),
+                _navTile(Icons.help_outline, AppLocalizations.of(context)!.faqs),
                 const Divider(height: 1),
-                _navTile(Icons.support_agent_outlined, 'Contact Support'),
+                _navTile(Icons.support_agent_outlined, AppLocalizations.of(context)!.contactSupport),
                 const Divider(height: 1),
                 ListTile(
                   leading: const Icon(Icons.info_outline),
-                  title: Text('App version', style: AppTypography.body),
-                  trailing: Text('v1.0.0+1', style: AppTypography.smallBold),
+                  title: Text(AppLocalizations.of(context)!.appVersion, style: AppTypography.body),
+                  trailing: Text(_appVersion.isNotEmpty ? _appVersion : 'v1.0.0+1', style: AppTypography.smallBold),
                   enabled: false,
                 ),
               ],
@@ -168,11 +173,11 @@ class _SettingsPageState extends State<SettingsPage> {
 
             const SizedBox(height: DesignTokens.space24),
 
-            _sectionHeader('Danger Zone'),
+            _sectionHeader(AppLocalizations.of(context)!.dangerZone),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
-                onPressed: () => _confirmAction(context, 'Logout'),
+                onPressed: () => _confirmAction(context, AppLocalizations.of(context)!.logout),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red,
                   padding: const EdgeInsets.symmetric(vertical: 14),
@@ -181,7 +186,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                 ),
                 icon: const Icon(Icons.logout),
-                label: const Text('Logout'),
+                label: Text(AppLocalizations.of(context)!.logout),
               ),
             ),
 
@@ -189,7 +194,7 @@ class _SettingsPageState extends State<SettingsPage> {
             SizedBox(
               width: double.infinity,
               child: OutlinedButton.icon(
-                onPressed: () => _confirmAction(context, 'Delete Account'),
+                onPressed: () => _confirmAction(context, AppLocalizations.of(context)!.deleteAccount),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Colors.red,
                   side: const BorderSide(color: Colors.red),
@@ -199,7 +204,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                 ),
                 icon: const Icon(Icons.delete_forever_outlined),
-                label: const Text('Delete Account'),
+                label: Text(AppLocalizations.of(context)!.deleteAccount),
               ),
             ),
 
@@ -233,20 +238,55 @@ class _SettingsPageState extends State<SettingsPage> {
         onTap: onTap ?? () => _comingSoon(title),
       );
 
+  // Helpers to map codes to localized labels
+  String _languageLabel(AppLocalizations l10n) {
+    final controller = Provider.of<LocaleController>(context, listen: false);
+    final code = controller.locale.value?.languageCode ?? Localizations.localeOf(context).languageCode;
+    return code == 'ar' ? l10n.languageArabic : l10n.languageEnglish;
+  }
+
+  String _themeLabel(AppLocalizations l10n) {
+    switch (_themeKey) {
+      case 'light':
+        return l10n.themeLight;
+      case 'dark':
+        return l10n.themeDark;
+      default:
+        return l10n.themeSystem;
+    }
+  }
+
+  String _regionLabelFromCode(String code, AppLocalizations l10n) {
+    switch (code) {
+      case 'AE':
+        return l10n.regionUAE;
+      case 'US':
+        return l10n.regionUS;
+      default:
+        return l10n.regionSudan;
+    }
+  }
+
+  String _regionLabel(AppLocalizations l10n) => _regionLabelFromCode(_regionCode, l10n);
+
+  String _regionCurrencyLabel(AppLocalizations l10n) =>
+      l10n.regionCurrencyFormat(_regionLabel(l10n), _currencyCode);
+
   void _comingSoon(String feature) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('$feature coming soon')),
+      SnackBar(content: Text(AppLocalizations.of(context)!.comingSoonWithFeature(feature))),
     );
   }
 
   void _confirmAction(BuildContext context, String action) async {
+    final l10n = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title: Text('$action?'),
-        content: Text('Are you sure you want to proceed with $action?'),
+        title: Text(l10n.confirmActionTitle(action)),
+        content: Text(l10n.confirmActionMessage(action)),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
+          TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l10n.cancel)),
           ElevatedButton(onPressed: () => Navigator.pop(context, true), child: Text(action)),
         ],
       ),
@@ -257,7 +297,10 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   void _selectLanguage() async {
-    final options = ['English', 'Arabic'];
+    final l10n = AppLocalizations.of(context)!;
+    final controller = Provider.of<LocaleController>(context, listen: false);
+    final selectedCode = controller.locale.value?.languageCode ?? Localizations.localeOf(context).languageCode;
+    final options = ['en', 'ar'];
     final value = await showModalBottomSheet<String>(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -268,13 +311,13 @@ class _SettingsPageState extends State<SettingsPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             const SizedBox(height: 12),
-            Text('Select language', style: AppTypography.cardTitle),
+            Text(l10n.selectLanguage, style: AppTypography.cardTitle),
             const SizedBox(height: 8),
-            for (final o in options)
+            for (final code in options)
               ListTile(
-                title: Text(o),
-                trailing: _language == o ? const Icon(Icons.check, color: Colors.green) : null,
-                onTap: () => Navigator.pop(ctx, o),
+                title: Text(code == 'ar' ? l10n.languageArabic : l10n.languageEnglish),
+                trailing: selectedCode == code ? const Icon(Icons.check, color: Colors.green) : null,
+                onTap: () => Navigator.pop(ctx, code),
               ),
             const SizedBox(height: 12),
           ],
@@ -282,12 +325,13 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
     );
     if (value != null) {
-      setState(() => _language = value);
+      await controller.setLanguageCode(value);
     }
   }
 
   void _selectTheme() async {
-    final options = ['System', 'Light', 'Dark'];
+    final l10n = AppLocalizations.of(context)!;
+    final options = ['system', 'light', 'dark'];
     final value = await showModalBottomSheet<String>(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -298,13 +342,22 @@ class _SettingsPageState extends State<SettingsPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             const SizedBox(height: 12),
-            Text('Select theme', style: AppTypography.cardTitle),
+            Text(l10n.selectTheme, style: AppTypography.cardTitle),
             const SizedBox(height: 8),
-            for (final o in options)
+            for (final key in options)
               ListTile(
-                title: Text(o),
-                trailing: _theme == o ? const Icon(Icons.check, color: Colors.green) : null,
-                onTap: () => Navigator.pop(ctx, o),
+                title: Text(() {
+                  switch (key) {
+                    case 'light':
+                      return l10n.themeLight;
+                    case 'dark':
+                      return l10n.themeDark;
+                    default:
+                      return l10n.themeSystem;
+                  }
+                }()),
+                trailing: _themeKey == key ? const Icon(Icons.check, color: Colors.green) : null,
+                onTap: () => Navigator.pop(ctx, key),
               ),
             const SizedBox(height: 12),
           ],
@@ -312,13 +365,18 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
     );
     if (value != null) {
-      setState(() => _theme = value);
+      setState(() => _themeKey = value);
     }
   }
 
   void _selectRegionCurrency() async {
-    final options = ['Sudan (SDG)', 'United Arab Emirates (AED)', 'United States (USD)'];
-    final value = await showModalBottomSheet<String>(
+    final l10n = AppLocalizations.of(context)!;
+    final options = [
+      {"region": 'SD', "currency": 'SDG'},
+      {"region": 'AE', "currency": 'AED'},
+      {"region": 'US', "currency": 'USD'},
+    ];
+    final value = await showModalBottomSheet<Map<String, String>>(
       context: context,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
@@ -328,12 +386,14 @@ class _SettingsPageState extends State<SettingsPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             const SizedBox(height: 12),
-            Text('Select region & currency', style: AppTypography.cardTitle),
+            Text(l10n.selectRegionCurrency, style: AppTypography.cardTitle),
             const SizedBox(height: 8),
             for (final o in options)
               ListTile(
-                title: Text(o),
-                trailing: (o.contains(_region) && o.contains(_currency)) ? const Icon(Icons.check, color: Colors.green) : null,
+                title: Text(l10n.regionCurrencyFormat(_regionLabelFromCode(o['region']!, l10n), o['currency']!)),
+                trailing: (_regionCode == o['region'] && _currencyCode == o['currency'])
+                    ? const Icon(Icons.check, color: Colors.green)
+                    : null,
                 onTap: () => Navigator.pop(ctx, o),
               ),
             const SizedBox(height: 12),
@@ -342,17 +402,30 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
     );
     if (value != null) {
-      final parts = RegExp(r'^(.*)\s\((.*)\)$').firstMatch(value);
-      if (parts != null) {
-        setState(() {
-          _region = parts.group(1)!;
-          _currency = parts.group(2)!;
-        });
-      }
+      setState(() {
+        _regionCode = value['region']!;
+        _currencyCode = value['currency']!;
+      });
+    }
+  }
+
+  Future<void> _fetchAppVersion() async {
+    try {
+      final info = await PackageInfo.fromPlatform();
+      if (!mounted) return;
+      setState(() {
+        _appVersion = 'v${info.version}+${info.buildNumber}';
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _appVersion = '';
+      });
     }
   }
 
   Widget _errorBanner() {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.only(bottom: DesignTokens.space12),
@@ -365,7 +438,7 @@ class _SettingsPageState extends State<SettingsPage> {
         children: [
           const Icon(Icons.error_outline, color: Colors.red),
           const SizedBox(width: DesignTokens.space12),
-          Expanded(child: Text('Failed to load settings. Please try again.', style: AppTypography.body)),
+          Expanded(child: Text(l10n.failedToLoadSettings, style: AppTypography.body)),
           TextButton(
             onPressed: () {
               setState(() {
@@ -376,7 +449,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 if (mounted) setState(() => _isLoading = false);
               });
             },
-            child: const Text('Retry'),
+            child: Text(l10n.retry),
           ),
         ],
       ),

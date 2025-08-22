@@ -4,6 +4,7 @@ import 'package:sudan_goods/models/store/store_model.dart';
 import 'package:sudan_goods/store/pages/store_details_page.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
+import 'package:sudan_goods/l10n/app_localizations.dart';
 
 class BigStoreCard extends StatefulWidget {
   final Store store;
@@ -262,7 +263,9 @@ class _BigStoreCardState extends State<BigStoreCard> with SingleTickerProviderSt
                                     ),
                                     const SizedBox(width: 4),
                                     Text(
-                                      widget.store.isOpen ? 'Open' : 'Closed',
+                                      widget.store.isOpen
+                                          ? AppLocalizations.of(context)!.storeOpen
+                                          : AppLocalizations.of(context)!.storeClosed,
                                       style: AppTypography.tag.copyWith(
                                         color: widget.store.isOpen ? Colors.green.shade700 : Colors.red.shade700,
                                         fontWeight: FontWeight.w600,
@@ -355,7 +358,9 @@ class _BigStoreCardState extends State<BigStoreCard> with SingleTickerProviderSt
                                 ),
                                 const SizedBox(width: DesignTokens.space8),
                                 Text(
-                                  'Min. Order: €${widget.store.minimumOrderAmount.toStringAsFixed(0)}',
+                                  AppLocalizations.of(context)!.minOrderWithAmount(
+                                    '€${widget.store.minimumOrderAmount.toStringAsFixed(0)}',
+                                  ),
                                   style: AppTypography.small.copyWith(
                                     color: Colors.green.shade700,
                                     fontWeight: FontWeight.w500,

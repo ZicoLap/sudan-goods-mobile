@@ -4,6 +4,7 @@ import 'package:sudan_goods/cart/cart_controller.dart';
 import 'package:sudan_goods/cart/widgets/cart_bottom_sheet_widget.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
+import 'package:sudan_goods/l10n/app_localizations.dart';
 
 class _CartSnapshot {
   final int count;
@@ -18,6 +19,7 @@ class FloatingCartBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Selector<CartController, _CartSnapshot>(
       selector: (_, c) {
         final items = c.getItemsByStore(storeId);
@@ -76,10 +78,10 @@ class FloatingCartBar extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('View cart', style: AppTypography.bodyBold.copyWith(color: Colors.white)),
+                      Text(l10n.viewCart, style: AppTypography.bodyBold.copyWith(color: Colors.white)),
                       const SizedBox(height: 2),
                       Text(
-                        '€${snap.subtotal.toStringAsFixed(2)} total',
+                        '${l10n.total} €${snap.subtotal.toStringAsFixed(2)}',
                         style: AppTypography.small.copyWith(color: Colors.white.withOpacity(0.9)),
                       ),
                     ],

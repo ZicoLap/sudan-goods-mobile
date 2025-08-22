@@ -3,6 +3,7 @@ import 'package:sudan_goods/Home/widgets/category_chip.dart';
 import 'package:sudan_goods/Home/widgets/shimmer_components.dart';
 import 'package:sudan_goods/models/store/category_model.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
+import 'package:sudan_goods/l10n/app_localizations.dart';
 
 class CategoriesSection extends StatelessWidget {
   final List<Category> categories;
@@ -21,7 +22,7 @@ class CategoriesSection extends StatelessWidget {
         Padding(
           padding: DesignTokens.paddingPageHorizontal,
           child: Text(
-            'Browse Categories',
+            AppLocalizations.of(context)!.browseCategories,
             style: AppTypography.sectionTitle.copyWith(
               color: Colors.black,
             ),

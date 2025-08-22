@@ -5,6 +5,7 @@ import 'package:sudan_goods/authentication/views/login_page.dart';
 import 'package:sudan_goods/authentication/views/widgets/register_form_address.dart';
 import 'package:sudan_goods/authentication/views/widgets/register_form_user.dart';
 import 'package:sudan_goods/models/shared_models/address.dart';
+import 'package:sudan_goods/l10n/app_localizations.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -58,10 +59,8 @@ class _RegisterPageState extends State<RegisterPage> {
 
     if (result == "success") {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            "Your registration was successful. Please verify your email.",
-          ),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.registrationSuccessVerifyEmail),
           backgroundColor: Colors.green,
         ),
       );
@@ -70,9 +69,26 @@ class _RegisterPageState extends State<RegisterPage> {
         MaterialPageRoute(builder: (_) => const LoginPage()),
       );
     } else {
+      if (result == "unverified") {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(AppLocalizations.of(context)!.verifyEmailPrompt)),
+        );
+        return;
+      }
+      
+      if (result == null) {
+        print("result is null in the register_page.dart");
+        return; // please check the console for more details
+      }
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text("Registration failed: $result")));
+      ).showSnackBar(
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context)!.registrationFailedWithError(result),
+          ),
+        ),
+      );
     }
 
     setState(() => _isLoading = false);
@@ -119,8 +135,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                 if (_formData.password.text !=
                                     _formData.confirmPassword.text) {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text("Passwords do not match"),
+                                    SnackBar(
+                                      content: Text(AppLocalizations.of(context)!.passwordsDoNotMatch),
                                     ),
                                   );
                                   return;

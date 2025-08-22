@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
+import 'package:sudan_goods/l10n/app_localizations.dart';
 
 class MessagesPage extends StatefulWidget {
   const MessagesPage({super.key});
@@ -50,7 +51,7 @@ class _MessagesPageState extends State<MessagesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Messages'),
+        title: Text(AppLocalizations.of(context)!.navMessages),
         centerTitle: true,
       ),
       body: SafeArea(
@@ -73,7 +74,7 @@ class _MessagesPageState extends State<MessagesPage> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _composeNewMessage,
-        label: const Text('New message'),
+        label: Text(AppLocalizations.of(context)!.newMessage),
         icon: const Icon(Icons.edit_outlined),
       ),
     );
@@ -88,10 +89,10 @@ class _MessagesPageState extends State<MessagesPage> {
       ),
       padding: const EdgeInsets.symmetric(horizontal: DesignTokens.space12),
       child: TextField(
-        decoration: const InputDecoration(
-          hintText: 'Search messages',
+        decoration: InputDecoration(
+          hintText: AppLocalizations.of(context)!.searchMessagesHint,
           border: InputBorder.none,
-          prefixIcon: Icon(Icons.search),
+          prefixIcon: const Icon(Icons.search),
         ),
         onChanged: (value) {
           // Placeholder: no real filtering yet
@@ -113,9 +114,9 @@ class _MessagesPageState extends State<MessagesPage> {
           children: [
             Icon(Icons.chat_bubble_outline, size: 40, color: Colors.grey.shade500),
             const SizedBox(height: DesignTokens.space8),
-            Text('No messages yet', style: AppTypography.bodyBold),
+            Text(AppLocalizations.of(context)!.noMessagesYet, style: AppTypography.bodyBold),
             const SizedBox(height: 4),
-            Text('Start a conversation with a store or support', style: AppTypography.small.copyWith(color: Colors.black54), textAlign: TextAlign.center),
+            Text(AppLocalizations.of(context)!.startConversationPrompt, style: AppTypography.small.copyWith(color: Colors.black54), textAlign: TextAlign.center),
           ],
         ),
       );
@@ -165,7 +166,7 @@ class _MessagesPageState extends State<MessagesPage> {
             ),
         ],
       ),
-      onTap: () => _comingSoon('Chat with ${c.title}'),
+      onTap: () => _comingSoon(AppLocalizations.of(context)!.chatWith(c.title)),
       contentPadding: const EdgeInsets.symmetric(horizontal: DesignTokens.space16, vertical: 6),
     );
   }
@@ -208,7 +209,7 @@ class _MessagesPageState extends State<MessagesPage> {
               const Icon(Icons.error_outline, color: Colors.red),
               const SizedBox(width: DesignTokens.space12),
               Expanded(
-                child: Text('Failed to load messages. Please try again.', style: AppTypography.body),
+                child: Text(AppLocalizations.of(context)!.failedToLoadMessages, style: AppTypography.body),
               ),
               TextButton(
                 onPressed: () {
@@ -220,7 +221,7 @@ class _MessagesPageState extends State<MessagesPage> {
                     if (mounted) setState(() => _isLoading = false);
                   });
                 },
-                child: const Text('Retry'),
+                child: Text(AppLocalizations.of(context)!.retry),
               ),
             ],
           ),
@@ -303,16 +304,16 @@ class _MessagesPageState extends State<MessagesPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             const SizedBox(height: 12),
-            Text('Start new message', style: AppTypography.cardTitle),
+            Text(AppLocalizations.of(context)!.startNewMessage, style: AppTypography.cardTitle),
             const SizedBox(height: 8),
             ListTile(
               leading: const Icon(Icons.storefront_outlined),
-              title: const Text('Message a store'),
+              title: Text(AppLocalizations.of(context)!.messageAStore),
               onTap: () => Navigator.pop(ctx),
             ),
             ListTile(
               leading: const Icon(Icons.support_agent_outlined),
-              title: const Text('Contact support'),
+              title: Text(AppLocalizations.of(context)!.contactSupport),
               onTap: () => Navigator.pop(ctx),
             ),
             const SizedBox(height: 12),
@@ -323,8 +324,9 @@ class _MessagesPageState extends State<MessagesPage> {
   }
 
   void _comingSoon(String feature) {
+    final l10n = AppLocalizations.of(context)!;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('$feature coming soon')),
+      SnackBar(content: Text(l10n.comingSoonWithFeature(feature))),
     );
   }
 }

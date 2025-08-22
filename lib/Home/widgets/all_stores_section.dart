@@ -4,6 +4,7 @@ import 'package:sudan_goods/Home/widgets/big_store_card_enhanced.dart';
 import 'package:sudan_goods/Home/widgets/shimmer_components.dart';
 import 'package:sudan_goods/models/store/store_model.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
+import 'package:sudan_goods/l10n/app_localizations.dart';
 
 class AllStoresSection extends StatelessWidget {
   const AllStoresSection({super.key});
@@ -20,7 +21,7 @@ class AllStoresSection extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'All Stores',
+                AppLocalizations.of(context)!.allStoresTitle,
                 style: AppTypography.sectionTitle.copyWith(
                   color: Colors.black,
                 ),
@@ -30,7 +31,7 @@ class AllStoresSection extends StatelessWidget {
                   // TODO: Navigate to all stores page
                 },
                 child: Text(
-                  'View all',
+                  AppLocalizations.of(context)!.viewAll,
                   style: AppTypography.small.copyWith(
                     color: Colors.orange,
                     fontWeight: FontWeight.w600,
@@ -40,7 +41,7 @@ class AllStoresSection extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: DesignTokens.space16),
+        SizedBox(height: DesignTokens.space16),
 
         // Real-time store list
         StreamBuilder<List<Store>>(
@@ -49,27 +50,27 @@ class AllStoresSection extends StatelessWidget {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return ListView.separated(
                 shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
+                physics: NeverScrollableScrollPhysics(),
                 padding: DesignTokens.paddingPageHorizontal,
                 itemCount: 3,
-                separatorBuilder: (_, __) => const SizedBox(height: DesignTokens.space20),
+                separatorBuilder: (_, __) => SizedBox(height: DesignTokens.space20),
                 itemBuilder: (context, index) => ShimmerComponents.bigStoreCardShimmer(),
               );
             }
 
             if (snapshot.hasError) {
-              return const Center(child: Text('Failed to load stores'));
+              return Center(child: Text(AppLocalizations.of(context)!.failedToLoadStores));
             }
 
             final stores = snapshot.data ?? [];
 
             if (stores.isEmpty) {
-              return const Center(child: Text('No stores available'));
+              return Center(child: Text(AppLocalizations.of(context)!.noStoresAvailable));
             }
 
             return ListView.separated(
               shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
+              physics: NeverScrollableScrollPhysics(),
               padding: DesignTokens.paddingPageHorizontal,
               itemCount: stores.length,
               separatorBuilder: (_, __) => const SizedBox(height: DesignTokens.space20),

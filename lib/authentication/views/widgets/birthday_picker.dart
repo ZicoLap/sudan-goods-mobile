@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
+import 'package:sudan_goods/l10n/app_localizations.dart';
 
 class BirthdayPicker extends StatelessWidget {
   final DateTime birthday;
@@ -13,9 +14,10 @@ class BirthdayPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Row(
       children: [
-        const Text("Birthday:", style: TextStyle(fontWeight: FontWeight.bold)),
+        Text(l10n.birthdayLabel, style: const TextStyle(fontWeight: FontWeight.bold)),
         const SizedBox(width: 16),
         TextButton(
           onPressed: () async {

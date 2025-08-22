@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sudan_goods/cart/cart_controller.dart';
+import 'package:sudan_goods/l10n/app_localizations.dart';
 
 class CartSummaryBar extends StatelessWidget {
   const CartSummaryBar({super.key});
@@ -8,6 +9,7 @@ class CartSummaryBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<CartController>(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -24,7 +26,7 @@ class CartSummaryBar extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Total', style: TextStyle(fontSize: 14, color: Colors.grey)),
+              Text(l10n.total, style: const TextStyle(fontSize: 14, color: Colors.grey)),
               const SizedBox(height: 4),
               Text(
                 '${cart.totalPrice.toStringAsFixed(2)} €',
@@ -45,7 +47,7 @@ class CartSummaryBar extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            child: const Text('Checkout'),
+            child: Text(l10n.checkout),
           ),
         ],
       ),

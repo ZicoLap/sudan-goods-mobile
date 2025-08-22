@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
+import 'package:sudan_goods/l10n/app_localizations.dart';
 
 /// Modern Bottom Navigation Bar with enhanced UX
 class ModernBottomNavigationBar extends StatefulWidget {
@@ -26,27 +27,27 @@ class _ModernBottomNavigationBarState extends State<ModernBottomNavigationBar>
     _NavItem(
       icon: Icons.home_outlined,
       activeIcon: Icons.home_rounded,
-      label: 'Home',
+      label: (l10n) => l10n.navHome,
     ),
     _NavItem(
       icon: Icons.shopping_bag_outlined,
       activeIcon: Icons.shopping_bag,
-      label: 'Orders',
+      label: (l10n) => l10n.navOrders,
     ),
     _NavItem(
       icon: Icons.search_outlined,
       activeIcon: Icons.search,
-      label: 'Search',
+      label: (l10n) => l10n.navSearch,
     ),
     _NavItem(
       icon: Icons.chat_bubble_outline,
       activeIcon: Icons.chat_bubble,
-      label: 'Messages',
+      label: (l10n) => l10n.navMessages,
     ),
     _NavItem(
       icon: Icons.account_circle_outlined,
       activeIcon: Icons.account_circle,
-      label: 'Profile',
+      label: (l10n) => l10n.navProfile,
     ),
   ];
 
@@ -113,6 +114,7 @@ class _ModernBottomNavigationBarState extends State<ModernBottomNavigationBar>
   Widget _buildNavItem(int index) {
     final item = _navItems[index];
     final isSelected = widget.currentIndex == index;
+    final l10n = AppLocalizations.of(context)!;
 
     return Expanded(
       child: Material(
@@ -168,7 +170,7 @@ class _ModernBottomNavigationBarState extends State<ModernBottomNavigationBar>
                               isSelected ? FontWeight.w600 : FontWeight.normal,
                         ),
                         child: Text(
-                          item.label,
+                          item.label(l10n),
                           textAlign: TextAlign.center,
                           maxLines: 1,
                         ),
@@ -189,7 +191,7 @@ class _ModernBottomNavigationBarState extends State<ModernBottomNavigationBar>
 class _NavItem {
   final IconData icon;
   final IconData activeIcon;
-  final String label;
+  final String Function(AppLocalizations) label;
 
   const _NavItem({
     required this.icon,

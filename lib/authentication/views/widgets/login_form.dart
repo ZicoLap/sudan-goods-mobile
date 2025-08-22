@@ -9,6 +9,7 @@ import 'package:sudan_goods/authentication/views/register_page.dart';
 import 'package:sudan_goods/authentication/views/widgets/password_reset_dialog.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
 import 'package:sudan_goods/user/user_provider.dart';
+import 'package:sudan_goods/l10n/app_localizations.dart';
 
 class LoginForm extends StatefulWidget {
   final LoginFormData formData;
@@ -36,7 +37,7 @@ class _LoginFormState extends State<LoginForm> {
 
       if (result == "unverified") {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Please verify your email.")),
+          SnackBar(content: Text(AppLocalizations.of(context)!.verifyEmailPrompt)),
         );
         return;
       }
@@ -51,7 +52,13 @@ class _LoginFormState extends State<LoginForm> {
     } catch (e) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text("Login failed: $e")));
+      ).showSnackBar(
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context)!.loginFailedWithError(e.toString()),
+          ),
+        ),
+      );
     } finally {
       setState(() => _isLoading = false);
     }
@@ -63,12 +70,13 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            "Sudan Goods",
+            l10n.appTitle,
             style: GoogleFonts.staatliches(
               fontSize: 48,
               fontWeight: FontWeight.bold,
@@ -80,11 +88,11 @@ class _LoginFormState extends State<LoginForm> {
             key: _formKey,
             child: Column(
               children: [
-                _textField(widget.formData.email, "Email", icon: Icons.email),
+                _textField(widget.formData.email, l10n.email, icon: Icons.email),
                 const SizedBox(height: 36),
                 _textField(
                   widget.formData.password,
-                  "Password",
+                  l10n.password,
                   obscure: true,
                   icon: Icons.lock,
                 ),
@@ -109,21 +117,21 @@ class _LoginFormState extends State<LoginForm> {
               child:
                   _isLoading
                       ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text("LOGIN", style: TextStyle(fontSize: 16)),
+                      : Text(l10n.login, style: const TextStyle(fontSize: 16)),
             ),
           ),
           const SizedBox(height: 36),
           Row(
-            children: const [
-              Expanded(child: Divider(color: Colors.black, thickness: 2)),
+            children: [
+              const Expanded(child: Divider(color: Colors.black, thickness: 2)),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: Text(
-                  "OR",
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  l10n.or,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
-              Expanded(child: Divider(color: Colors.black, thickness: 2)),
+              const Expanded(child: Divider(color: Colors.black, thickness: 2)),
             ],
           ),
           const SizedBox(height: 36),
@@ -139,13 +147,13 @@ class _LoginFormState extends State<LoginForm> {
               child:
                   _isLoading
                       ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text("REGISTER", style: TextStyle(fontSize: 16)),
+                      : Text(l10n.register, style: const TextStyle(fontSize: 16)),
             ),
           ),
           const SizedBox(height: 12),
           TextButton(
             onPressed: _showResetDialog,
-            child: const Text("Forgot password?"),
+            child: Text(l10n.forgotPassword),
           ),
         ],
       ),
@@ -172,7 +180,9 @@ class _LoginFormState extends State<LoginForm> {
           horizontal: 16,
         ),
       ),
-      validator: (val) => val == null || val.isEmpty ? 'Enter $label' : null,
+      validator: (val) => val == null || val.isEmpty
+          ? AppLocalizations.of(context)!.pleaseEnterField(label)
+          : null,
     );
   }
 

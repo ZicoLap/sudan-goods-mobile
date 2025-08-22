@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sudan_goods/l10n/app_localizations.dart';
 
 class PopularProductsSection extends StatelessWidget {
   const PopularProductsSection({super.key});
@@ -8,9 +9,12 @@ class PopularProductsSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
+        Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.0),
-          child: Text('Popular Products', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          child: Text(
+            AppLocalizations.of(context)!.popularProducts,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
         ),
         const SizedBox(height: 8),
         SizedBox(
