@@ -581,4 +581,79 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get checkoutThisStore => 'الدفع لهذا المتجر';
+
+  @override
+  String get langArabic => 'العربية';
+
+  @override
+  String get langEnglish => 'الإنجليزية';
+
+  @override
+  String get actionSkip => 'تخطي';
+
+  @override
+  String get actionNext => 'التالي';
+
+  @override
+  String get actionGetStarted => 'ابدأ الآن';
+
+  @override
+  String get onbTitle1 => 'مرحباً بك في سلع السودان';
+
+  @override
+  String get onbBody1 => 'نقرّب المنتجات السودانية إليك.';
+
+  @override
+  String get onbTitle2 => 'اطلب بلا انتظار';
+
+  @override
+  String get onbBody2 => 'لا حاجة لانتظار المسافرين—اشترِ مباشرة من باعة موثوقين.';
+
+  @override
+  String get onbTitle3 => 'لأجل مجتمعنا';
+
+  @override
+  String get onbBody3 => 'نصل الباعة السودانيين بالمشترين السودانيين في كل مكان.';
+
+  @override
+  String get onbTitle4 => 'توصيل سريع';
+
+  @override
+  String get onbBody4 => 'تصل إلى باب منزلك خلال نحو ٣ أيام.';
+
+  @override
+  String get onbTitle5 => 'ابقَ على اطلاع';
+
+  @override
+  String get onbBody5 => 'تابِع المتاجر وتلقَّ إشعاراً عند توفر منتجات جديدة.';
+
+  @override
+  String get onbTitle6 => 'لم تجد ما تريد؟';
+
+  @override
+  String get onbBody6 => 'اضغط \"مطلوب\" وسنحاول توفيره لك قريباً.';
+
+  @override
+  String get onbTitle7 => 'ابدأ خلال دقائق';
+
+  @override
+  String get onbBody7 => 'سجّل عنوانك وابدأ شراء المنتجات السودانية.';
+
+  @override
+  String get onbTitle8 => 'معاً من أجل السودان';
+
+  @override
+  String get onbBody8 => 'نبني شيئاً لبلدنا الحبيب. تواصل معنا في أي وقت.';
+
+  @override
+  String get resetOnboarding => 'إعادة تشغيل الإرشادات';
+
+  @override
+  String get resetOnboardingSubtitle => 'عرض جولة الترحيب عند تشغيل التطبيق القادم';
+
+  @override
+  String get reset => 'إعادة تعيين';
+
+  @override
+  String get onboardingResetSuccess => 'تمت إعادة الإرشادات. ستظهر عند التشغيل القادم.';
 }

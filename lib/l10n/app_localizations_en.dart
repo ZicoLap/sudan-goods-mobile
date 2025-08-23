@@ -581,4 +581,79 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get checkoutThisStore => 'Checkout this store';
+
+  @override
+  String get langArabic => 'Arabic';
+
+  @override
+  String get langEnglish => 'English';
+
+  @override
+  String get actionSkip => 'Skip';
+
+  @override
+  String get actionNext => 'Next';
+
+  @override
+  String get actionGetStarted => 'Get started';
+
+  @override
+  String get onbTitle1 => 'Welcome to Sudan Goods';
+
+  @override
+  String get onbBody1 => 'Bringing Sudanese products closer to you.';
+
+  @override
+  String get onbTitle2 => 'Order without waiting';
+
+  @override
+  String get onbBody2 => 'No need to wait for travelers—buy directly from trusted sellers.';
+
+  @override
+  String get onbTitle3 => 'Made for our community';
+
+  @override
+  String get onbBody3 => 'We connect Sudanese sellers with Sudanese buyers everywhere.';
+
+  @override
+  String get onbTitle4 => 'Fast delivery';
+
+  @override
+  String get onbBody4 => 'Get items to your door in about 3 days.';
+
+  @override
+  String get onbTitle5 => 'Stay in the loop';
+
+  @override
+  String get onbBody5 => 'Follow stores and get notified when new products arrive.';
+
+  @override
+  String get onbTitle6 => 'Can\'t find it?';
+
+  @override
+  String get onbBody6 => 'Tap \"Wanted\" and we\'ll try to source it for you.';
+
+  @override
+  String get onbTitle7 => 'Start in minutes';
+
+  @override
+  String get onbBody7 => 'Register with your address and start shopping Sudanese products.';
+
+  @override
+  String get onbTitle8 => 'Together for Sudan';
+
+  @override
+  String get onbBody8 => 'We\'re building something for our beloved Sudan. Contact us anytime.';
+
+  @override
+  String get resetOnboarding => 'Reset onboarding';
+
+  @override
+  String get resetOnboardingSubtitle => 'Show the welcome walkthrough on next app start';
+
+  @override
+  String get reset => 'Reset';
+
+  @override
+  String get onboardingResetSuccess => 'Onboarding reset. It will appear on next launch.';
 }

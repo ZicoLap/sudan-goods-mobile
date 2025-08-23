@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
-import 'package:sudan_goods/authentication/auth_gate_page.dart';
 import 'package:sudan_goods/cart/cart_controller.dart';
 import 'package:sudan_goods/checkout/controller/checkout_controller.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
@@ -10,6 +9,7 @@ import 'package:sudan_goods/user/user_provider.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
 import 'package:sudan_goods/l10n/locale_controller.dart';
 import 'package:sudan_goods/l10n/locale_persistence_service.dart';
+import 'package:sudan_goods/onboarding/app_start_gate.dart';
 
 import 'firebase_options.dart';
 
@@ -69,7 +69,7 @@ class MyApp extends StatelessWidget {
           },
           theme: AppTheme.lightTheme,
           debugShowCheckedModeBanner: false,
-          home: const AuthGate(), // Auth gate for routing based on auth state
+          home: const AppStartGate(), // App start gate decides Language → Onboarding → Auth
         );
       },
     );

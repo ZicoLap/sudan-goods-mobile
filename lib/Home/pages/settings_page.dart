@@ -5,6 +5,7 @@ import 'package:sudan_goods/l10n/app_localizations.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:sudan_goods/l10n/locale_controller.dart';
+import 'package:sudan_goods/Home/pages/language_settings_page.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -132,7 +133,11 @@ class _SettingsPageState extends State<SettingsPage> {
                   title: Text(AppLocalizations.of(context)!.language, style: AppTypography.body),
                   subtitle: Text(_languageLabel(AppLocalizations.of(context)!), style: AppTypography.small),
                   trailing: const Icon(Icons.chevron_right),
-                  onTap: _selectLanguage,
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const LanguageSettingsPage()),
+                    );
+                  },
                 ),
                 const Divider(height: 1),
                 ListTile(

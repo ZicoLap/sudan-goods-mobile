@@ -1168,6 +1168,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Checkout this store'**
   String get checkoutThisStore;
+
+  /// No description provided for @langArabic.
+  ///
+  /// In en, this message translates to:
+  /// **'Arabic'**
+  String get langArabic;
+
+  /// No description provided for @langEnglish.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get langEnglish;
+
+  /// No description provided for @actionSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get actionSkip;
+
+  /// No description provided for @actionNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get actionNext;
+
+  /// No description provided for @actionGetStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Get started'**
+  String get actionGetStarted;
+
+  /// No description provided for @onbTitle1.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to Sudan Goods'**
+  String get onbTitle1;
+
+  /// No description provided for @onbBody1.
+  ///
+  /// In en, this message translates to:
+  /// **'Bringing Sudanese products closer to you.'**
+  String get onbBody1;
+
+  /// No description provided for @onbTitle2.
+  ///
+  /// In en, this message translates to:
+  /// **'Order without waiting'**
+  String get onbTitle2;
+
+  /// No description provided for @onbBody2.
+  ///
+  /// In en, this message translates to:
+  /// **'No need to wait for travelers—buy directly from trusted sellers.'**
+  String get onbBody2;
+
+  /// No description provided for @onbTitle3.
+  ///
+  /// In en, this message translates to:
+  /// **'Made for our community'**
+  String get onbTitle3;
+
+  /// No description provided for @onbBody3.
+  ///
+  /// In en, this message translates to:
+  /// **'We connect Sudanese sellers with Sudanese buyers everywhere.'**
+  String get onbBody3;
+
+  /// No description provided for @onbTitle4.
+  ///
+  /// In en, this message translates to:
+  /// **'Fast delivery'**
+  String get onbTitle4;
+
+  /// No description provided for @onbBody4.
+  ///
+  /// In en, this message translates to:
+  /// **'Get items to your door in about 3 days.'**
+  String get onbBody4;
+
+  /// No description provided for @onbTitle5.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay in the loop'**
+  String get onbTitle5;
+
+  /// No description provided for @onbBody5.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow stores and get notified when new products arrive.'**
+  String get onbBody5;
+
+  /// No description provided for @onbTitle6.
+  ///
+  /// In en, this message translates to:
+  /// **'Can\'t find it?'**
+  String get onbTitle6;
+
+  /// No description provided for @onbBody6.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap \"Wanted\" and we\'ll try to source it for you.'**
+  String get onbBody6;
+
+  /// No description provided for @onbTitle7.
+  ///
+  /// In en, this message translates to:
+  /// **'Start in minutes'**
+  String get onbTitle7;
+
+  /// No description provided for @onbBody7.
+  ///
+  /// In en, this message translates to:
+  /// **'Register with your address and start shopping Sudanese products.'**
+  String get onbBody7;
+
+  /// No description provided for @onbTitle8.
+  ///
+  /// In en, this message translates to:
+  /// **'Together for Sudan'**
+  String get onbTitle8;
+
+  /// No description provided for @onbBody8.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'re building something for our beloved Sudan. Contact us anytime.'**
+  String get onbBody8;
+
+  /// No description provided for @resetOnboarding.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset onboarding'**
+  String get resetOnboarding;
+
+  /// No description provided for @resetOnboardingSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the welcome walkthrough on next app start'**
+  String get resetOnboardingSubtitle;
+
+  /// No description provided for @reset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get reset;
+
+  /// No description provided for @onboardingResetSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Onboarding reset. It will appear on next launch.'**
+  String get onboardingResetSuccess;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
