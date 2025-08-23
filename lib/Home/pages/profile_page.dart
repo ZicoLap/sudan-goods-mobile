@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
 import 'package:sudan_goods/Home/pages/edit_profile_page.dart';
 import 'package:sudan_goods/Home/pages/settings_page.dart';
+import 'package:sudan_goods/models/user/user_model.dart';
+import 'package:sudan_goods/user/user_provider.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -13,29 +17,49 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  bool _isLoading = true;
   bool _hasError = false;
-  bool _bioExpanded = false;
 
-  final String _displayName = 'John Doe';
-  final String _handle = '@john_doe';
-  final String _bio = 'Loves Sudanese spices and coffee.';
-
-  final int _orders = 12;
-  final int _favorites = 5;
-  final int _reviews = 3;
+  int _ordersCount = 0;
+  int _favorites = 0;
+  int _reviews = 0;
 
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(milliseconds: 800), () {
-      if (!mounted) return;
-      setState(() => _isLoading = false);
+    // Defer until after first build so Provider is available
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      try {
+        final userProvider = Provider.of<UserProvider>(context, listen: false);
+        if (userProvider.isUserLoaded) {
+          await _fetchOrdersCount(userProvider.currentUser.uid);
+        }
+      } catch (_) {
+        // Ignore if provider not ready yet
+      }
     });
+  }
+
+  Future<void> _fetchOrdersCount(String uid) async {
+    try {
+      final agg = FirebaseFirestore.instance
+          .collection('orders')
+          .where('userId', isEqualTo: uid)
+          .count();
+      final snapshot = await agg.get();
+      if (!mounted) return;
+      setState(() {
+        _ordersCount = snapshot.count ?? 0;
+      });
+    } catch (e) {
+      // Silently ignore count errors; page still renders without stats
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
+    final bool isLoaded = userProvider.isUserLoaded;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.navProfile),
@@ -53,35 +77,34 @@ class _ProfilePageState extends State<ProfilePage> {
         ],
       ),
       body: SafeArea(
-        child:
-            _hasError
-                ? _errorBanner()
-                : (_isLoading
-                    ? _buildLoadingSkeleton()
-                    : SingleChildScrollView(
-                      padding: const EdgeInsets.all(DesignTokens.space16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          _buildHeaderCard(),
-                          const SizedBox(height: DesignTokens.space16),
-                          _buildStatsRow(),
-                          const SizedBox(height: DesignTokens.space16),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 4.0,
-                            ),
-                            child: Text(
-                              AppLocalizations.of(context)!.recentActivity,
-                              style: AppTypography.cardTitle,
-                            ),
+        child: _hasError
+            ? _errorBanner()
+            : (!isLoaded
+                ? _buildLoadingSkeleton()
+                : SingleChildScrollView(
+                    padding: const EdgeInsets.all(DesignTokens.space16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _buildHeaderCard(userProvider.currentUser),
+                        const SizedBox(height: DesignTokens.space16),
+                        _buildStatsRow(),
+                        const SizedBox(height: DesignTokens.space16),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 4.0,
                           ),
-                          const SizedBox(height: DesignTokens.space8),
-                          _buildRecentActivity(),
-                          const SizedBox(height: DesignTokens.space24),
-                        ],
-                      ),
-                    )),
+                          child: Text(
+                            AppLocalizations.of(context)!.recentActivity,
+                            style: AppTypography.cardTitle,
+                          ),
+                        ),
+                        const SizedBox(height: DesignTokens.space8),
+                        _buildRecentActivity(),
+                        const SizedBox(height: DesignTokens.space24),
+                      ],
+                    ),
+                  )),
       ),
     );
   }
@@ -108,14 +131,19 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               TextButton(
-                onPressed: () {
+                onPressed: () async {
                   setState(() {
                     _hasError = false;
-                    _isLoading = true;
                   });
-                  Future.delayed(const Duration(milliseconds: 600), () {
-                    if (mounted) setState(() => _isLoading = false);
-                  });
+                  try {
+                    await Provider.of<UserProvider>(context, listen: false).refreshUser();
+                  } catch (_) {
+                    if (mounted) {
+                      setState(() {
+                        _hasError = true;
+                      });
+                    }
+                  }
                 },
                 child: Text(AppLocalizations.of(context)!.retry),
               ),
@@ -190,7 +218,7 @@ class _ProfilePageState extends State<ProfilePage> {
     borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
   );
 
-  Widget _buildHeaderCard() {
+  Widget _buildHeaderCard(AppUser user) {
     return Container(
       padding: const EdgeInsets.all(DesignTokens.space16),
       decoration: BoxDecoration(
@@ -206,28 +234,24 @@ class _ProfilePageState extends State<ProfilePage> {
             onTap: _showChangePhotoSheet,
             child: Semantics(
               label: AppLocalizations.of(context)!.profilePhoto,
-              child: const CircleAvatar(
+              child: CircleAvatar(
                 radius: 42,
-                backgroundImage: AssetImage(
-                  'assets/images/default_profile.jpg',
+                backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.12),
+                child: Text(
+                  _initialsFromName(user.fullName),
+                  style: AppTypography.heading6.copyWith(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
                 ),
               ),
             ),
           ),
           const SizedBox(height: DesignTokens.space12),
           Text(
-            _displayName,
+            user.fullName,
             style: AppTypography.heading6,
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 4),
-          Text(
-            _handle,
-            style: AppTypography.small.copyWith(color: Colors.black54),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: DesignTokens.space8),
-          _buildBio(),
           const SizedBox(height: DesignTokens.space12),
           Semantics(
             button: true,
@@ -258,53 +282,22 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _buildBio() {
-    if (_bio.trim().isEmpty) {
-      return Text(
-        AppLocalizations.of(context)!.addShortBioPrompt,
-        style: AppTypography.small.copyWith(color: Colors.black54),
-        textAlign: TextAlign.center,
-      );
-    }
-    final canExpand = _bio.length > 70;
-    return Column(
-      children: [
-        AnimatedCrossFade(
-          firstChild: Text(
-            _bio,
-            style: AppTypography.body,
-            textAlign: TextAlign.center,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-          secondChild: Text(
-            _bio,
-            style: AppTypography.body,
-            textAlign: TextAlign.center,
-          ),
-          crossFadeState:
-              _bioExpanded
-                  ? CrossFadeState.showSecond
-                  : CrossFadeState.showFirst,
-          duration: const Duration(milliseconds: 200),
-        ),
-        if (canExpand)
-          TextButton(
-            onPressed: () => setState(() => _bioExpanded = !_bioExpanded),
-            child: Text(
-              _bioExpanded
-                  ? AppLocalizations.of(context)!.showLess
-                  : AppLocalizations.of(context)!.readMore,
-            ),
-          ),
-      ],
-    );
+  String _initialsFromName(String name) {
+    final trimmed = name.trim();
+    if (trimmed.isEmpty) return '?';
+    final parts = trimmed.split(' ').where((p) => p.isNotEmpty).toList();
+    String firstLetter(String s) => s.trim().isEmpty ? '' : s.trim().substring(0, 1).toUpperCase();
+    if (parts.length == 1) return firstLetter(parts.first);
+    final first = firstLetter(parts.first);
+    final last = firstLetter(parts.last);
+    final combined = '$first$last';
+    return combined.isEmpty ? '?' : combined;
   }
 
   Widget _buildStatsRow() {
     return Row(
       children: [
-        _statChip(Icons.receipt_long_outlined, AppLocalizations.of(context)!.navOrders, _orders),
+        _statChip(Icons.receipt_long_outlined, AppLocalizations.of(context)!.navOrders, _ordersCount),
         const SizedBox(width: DesignTokens.space12),
         _statChip(Icons.favorite_border, AppLocalizations.of(context)!.favorites, _favorites),
         const SizedBox(width: DesignTokens.space12),
@@ -388,16 +381,16 @@ class _ProfilePageState extends State<ProfilePage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const SizedBox(height: 12),
-                Text(AppLocalizations.of(context)!.changePhoto, style: AppTypography.cardTitle),
+                Text(AppLocalizations.of(ctx)!.changePhoto, style: AppTypography.cardTitle),
                 const SizedBox(height: 8),
                 ListTile(
                   leading: const Icon(Icons.photo_camera_outlined),
-                  title: Text(AppLocalizations.of(context)!.takePhoto),
+                  title: Text(AppLocalizations.of(ctx)!.takePhoto),
                   onTap: () => Navigator.pop(ctx),
                 ),
                 ListTile(
                   leading: const Icon(Icons.photo_library_outlined),
-                  title: Text(AppLocalizations.of(context)!.chooseFromGallery),
+                  title: Text(AppLocalizations.of(ctx)!.chooseFromGallery),
                   onTap: () => Navigator.pop(ctx),
                 ),
                 const SizedBox(height: 12),

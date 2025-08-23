@@ -6,6 +6,10 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:sudan_goods/l10n/locale_controller.dart';
 import 'package:sudan_goods/Home/pages/language_settings_page.dart';
+import 'package:sudan_goods/authentication/services/account_service.dart';
+import 'package:sudan_goods/authentication/auth_gate_page.dart';
+import 'package:sudan_goods/user/user_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -297,7 +301,74 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
     );
     if (confirmed == true) {
-      _comingSoon(action);
+      if (action == l10n.logout) {
+        await _doLogout();
+      } else if (action == l10n.deleteAccount) {
+        await _doDeleteAccount();
+      }
+    }
+  }
+
+  Future<void> _doLogout() async {
+    final l10n = AppLocalizations.of(context)!;
+    await _withProgress(() async {
+      try {
+        await AccountService.logout();
+        if (!mounted) return;
+        Provider.of<UserProvider>(context, listen: false).clear();
+        if (!mounted) return;
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const AuthGate()),
+          (route) => false,
+        );
+      } catch (e) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.errorWithMessage('Failed to log out'))),
+        );
+      }
+    });
+  }
+
+  Future<void> _doDeleteAccount() async {
+    final l10n = AppLocalizations.of(context)!;
+    await _withProgress(() async {
+      try {
+        await AccountService.deleteAccount();
+        if (!mounted) return;
+        Provider.of<UserProvider>(context, listen: false).clear();
+        if (!mounted) return;
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const AuthGate()),
+          (route) => false,
+        );
+      } on FirebaseAuthException catch (e) {
+        if (!mounted) return;
+        final msg = e.code == 'requires-recent-login'
+            ? l10n.errorWithMessage('Please re-authenticate to continue')
+            : l10n.errorWithMessage('Failed to delete account');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(msg)),
+        );
+      } catch (_) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.errorWithMessage('Failed to delete account'))),
+        );
+      }
+    });
+  }
+
+  Future<void> _withProgress(Future<void> Function() task) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(child: CircularProgressIndicator()),
+    );
+    try {
+      await task();
+    } finally {
+      if (mounted) Navigator.of(context, rootNavigator: true).pop();
     }
   }
 

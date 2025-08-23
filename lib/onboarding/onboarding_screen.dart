@@ -22,7 +22,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   void _next() {
     if (_index < 7) {
-      _controller.nextPage(duration: const Duration(milliseconds: 250), curve: Curves.easeOut);
+      _controller.nextPage(
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeOut,
+      );
     } else {
       _finish();
     }
@@ -31,9 +34,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Future<void> _finish() async {
     await OnboardingPersistenceService().setHasSeenOnboarding(true);
     if (!mounted) return;
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const AuthGate()),
-    );
+    Navigator.of(
+      context,
+    ).pushReplacement(MaterialPageRoute(builder: (_) => const AuthGate()));
   }
 
   @override
@@ -78,13 +81,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         const SizedBox(height: 32),
                         Text(
                           titles[i],
-                          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
                           textAlign: TextAlign.start,
                         ),
                         const SizedBox(height: 16),
                         Text(
                           bodies[i],
-                          style: const TextStyle(fontSize: 16, color: Colors.black87),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.black87,
+                          ),
                         ),
                         const Spacer(),
                       ],
@@ -97,16 +106,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               child: Row(
                 children: [
-                  TextButton(
-                    onPressed: _finish,
-                    child: Text(l10n.actionSkip),
-                  ),
+                  TextButton(onPressed: _finish, child: Text(l10n.actionSkip)),
                   const Spacer(),
                   _Dots(count: 8, index: _index),
                   const Spacer(),
                   ElevatedButton(
                     onPressed: _next,
-                    child: Text(_index == 7 ? l10n.actionGetStarted : l10n.actionNext),
+                    child: Text(
+                      _index == 7 ? l10n.actionGetStarted : l10n.actionNext,
+                    ),
                   ),
                 ],
               ),
@@ -136,7 +144,10 @@ class _Dots extends StatelessWidget {
           height: 8,
           width: active ? 18 : 8,
           decoration: BoxDecoration(
-            color: active ? Theme.of(context).colorScheme.primary : Colors.grey.shade400,
+            color:
+                active
+                    ? Theme.of(context).colorScheme.primary
+                    : Colors.grey.shade400,
             borderRadius: BorderRadius.circular(8),
           ),
         );

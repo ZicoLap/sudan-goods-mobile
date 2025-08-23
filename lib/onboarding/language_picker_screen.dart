@@ -82,17 +82,27 @@ class LanguagePickerScreen extends StatelessWidget {
                             code == 'ar'
                                 ? (l10n?.languageArabic ?? 'Arabic')
                                 : (l10n?.languageEnglish ?? 'English'),
-                            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                           const SizedBox(height: 6),
                           Text(
                             l10n?.onbTitle1 ?? 'Welcome to Sudan Goods',
-                            style: const TextStyle(fontSize: 14, color: Colors.black54),
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.black54,
+                            ),
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            l10n?.onbBody1 ?? 'Bringing Sudanese products closer to you.',
-                            style: const TextStyle(fontSize: 13, color: Colors.black45),
+                            l10n?.onbBody1 ??
+                                'Bringing Sudanese products closer to you.',
+                            style: const TextStyle(
+                              fontSize: 13,
+                              color: Colors.black45,
+                            ),
                           ),
                         ],
                       ),

@@ -149,16 +149,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             const SizedBox(height: 12),
-            Text(AppLocalizations.of(context)!.changePhoto, style: AppTypography.cardTitle),
+            Text(AppLocalizations.of(ctx)!.changePhoto, style: AppTypography.cardTitle),
             const SizedBox(height: 8),
             ListTile(
               leading: const Icon(Icons.photo_camera_outlined),
-              title: Text(AppLocalizations.of(context)!.takePhoto),
+              title: Text(AppLocalizations.of(ctx)!.takePhoto),
               onTap: () => Navigator.pop(ctx),
             ),
             ListTile(
               leading: const Icon(Icons.photo_library_outlined),
-              title: Text(AppLocalizations.of(context)!.chooseFromGallery),
+              title: Text(AppLocalizations.of(ctx)!.chooseFromGallery),
               onTap: () => Navigator.pop(ctx),
             ),
             const SizedBox(height: 12),
