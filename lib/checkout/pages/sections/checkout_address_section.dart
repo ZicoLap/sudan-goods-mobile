@@ -1,7 +1,9 @@
 // ✅ lib/domains/customer/checkout/sections/checkout_address_section.dart
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
+import 'package:sudan_goods/models/shared_models/address.dart';
+import 'package:sudan_goods/user/user_provider.dart';
 
 class CheckoutAddressSection extends StatefulWidget {
   const CheckoutAddressSection({super.key});
@@ -11,90 +13,85 @@ class CheckoutAddressSection extends StatefulWidget {
 }
 
 class _CheckoutAddressSectionState extends State<CheckoutAddressSection> {
-  String? street;
-  String? city;
-  bool isLoading = true;
+  bool _triggeredFetch = false;
 
   @override
   void initState() {
     super.initState();
-    _fetchUserAddress();
-  }
-
-  Future<void> _fetchUserAddress() async {
-    final uid = FirebaseAuth.instance.currentUser?.uid;
-    if (uid != null) {
-      final doc =
-          await FirebaseFirestore.instance.collection('users').doc(uid).get();
-      final data = doc.data();
-      if (data != null &&
-          data['addresses'] != null &&
-          data['addresses'].isNotEmpty) {
-        final address = data['addresses'][0];
-        setState(() {
-          street = address['street'];
-          city = "${address['postalCode']} ${address['city']}";
-          isLoading = false;
-        });
-      } else {
-        setState(() {
-          street = "No address found";
-          city = "";
-          isLoading = false;
-        });
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final userProv = context.read<UserProvider>();
+      if (!userProv.isUserLoaded && !_triggeredFetch) {
+        _triggeredFetch = true;
+        final uid = FirebaseAuth.instance.currentUser?.uid;
+        if (uid != null) {
+          try {
+            await userProv.fetchUser(uid);
+          } catch (_) {
+            // Suppress here; controller/UI can handle error presentation elsewhere
+          }
+        }
       }
-    }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return isLoading
-        ? const Padding(
-          padding: EdgeInsets.symmetric(vertical: 24),
-          child: Center(child: CircularProgressIndicator()),
-        )
-        : GestureDetector(
-          onTap: () {
-            // TODO: Show edit address bottom sheet
-          },
-          child: Container(
-            margin: const EdgeInsets.only(bottom: 12),
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              color: Colors.white,
-              border: Border.all(color: Colors.grey.shade300),
-            ),
-            child: Row(
-              children: [
-                const Icon(Icons.location_on_outlined, color: Colors.orange),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        street ?? '',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        city ?? '',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ],
+    final userProv = context.watch<UserProvider>();
+    if (!userProv.isUserLoaded) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 24),
+        child: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    final List<Address> addresses = userProv.currentUser.addresses;
+    final hasAddress = addresses.isNotEmpty;
+    final primary = hasAddress ? addresses.first : null;
+    final street = primary?.street ?? 'No address found';
+    final city = primary != null ? "${primary.postalCode} ${primary.city}" : '';
+
+    return GestureDetector(
+      onTap: () {
+        // TODO: Show edit address bottom sheet
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: Colors.white,
+          border: Border.all(color: Colors.grey.shade300),
+        ),
+        child: Row(
+          children: [
+            const Icon(Icons.location_on_outlined, color: Colors.orange),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    street,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                ),
-                const Icon(Icons.chevron_right, color: Colors.grey),
-              ],
+                  const SizedBox(height: 4),
+                  Text(
+                    city,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        );
+            const Icon(Icons.chevron_right, color: Colors.grey),
+          ],
+        ),
+      ),
+    );
   }
 }

@@ -60,4 +60,34 @@ import 'package:sudan_goods/models/user/user_model.dart';
     _currentUser = updatedUser;
     notifyListeners();
   }
+
+  /// Persists profile changes to Firestore and updates in-memory state.
+  ///
+  /// Any non-null argument will be written; nulls are ignored.
+  Future<void> updateUserProfile({
+    String? firstName,
+    String? lastName,
+    String? phoneNumber,
+  }) async {
+    if (_currentUser == null) {
+      throw Exception('User not loaded. Call fetchUser(uid) first.');
+    }
+
+    final uid = _currentUser!.uid;
+    final Map<String, dynamic> updates = {};
+    if (firstName != null) updates['firstName'] = firstName;
+    if (lastName != null) updates['lastName'] = lastName;
+    if (phoneNumber != null) updates['phoneNumber'] = phoneNumber;
+
+    if (updates.isEmpty) return;
+
+    await _firestore.collection('users').doc(uid).update(updates);
+
+    _currentUser = _currentUser!.copyWith(
+      firstName: firstName,
+      lastName: lastName,
+      phoneNumber: phoneNumber,
+    );
+    notifyListeners();
+  }
 }

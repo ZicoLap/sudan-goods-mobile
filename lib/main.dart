@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:sudan_goods/cart/cart_controller.dart';
 import 'package:sudan_goods/checkout/controller/checkout_controller.dart';
+import 'package:sudan_goods/checkout/services/checkout_service.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
 import 'package:sudan_goods/user/user_provider.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
@@ -31,7 +32,11 @@ void main() async {
           create: (_) => CartController()..loadCartsFromFirestore(),
         ),
         ChangeNotifierProvider(create: (_) => UserProvider()),
-        ChangeNotifierProvider(create: (_) => CheckoutController()),
+        ChangeNotifierProvider(
+          create: (_) => CheckoutController(
+            checkoutService: CheckoutService(),
+          ),
+        ),
         ChangeNotifierProvider(create: (_) => StoreFilterController()),
         Provider<LocaleController>(
           create: (_) => LocaleController(LocalePersistenceService())..loadSavedLocale(),
