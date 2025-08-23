@@ -11,6 +11,7 @@ import 'package:sudan_goods/models/store/category_model.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
+import 'package:sudan_goods/Home/controller/store_filter_controller.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -96,8 +97,14 @@ class HomePage extends StatelessWidget {
                 FutureBuilder<List<Category>>(
                   future: CategoryService().fetchActiveCategories(),
                   builder: (context, snapshot) {
+                    final selectedId = context.select<StoreFilterController, String>((c) => c.selectedCategoryId);
+                    final onSelect = context.read<StoreFilterController>().selectCategory;
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return CategoriesSection(categories: []);
+                      return CategoriesSection(
+                        categories: const [],
+                        selectedCategoryId: selectedId,
+                        onCategorySelected: onSelect,
+                      );
                     }
 
                     if (snapshot.hasError) {
@@ -107,7 +114,19 @@ class HomePage extends StatelessWidget {
                     }
 
                     final categories = snapshot.data ?? [];
-                    return CategoriesSection(categories: categories);
+                    final allCategory = Category(
+                      id: 'all',
+                      name: AppLocalizations.of(context)!.allStoresTitle,
+                      isActive: true,
+                      isFeatured: false,
+                      createdAt: DateTime.fromMillisecondsSinceEpoch(0),
+                    );
+                    final categoriesWithAll = [allCategory, ...categories];
+                    return CategoriesSection(
+                      categories: categoriesWithAll,
+                      selectedCategoryId: selectedId,
+                      onCategorySelected: onSelect,
+                    );
                   },
                 ),
 

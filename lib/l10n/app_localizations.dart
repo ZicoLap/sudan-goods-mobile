@@ -143,6 +143,24 @@ abstract class AppLocalizations {
   /// **'Manage addresses'**
   String get manageAddresses;
 
+  /// No description provided for @changeEmailVerifyBeforeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify before updating'**
+  String get changeEmailVerifyBeforeLabel;
+
+  /// No description provided for @changeEmailVerifyBeforeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Send a verification link to the new email first'**
+  String get changeEmailVerifyBeforeSubtitle;
+
+  /// No description provided for @changeEmailSyncNow.
+  ///
+  /// In en, this message translates to:
+  /// **'I verified, sync now'**
+  String get changeEmailSyncNow;
+
   /// No description provided for @sectionNotifications.
   ///
   /// In en, this message translates to:

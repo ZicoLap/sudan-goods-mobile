@@ -1,10 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// Centralized account operations backed by FirebaseAuth.
 ///
 /// Provides helpers for logout, delete account, change email, and change password.
 class AccountService {
   static final FirebaseAuth _auth = FirebaseAuth.instance;
+  static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   /// Signs out the current user.
   static Future<void> logout() async {
@@ -27,8 +29,22 @@ class AccountService {
   }
 
   /// Updates the authenticated user's email address.
-  /// May require recent login depending on Firebase rules.
-  static Future<void> changeEmail(String newEmail) async {
+  ///
+  /// If [verifyBefore] is true, a verification link is sent to [newEmail] and the
+  /// actual email change will only take effect after the user completes the
+  /// verification flow. In that case, this method will NOT update Firestore.
+  ///
+  /// If [verifyBefore] is false (default), updates the email immediately and, if
+  /// [syncFirestore] is true, also updates `users/{uid}.email` in Firestore.
+  ///
+  /// May throw [FirebaseAuthException] with code 'requires-recent-login'. The UI
+  /// should handle re-authentication (see
+  /// [reauthenticateWithEmailAndPassword]) before retrying.
+  static Future<void> changeEmail(
+    String newEmail, {
+    bool verifyBefore = false,
+    bool syncFirestore = true,
+  }) async {
     final user = _auth.currentUser;
     if (user == null) {
       throw FirebaseAuthException(
@@ -36,7 +52,20 @@ class AccountService {
         message: 'No authenticated user',
       );
     }
+
+    if (verifyBefore) {
+      // Sends a verification email; actual change happens once verified.
+      await user.verifyBeforeUpdateEmail(newEmail);
+      return;
+    }
+
     await user.updateEmail(newEmail);
+
+    if (syncFirestore) {
+      await _firestore.collection('users').doc(user.uid).update({'email': newEmail});
+    }
+
+    await user.reload();
   }
 
   /// Updates the authenticated user's password.
@@ -144,5 +173,20 @@ class AccountService {
     }
     final token = await user.getIdToken(forceRefresh);
     return token;
+  }
+
+  /// Synchronizes the email field in Firestore with the current FirebaseAuth user's email.
+  /// Useful after completing a verify-before-update flow.
+  static Future<void> syncEmailToFirestore() async {
+    final user = _auth.currentUser;
+    if (user == null) {
+      throw FirebaseAuthException(
+        code: 'no-current-user',
+        message: 'No authenticated user',
+      );
+    }
+    final email = user.email;
+    if (email == null) return;
+    await _firestore.collection('users').doc(user.uid).update({'email': email});
   }
 }

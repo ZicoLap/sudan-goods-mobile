@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:sudan_goods/Home/widgets/shimmer_components.dart';
 import 'package:sudan_goods/models/store/store_model.dart';
 import 'package:sudan_goods/store/pages/store_details_page.dart';
@@ -121,33 +122,31 @@ class _BigStoreCardState extends State<BigStoreCard> with SingleTickerProviderSt
                           ),
                           child: Stack(
                             children: [
-                              Image.network(
-                                widget.store.coverImageUrl ?? '',
+                              CachedNetworkImage(
+                                imageUrl: (widget.store.coverThumbUrl?.isNotEmpty == true
+                                        ? widget.store.coverThumbUrl
+                                        : widget.store.coverImageUrl) ??
+                                    '',
                                 height: 180,
                                 width: double.infinity,
                                 fit: BoxFit.cover,
-                                loadingBuilder: (context, child, loadingProgress) {
-                                  if (loadingProgress == null) return child;
-                                  return ShimmerComponents.shimmerWrapper(
-                                    child: Container(
-                                      height: 180,
-                                      width: double.infinity,
-                                      color: Colors.white,
-                                    ),
-                                  );
-                                },
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Container(
+                                placeholder: (context, url) => ShimmerComponents.shimmerWrapper(
+                                  child: Container(
                                     height: 180,
                                     width: double.infinity,
-                                    color: Colors.grey[300],
-                                    child: const Icon(
-                                      Icons.store,
-                                      size: 50,
-                                      color: Colors.grey,
-                                    ),
-                                  );
-                                },
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                errorWidget: (context, url, error) => Container(
+                                  height: 180,
+                                  width: double.infinity,
+                                  color: Colors.grey[300],
+                                  child: const Icon(
+                                    Icons.store,
+                                    size: 50,
+                                    color: Colors.grey,
+                                  ),
+                                ),
                               ),
                               // Gradient overlay for better text readability
                               Container(
@@ -181,31 +180,29 @@ class _BigStoreCardState extends State<BigStoreCard> with SingleTickerProviderSt
                               ),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
-                                child: Image.network(
-                                  widget.store.logoUrl!,
+                                child: CachedNetworkImage(
+                                  imageUrl: (widget.store.logoThumbUrl?.isNotEmpty == true
+                                          ? widget.store.logoThumbUrl
+                                          : widget.store.logoUrl) ??
+                                      '',
                                   fit: BoxFit.cover,
-                                  loadingBuilder: (context, child, loadingProgress) {
-                                    if (loadingProgress == null) return child;
-                                    return ShimmerComponents.shimmerWrapper(
-                                      child: Container(
-                                        width: 60,
-                                        height: 60,
-                                        color: Colors.white,
-                                      ),
-                                    );
-                                  },
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Container(
+                                  placeholder: (context, url) => ShimmerComponents.shimmerWrapper(
+                                    child: Container(
                                       width: 60,
                                       height: 60,
-                                      color: Colors.grey[300],
-                                      child: const Icon(
-                                        Icons.store,
-                                        size: 30,
-                                        color: Colors.grey,
-                                      ),
-                                    );
-                                  },
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  errorWidget: (context, url, error) => Container(
+                                    width: 60,
+                                    height: 60,
+                                    color: Colors.grey[300],
+                                    child: const Icon(
+                                      Icons.store,
+                                      size: 30,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),

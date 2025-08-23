@@ -22,6 +22,10 @@
   "changePassword": "تغيير كلمة المرور",
   "manageAddresses": "إدارة العناوين",
 
+  "changeEmailVerifyBeforeLabel": "تحقق قبل التحديث",
+  "changeEmailVerifyBeforeSubtitle": "أرسل رابط التحقق إلى البريد الجديد أولاً",
+  "changeEmailSyncNow": "لقد تحققت، مزامنة الآن",
+
   "sectionNotifications": "الإشعارات",
   "pushNotifications": "إشعارات الدفع",
   "pushNotificationsSubtitle": "استلام التحديثات والعروض",

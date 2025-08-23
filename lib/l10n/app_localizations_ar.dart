@@ -44,6 +44,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get manageAddresses => 'إدارة العناوين';
 
   @override
+  String get changeEmailVerifyBeforeLabel => 'تحقق قبل التحديث';
+
+  @override
+  String get changeEmailVerifyBeforeSubtitle => 'أرسل رابط التحقق إلى البريد الجديد أولاً';
+
+  @override
+  String get changeEmailSyncNow => 'لقد تحققت، مزامنة الآن';
+
+  @override
   String get sectionNotifications => 'الإشعارات';
 
   @override

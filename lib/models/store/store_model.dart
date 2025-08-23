@@ -34,6 +34,9 @@ class Store {
   /// Optional logo URL of the store.
   final String? logoUrl; //
   final String? coverImageUrl; //
+  /// Optional thumbnail URLs for optimized list rendering.
+  final String? logoThumbUrl; //
+  final String? coverThumbUrl; //
   final Address address; //
   final List<String> tags; //
   final bool isActive; //
@@ -69,6 +72,8 @@ class Store {
     this.phoneNumber,
     this.logoUrl,
     this.coverImageUrl,
+    this.logoThumbUrl,
+    this.coverThumbUrl,
     this.tags = const [],
     this.isActive = true,
     this.isApproved = false,
@@ -100,6 +105,8 @@ class Store {
       phoneNumber: phoneNumber,
       logoUrl: logoUrl,
       coverImageUrl: coverImageUrl,
+      logoThumbUrl: logoThumbUrl,
+      coverThumbUrl: coverThumbUrl,
       tags: tags,
       isActive: isActive,
       isApproved: isApproved,

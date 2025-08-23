@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:sudan_goods/models/store/category_model.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
+import 'package:sudan_goods/theme/app_theme.dart';
 
 class CategoryChip extends StatelessWidget {
   final Category category;
   final VoidCallback onTap;
+  final bool isSelected;
 
   const CategoryChip({
     super.key,
     required this.category,
     required this.onTap,
+    this.isSelected = false,
   });
 
   @override
@@ -27,31 +31,39 @@ class CategoryChip extends StatelessWidget {
               color: Colors.white,
               boxShadow: DesignTokens.shadowSmall,
               border: Border.all(
-                color: Colors.grey.shade200,
+                color: isSelected ? AppColors.primary : Colors.grey.shade200,
                 width: 1,
               ),
             ),
             child: ClipOval(
-              child: category.imageUrl != null && category.imageUrl!.isNotEmpty
-                  ? Image.network(
-                      category.imageUrl!,
+              child: ((category.imageThumbUrl ?? category.imageUrl)?.isNotEmpty ?? false)
+                  ? CachedNetworkImage(
+                      imageUrl: category.imageThumbUrl?.isNotEmpty == true
+                          ? category.imageThumbUrl!
+                          : (category.imageUrl ?? ''),
                       fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          color: Colors.grey.shade100,
-                          child: Icon(
-                            Icons.category,
-                            color: Colors.grey.shade400,
-                            size: 24,
-                          ),
-                        );
-                      },
+                      placeholder: (context, url) => Container(
+                        color: Colors.grey.shade100,
+                        child: Icon(
+                          Icons.category,
+                          color: isSelected ? AppColors.primary : Colors.grey.shade300,
+                          size: 24,
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => Container(
+                        color: Colors.grey.shade100,
+                        child: Icon(
+                          Icons.category,
+                          color: isSelected ? AppColors.primary : Colors.grey.shade400,
+                          size: 24,
+                        ),
+                      ),
                     )
                   : Container(
                       color: Colors.grey.shade100,
                       child: Icon(
                         Icons.category,
-                        color: Colors.grey.shade400,
+                        color: isSelected ? AppColors.primary : Colors.grey.shade400,
                         size: 24,
                       ),
                     ),
@@ -62,7 +74,7 @@ class CategoryChip extends StatelessWidget {
             category.name,
             textAlign: TextAlign.center,
             style: AppTypography.small.copyWith(
-              color: Colors.black,
+              color: isSelected ? AppColors.primary : Colors.black,
               fontWeight: FontWeight.w600,
             ),
             maxLines: 2,

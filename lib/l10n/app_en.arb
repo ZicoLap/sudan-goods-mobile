@@ -21,6 +21,9 @@
   "changeEmail": "Change email",
   "changePassword": "Change password",
   "manageAddresses": "Manage addresses",
+  "changeEmailVerifyBeforeLabel": "Verify before updating",
+  "changeEmailVerifyBeforeSubtitle": "Send a verification link to the new email first",
+  "changeEmailSyncNow": "I verified, sync now",
 
   "sectionNotifications": "Notifications",
   "pushNotifications": "Push notifications",

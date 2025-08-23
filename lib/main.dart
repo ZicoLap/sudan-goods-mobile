@@ -10,6 +10,7 @@ import 'package:sudan_goods/l10n/app_localizations.dart';
 import 'package:sudan_goods/l10n/locale_controller.dart';
 import 'package:sudan_goods/l10n/locale_persistence_service.dart';
 import 'package:sudan_goods/onboarding/app_start_gate.dart';
+import 'package:sudan_goods/Home/controller/store_filter_controller.dart';
 
 import 'firebase_options.dart';
 
@@ -31,6 +32,7 @@ void main() async {
         ),
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => CheckoutController()),
+        ChangeNotifierProvider(create: (_) => StoreFilterController()),
         Provider<LocaleController>(
           create: (_) => LocaleController(LocalePersistenceService())..loadSavedLocale(),
         ),

@@ -7,8 +7,15 @@ import 'package:sudan_goods/l10n/app_localizations.dart';
 
 class CategoriesSection extends StatelessWidget {
   final List<Category> categories;
+  final String selectedCategoryId;
+  final ValueChanged<String> onCategorySelected;
 
-  const CategoriesSection({super.key, required this.categories});
+  const CategoriesSection({
+    super.key,
+    required this.categories,
+    required this.selectedCategoryId,
+    required this.onCategorySelected,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -40,9 +47,9 @@ class CategoriesSection extends StatelessWidget {
               final category = categories[index];
               return CategoryChip(
                 category: category,
+                isSelected: category.id == selectedCategoryId,
                 onTap: () {
-                  // TODO: Handle navigation or filtering
-                  print("Tapped on category: ${category.name}");
+                  onCategorySelected(category.id);
                 },
               );
             },

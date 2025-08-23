@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:sudan_goods/l10n/locale_controller.dart';
 import 'package:sudan_goods/Home/pages/language_settings_page.dart';
 import 'package:sudan_goods/authentication/services/account_service.dart';
+import 'package:sudan_goods/authentication/views/change_email_page.dart';
 import 'package:sudan_goods/authentication/auth_gate_page.dart';
 import 'package:sudan_goods/user/user_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -61,7 +62,15 @@ class _SettingsPageState extends State<SettingsPage> {
             _sectionHeader(AppLocalizations.of(context)!.sectionAccount),
             _card(
               children: [
-                _navTile(Icons.alternate_email, AppLocalizations.of(context)!.changeEmail),
+                _navTile(
+                  Icons.alternate_email,
+                  AppLocalizations.of(context)!.changeEmail,
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const ChangeEmailPage()),
+                    );
+                  },
+                ),
                 const Divider(height: 1),
                 _navTile(Icons.lock_outline, AppLocalizations.of(context)!.changePassword),
                 const Divider(height: 1),

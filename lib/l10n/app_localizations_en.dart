@@ -44,6 +44,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get manageAddresses => 'Manage addresses';
 
   @override
+  String get changeEmailVerifyBeforeLabel => 'Verify before updating';
+
+  @override
+  String get changeEmailVerifyBeforeSubtitle => 'Send a verification link to the new email first';
+
+  @override
+  String get changeEmailSyncNow => 'I verified, sync now';
+
+  @override
   String get sectionNotifications => 'Notifications';
 
   @override

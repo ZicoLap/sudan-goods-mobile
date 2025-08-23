@@ -56,4 +56,25 @@ class StoreServices {
       rethrow;
     }
   }
+
+  /// Streams approved and active stores filtered by a specific [categoryId].
+  ///
+  /// Uses an `arrayContains` filter on the `categoryIds` field in Firestore.
+  Stream<List<Store>> streamApprovedStoresByCategory(String categoryId) {
+    try {
+      return _storeRef
+          .where('isActive', isEqualTo: true)
+          .where('isApproved', isEqualTo: true)
+          .where('categoryIds', arrayContains: categoryId)
+          .orderBy('createdAt', descending: true)
+          .snapshots()
+          .map(
+            (snapshot) =>
+                snapshot.docs.map((doc) => Store.fromDocument(doc)).toList(),
+          );
+    } catch (e) {
+      print('Stream by category error: $e');
+      rethrow;
+    }
+  }
 }

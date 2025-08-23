@@ -9,6 +9,8 @@ class Category {
   final String id;
   final String name;
   final String? imageUrl;
+  /// Optional thumbnail for faster list rendering
+  final String? imageThumbUrl;
   final bool isActive;
   final bool isFeatured;
 
@@ -25,6 +27,7 @@ class Category {
     required this.isFeatured,
     required this.createdAt,
     this.imageUrl,
+    this.imageThumbUrl,
     this.updatedAt,
   });
 

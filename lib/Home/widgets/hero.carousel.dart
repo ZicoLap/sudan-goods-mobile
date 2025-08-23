@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:sudan_goods/Home/widgets/shimmer_components.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class HeroCarousel extends StatefulWidget {
   const HeroCarousel({super.key});
@@ -64,31 +65,26 @@ class _HeroCarouselState extends State<HeroCarousel> {
                 ],
               ),
               clipBehavior: Clip.hardEdge,
-              child: Image.network(
-                imageUrl,
+              child: CachedNetworkImage(
+                imageUrl: imageUrl,
                 fit: BoxFit.cover,
                 width: double.infinity,
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return ShimmerComponents.shimmerWrapper(
-                    child: Container(
-                      width: double.infinity,
-                      height: double.infinity,
-                      color: Colors.white,
-                    ),
-                  );
-                },
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
+                placeholder: (context, url) => ShimmerComponents.shimmerWrapper(
+                  child: Container(
                     width: double.infinity,
-                    color: Colors.grey[300],
-                    child: const Icon(
-                      Icons.image_not_supported,
-                      size: 50,
-                      color: Colors.grey,
-                    ),
-                  );
-                },
+                    height: double.infinity,
+                    color: Colors.white,
+                  ),
+                ),
+                errorWidget: (context, url, error) => Container(
+                  width: double.infinity,
+                  color: Colors.grey[300],
+                  child: const Icon(
+                    Icons.image_not_supported,
+                    size: 50,
+                    color: Colors.grey,
+                  ),
+                ),
               ),
             );
           },
