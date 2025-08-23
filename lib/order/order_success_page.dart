@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sudan_goods/Home/pages/home_page_new.dart';
 
 class OrderSuccessPage extends StatelessWidget {
   const OrderSuccessPage({super.key});
@@ -32,13 +31,8 @@ class OrderSuccessPage extends StatelessWidget {
               const SizedBox(height: 32),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const HomePage(),
-                    ), // ✅ replace with your actual home page
-                    (route) => false,
-                  );
+                  // Return to the root of the current tab's navigator
+                  Navigator.of(context).popUntil((route) => route.isFirst);
                 },
                 child: const Text('Back to Home'),
               ),

@@ -443,6 +443,78 @@ abstract class AppLocalizations {
   /// **'Results for: \"{query}\"'**
   String searchResultsFor(String query);
 
+  /// Title shown when no search results are found
+  ///
+  /// In en, this message translates to:
+  /// **'No results for: \"{query}\"'**
+  String searchNoResultsTitle(String query);
+
+  /// No description provided for @searchNoResultsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Try different keywords or request the item.'**
+  String get searchNoResultsSubtitle;
+
+  /// No description provided for @storesWithMatches.
+  ///
+  /// In en, this message translates to:
+  /// **'Stores with matching products'**
+  String get storesWithMatches;
+
+  /// No description provided for @matchingProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'Matching products'**
+  String get matchingProducts;
+
+  /// No description provided for @clearSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get clearSearch;
+
+  /// No description provided for @wantedCTA.
+  ///
+  /// In en, this message translates to:
+  /// **'Request it'**
+  String get wantedCTA;
+
+  /// No description provided for @wantedSheetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Request a product'**
+  String get wantedSheetTitle;
+
+  /// No description provided for @wantedProductNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Product name'**
+  String get wantedProductNameLabel;
+
+  /// No description provided for @wantedNotesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes (optional)'**
+  String get wantedNotesLabel;
+
+  /// No description provided for @submitRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit request'**
+  String get submitRequest;
+
+  /// No description provided for @wantedSubmitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Request submitted. Thank you!'**
+  String get wantedSubmitted;
+
+  /// No description provided for @wantedSubmitFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to submit request. Please try again.'**
+  String get wantedSubmitFailed;
+
   /// No description provided for @allStoresTitle.
   ///
   /// In en, this message translates to:

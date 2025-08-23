@@ -153,7 +153,7 @@ class CheckoutController with ChangeNotifier {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (_) => const OrderSuccessPage()),
-      (route) => false,
+      (route) => route.isFirst,
     );
   }
 

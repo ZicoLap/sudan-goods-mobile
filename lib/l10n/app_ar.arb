@@ -114,6 +114,24 @@
       "query": { "type": "String" }
     }
   },
+  "searchNoResultsTitle": "لا نتائج لـ: \"{query}\"",
+  "@searchNoResultsTitle": {
+    "description": "عنوان يظهر عند عدم وجود نتائج",
+    "placeholders": {
+      "query": { "type": "String" }
+    }
+  },
+  "searchNoResultsSubtitle": "جرّب كلمات أخرى أو اطلب المنتج.",
+  "storesWithMatches": "متاجر تحتوي منتجات مطابقة",
+  "matchingProducts": "منتجات مطابقة",
+  "clearSearch": "مسح",
+  "wantedCTA": "مطلوب",
+  "wantedSheetTitle": "طلب منتج",
+  "wantedProductNameLabel": "اسم المنتج",
+  "wantedNotesLabel": "ملاحظات (اختياري)",
+  "submitRequest": "إرسال الطلب",
+  "wantedSubmitted": "تم إرسال الطلب. شكراً!",
+  "wantedSubmitFailed": "فشل إرسال الطلب. الرجاء المحاولة لاحقاً.",
 
   "allStoresTitle": "جميع المتاجر",
   "viewAll": "عرض الكل",

@@ -204,6 +204,44 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String searchNoResultsTitle(String query) {
+    return 'لا نتائج لـ: \"$query\"';
+  }
+
+  @override
+  String get searchNoResultsSubtitle => 'جرّب كلمات أخرى أو اطلب المنتج.';
+
+  @override
+  String get storesWithMatches => 'متاجر تحتوي منتجات مطابقة';
+
+  @override
+  String get matchingProducts => 'منتجات مطابقة';
+
+  @override
+  String get clearSearch => 'مسح';
+
+  @override
+  String get wantedCTA => 'مطلوب';
+
+  @override
+  String get wantedSheetTitle => 'طلب منتج';
+
+  @override
+  String get wantedProductNameLabel => 'اسم المنتج';
+
+  @override
+  String get wantedNotesLabel => 'ملاحظات (اختياري)';
+
+  @override
+  String get submitRequest => 'إرسال الطلب';
+
+  @override
+  String get wantedSubmitted => 'تم إرسال الطلب. شكراً!';
+
+  @override
+  String get wantedSubmitFailed => 'فشل إرسال الطلب. الرجاء المحاولة لاحقاً.';
+
+  @override
   String get allStoresTitle => 'جميع المتاجر';
 
   @override

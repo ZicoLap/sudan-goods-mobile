@@ -113,6 +113,24 @@
       "query": { "type": "String" }
     }
   },
+  "searchNoResultsTitle": "No results for: \"{query}\"",
+  "@searchNoResultsTitle": {
+    "description": "Title shown when no search results are found",
+    "placeholders": {
+      "query": { "type": "String" }
+    }
+  },
+  "searchNoResultsSubtitle": "Try different keywords or request the item.",
+  "storesWithMatches": "Stores with matching products",
+  "matchingProducts": "Matching products",
+  "clearSearch": "Clear",
+  "wantedCTA": "Request it",
+  "wantedSheetTitle": "Request a product",
+  "wantedProductNameLabel": "Product name",
+  "wantedNotesLabel": "Notes (optional)",
+  "submitRequest": "Submit request",
+  "wantedSubmitted": "Request submitted. Thank you!",
+  "wantedSubmitFailed": "Failed to submit request. Please try again.",
 
   "allStoresTitle": "All Stores",
   "viewAll": "View all",

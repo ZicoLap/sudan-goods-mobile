@@ -204,6 +204,44 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String searchNoResultsTitle(String query) {
+    return 'No results for: \"$query\"';
+  }
+
+  @override
+  String get searchNoResultsSubtitle => 'Try different keywords or request the item.';
+
+  @override
+  String get storesWithMatches => 'Stores with matching products';
+
+  @override
+  String get matchingProducts => 'Matching products';
+
+  @override
+  String get clearSearch => 'Clear';
+
+  @override
+  String get wantedCTA => 'Request it';
+
+  @override
+  String get wantedSheetTitle => 'Request a product';
+
+  @override
+  String get wantedProductNameLabel => 'Product name';
+
+  @override
+  String get wantedNotesLabel => 'Notes (optional)';
+
+  @override
+  String get submitRequest => 'Submit request';
+
+  @override
+  String get wantedSubmitted => 'Request submitted. Thank you!';
+
+  @override
+  String get wantedSubmitFailed => 'Failed to submit request. Please try again.';
+
+  @override
   String get allStoresTitle => 'All Stores';
 
   @override
