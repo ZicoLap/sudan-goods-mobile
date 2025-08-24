@@ -46,6 +46,7 @@ class OrdersPage extends StatelessWidget {
           }
 
           return ListView.separated(
+            physics: NeverScrollableScrollPhysics(),
             padding: const EdgeInsets.all(DesignTokens.space12),
             itemCount: docs.length,
             separatorBuilder: (_, __) => const SizedBox(height: DesignTokens.space12),
