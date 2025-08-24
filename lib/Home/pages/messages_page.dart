@@ -1,5 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:provider/provider.dart';
+import 'package:sudan_goods/messaging/presentation/controllers/chat_controller.dart';
+import 'package:sudan_goods/messaging/data/store_repo_fs.dart';
+import 'package:sudan_goods/messaging/domain/entities/store_summary.dart' as chat_store;
+import 'package:sudan_goods/messaging/domain/entities/conversation.dart' as chat_domain;
+import 'package:sudan_goods/messaging/presentation/pages/chat_page.dart';
+import 'package:sudan_goods/messaging/presentation/controllers/support_controller.dart';
+import 'package:sudan_goods/messaging/presentation/pages/support_chat_page.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
 
@@ -16,6 +24,7 @@ class _MessagesPageState extends State<MessagesPage> {
 
   final List<_Conversation> _conversations = [
     _Conversation(
+      id: 'mock-1',
       title: 'Spices of Sudan',
       lastMessage: 'Your order is ready for pickup!',
       time: '10:24 AM',
@@ -23,6 +32,7 @@ class _MessagesPageState extends State<MessagesPage> {
       avatarAsset: 'assets/images/sudanese_spices.png',
     ),
     _Conversation(
+      id: 'mock-2',
       title: 'Customer Support',
       lastMessage: 'How can we assist you today?',
       time: 'Yesterday',
@@ -30,6 +40,7 @@ class _MessagesPageState extends State<MessagesPage> {
       avatarIcon: Icons.support_agent_outlined,
     ),
     _Conversation(
+      id: 'mock-3',
       title: 'Coffee House',
       lastMessage: 'Thanks for your review ☕',
       time: 'Mon',
@@ -45,6 +56,152 @@ class _MessagesPageState extends State<MessagesPage> {
       if (!mounted) return;
       setState(() => _isLoading = false);
     });
+  }
+
+  void _showStoreSearchSheet() {
+    final repo = FirestoreStoreRepo();
+    final chat = Provider.of<ChatController?>(context, listen: false);
+    if (chat == null) {
+      _comingSoon(AppLocalizations.of(context)!.navMessages);
+      return;
+    }
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (ctx) {
+        String query = '';
+        List<chat_store.StoreSummary> results = [];
+        bool loading = false;
+
+        Future<void> doSearch(String q, void Function(void Function()) sbSetState) async {
+          final trimmed = q.trim();
+          if (trimmed.isEmpty) {
+            sbSetState(() {
+              query = q;
+              results = [];
+              loading = false;
+            });
+            return;
+          }
+          sbSetState(() {
+            query = q;
+            loading = true;
+          });
+          try {
+            final r = await repo.searchStores(trimmed, limit: 20);
+            sbSetState(() {
+              results = r;
+              loading = false;
+            });
+          } catch (e) {
+            sbSetState(() {
+              loading = false;
+            });
+          }
+        }
+
+        return DraggableScrollableSheet(
+          expand: false,
+          maxChildSize: 0.9,
+          initialChildSize: 0.7,
+          minChildSize: 0.5,
+          builder: (context, scrollController) {
+            return StatefulBuilder(
+              builder: (context, sbSetState) {
+                return Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              autofocus: true,
+                              decoration: InputDecoration(
+                                hintText: AppLocalizations.of(context)!.searchHint,
+                                prefixIcon: const Icon(Icons.search),
+                                border: const OutlineInputBorder(),
+                              ),
+                              onChanged: (v) => doSearch(v, sbSetState),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      if (loading)
+                        const LinearProgressIndicator(minHeight: 2),
+                      const SizedBox(height: 8),
+                      Expanded(
+                        child: results.isEmpty && query.isEmpty
+                            ? Center(child: Text(AppLocalizations.of(context)!.startConversationPrompt))
+                            : (results.isEmpty
+                                ? Center(
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(AppLocalizations.of(context)!.searchNoResultsTitle(query)),
+                                        const SizedBox(height: 6),
+                                        Text(
+                                          AppLocalizations.of(context)!.searchNoResultsSubtitle,
+                                          textAlign: TextAlign.center,
+                                          style: AppTypography.small.copyWith(color: Colors.black54),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                : ListView.separated(
+                                    controller: scrollController,
+                                    itemCount: results.length,
+                                    separatorBuilder: (_, __) => const Divider(height: 1),
+                                    itemBuilder: (_, i) {
+                                      final s = results[i];
+                                      return ListTile(
+                                        leading: CircleAvatar(
+                                          backgroundColor: Colors.grey.shade200,
+                                          child: s.logoUrl == null
+                                              ? const Icon(Icons.storefront_outlined)
+                                              : ClipOval(
+                                                  child: Image.network(
+                                                    s.logoUrl!,
+                                                    width: 40,
+                                                    height: 40,
+                                                    fit: BoxFit.cover,
+                                                    errorBuilder: (_, __, ___) => const Icon(Icons.storefront_outlined),
+                                                  ),
+                                                ),
+                                        ),
+                                        title: Text(s.name),
+                                        onTap: () async {
+                                          final convId = await chat.startConversationWithStore(s);
+                                          if (!mounted) return;
+                                          Navigator.of(context).pop();
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (_) => ChatPage(
+                                                conversationId: convId,
+                                                storeName: s.name,
+                                                storeLogoUrl: s.logoUrl,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    },
+                                  )),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          },
+        );
+      },
+    );
   }
 
   @override
@@ -102,26 +259,38 @@ class _MessagesPageState extends State<MessagesPage> {
   }
 
   Widget _conversationListCard() {
-    if (_conversations.isEmpty) {
-      return Container(
-        padding: const EdgeInsets.all(DesignTokens.space24),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
-          boxShadow: DesignTokens.shadowSmall,
-        ),
-        child: Column(
-          children: [
-            Icon(Icons.chat_bubble_outline, size: 40, color: Colors.grey.shade500),
-            const SizedBox(height: DesignTokens.space8),
-            Text(AppLocalizations.of(context)!.noMessagesYet, style: AppTypography.bodyBold),
-            const SizedBox(height: 4),
-            Text(AppLocalizations.of(context)!.startConversationPrompt, style: AppTypography.small.copyWith(color: Colors.black54), textAlign: TextAlign.center),
-          ],
-        ),
+    // Try to use ChatController if available; otherwise fall back to mock list.
+    final chat = Provider.of<ChatController?>(context, listen: false);
+    if (chat != null) {
+      return StreamBuilder<List<chat_domain.Conversation>>(
+        stream: chat.watchInbox(pageSize: 20),
+        builder: (context, snapshot) {
+          final items = snapshot.data;
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            // Fallback to existing mock while loading
+            return _mockConversationListCard();
+          }
+          if (items == null || items.isEmpty) {
+            return _emptyInboxCard();
+          }
+          final mapped = _mapDomainConversations(items);
+          return _buildConversationList(mapped);
+        },
       );
     }
 
+    // No controller provided yet; show mock list
+    return _mockConversationListCard();
+  }
+
+  // Build the original mock list card
+  Widget _mockConversationListCard() {
+    if (_conversations.isEmpty) return _emptyInboxCard();
+    return _buildConversationList(_conversations);
+  }
+
+  // Shared conversation list container
+  Widget _buildConversationList(List<_Conversation> data) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -130,13 +299,65 @@ class _MessagesPageState extends State<MessagesPage> {
       ),
       child: Column(
         children: [
-          for (int i = 0; i < _conversations.length; i++) ...[
-            _conversationTile(_conversations[i]),
-            if (i != _conversations.length - 1) const Divider(height: 1),
+          for (int i = 0; i < data.length; i++) ...[
+            _conversationTile(data[i]),
+            if (i != data.length - 1) const Divider(height: 1),
           ]
         ],
       ),
     );
+  }
+
+  // Empty state card reused by both data sources
+  Widget _emptyInboxCard() {
+    return Container(
+      padding: const EdgeInsets.all(DesignTokens.space24),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
+        boxShadow: DesignTokens.shadowSmall,
+      ),
+      child: Column(
+        children: [
+          Icon(Icons.chat_bubble_outline, size: 40, color: Colors.grey.shade500),
+          const SizedBox(height: DesignTokens.space8),
+          Text(AppLocalizations.of(context)!.noMessagesYet, style: AppTypography.bodyBold),
+          const SizedBox(height: 4),
+          Text(AppLocalizations.of(context)!.startConversationPrompt, style: AppTypography.small.copyWith(color: Colors.black54), textAlign: TextAlign.center),
+        ],
+      ),
+    );
+  }
+
+  // Map domain conversations to local view model for reuse of tile UI
+  List<_Conversation> _mapDomainConversations(List<chat_domain.Conversation> items) {
+    return items.map((c) {
+      final title = c.store.name;
+      final last = c.lastMessageText ?? '';
+      final time = _formatTimestamp(c.lastMessageAt);
+      final unread = c.unreadCount;
+      return _Conversation(
+        id: c.id,
+        title: title,
+        lastMessage: last,
+        time: time,
+        unreadCount: unread,
+        avatarAsset: null,
+        avatarIcon: Icons.storefront_outlined,
+        storeLogoUrl: c.store.logoUrl,
+      );
+    }).toList(growable: false);
+  }
+
+  String _formatTimestamp(DateTime? ts) {
+    if (ts == null) return '';
+    final now = DateTime.now();
+    final isSameDay = ts.year == now.year && ts.month == now.month && ts.day == now.day;
+    if (isSameDay) {
+      final t = TimeOfDay.fromDateTime(ts);
+      return t.format(context);
+    }
+    return '${ts.year}-${ts.month.toString().padLeft(2, '0')}-${ts.day.toString().padLeft(2, '0')}';
   }
 
   Widget _conversationTile(_Conversation c) {
@@ -166,12 +387,37 @@ class _MessagesPageState extends State<MessagesPage> {
             ),
         ],
       ),
-      onTap: () => _comingSoon(AppLocalizations.of(context)!.chatWith(c.title)),
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => ChatPage(
+              conversationId: c.id,
+              storeName: c.title,
+              storeLogoUrl: c.storeLogoUrl,
+            ),
+          ),
+        );
+      },
       contentPadding: const EdgeInsets.symmetric(horizontal: DesignTokens.space16, vertical: 6),
     );
   }
 
   Widget _avatar(_Conversation c) {
+    if (c.storeLogoUrl != null) {
+      return CircleAvatar(
+        radius: 22,
+        backgroundColor: Colors.grey.shade200,
+        child: ClipOval(
+          child: Image.network(
+            c.storeLogoUrl!,
+            width: 44,
+            height: 44,
+            fit: BoxFit.cover,
+            errorBuilder: (_, __, ___) => const Icon(Icons.storefront_outlined),
+          ),
+        ),
+      );
+    }
     if (c.avatarAsset != null) {
       return CircleAvatar(
         radius: 22,
@@ -309,12 +555,18 @@ class _MessagesPageState extends State<MessagesPage> {
             ListTile(
               leading: const Icon(Icons.storefront_outlined),
               title: Text(AppLocalizations.of(context)!.messageAStore),
-              onTap: () => Navigator.pop(ctx),
+              onTap: () {
+                Navigator.pop(ctx);
+                _showStoreSearchSheet();
+              },
             ),
             ListTile(
               leading: const Icon(Icons.support_agent_outlined),
               title: Text(AppLocalizations.of(context)!.contactSupport),
-              onTap: () => Navigator.pop(ctx),
+              onTap: () {
+                Navigator.pop(ctx);
+                _startSupportChat();
+              },
             ),
             const SizedBox(height: 12),
           ],
@@ -329,22 +581,48 @@ class _MessagesPageState extends State<MessagesPage> {
       SnackBar(content: Text(l10n.comingSoonWithFeature(feature))),
     );
   }
+
+  Future<void> _startSupportChat() async {
+    final support = Provider.of<SupportController?>(context, listen: false);
+    if (support == null) {
+      _comingSoon(AppLocalizations.of(context)!.contactSupport);
+      return;
+    }
+    try {
+      final threadId = await support.ensureThread();
+      if (!mounted) return;
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => SupportChatPage(threadId: threadId),
+        ),
+      );
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.failedToLoadMessages)),
+      );
+    }
+  }
 }
 
 class _Conversation {
+  final String id;
   final String title;
   final String lastMessage;
   final String time;
   final int unreadCount;
   final String? avatarAsset;
   final IconData? avatarIcon;
+  final String? storeLogoUrl;
 
   _Conversation({
+    required this.id,
     required this.title,
     required this.lastMessage,
     required this.time,
     required this.unreadCount,
     this.avatarAsset,
     this.avatarIcon,
+    this.storeLogoUrl,
   });
 }

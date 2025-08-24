@@ -15,6 +15,11 @@ import 'package:sudan_goods/Home/controller/store_filter_controller.dart';
 import 'package:sudan_goods/follow/presentation/controllers/follow_controller.dart';
 import 'package:sudan_goods/follow/presentation/wiring/follow_wiring_example.dart';
 
+import 'package:sudan_goods/messaging/presentation/controllers/chat_controller.dart';
+import 'package:sudan_goods/messaging/presentation/wiring/chat_wiring.dart';
+import 'package:sudan_goods/messaging/presentation/controllers/support_controller.dart';
+import 'package:sudan_goods/messaging/presentation/wiring/support_wiring.dart';
+
 import 'firebase_options.dart';
 
 /// Entry point of the Sudan Goods application.
@@ -48,6 +53,28 @@ void main() async {
             if (previous != null) return previous;
             final uid = userProvider.currentUser.uid;
             return makeFollowControllerForUid(uid);
+          },
+          dispose: (_, value) => value?.dispose(),
+        ),
+        ProxyProvider<UserProvider, ChatController?>(
+          update: (_, userProvider, previous) {
+            if (!userProvider.isUserLoaded) {
+              return previous; // user not loaded yet
+            }
+            if (previous != null) return previous;
+            final uid = userProvider.currentUser.uid;
+            return makeChatControllerForUid(uid);
+          },
+          dispose: (_, value) => value?.dispose(),
+        ),
+        ProxyProvider<UserProvider, SupportController?>(
+          update: (_, userProvider, previous) {
+            if (!userProvider.isUserLoaded) {
+              return previous; // user not loaded yet
+            }
+            if (previous != null) return previous;
+            final uid = userProvider.currentUser.uid;
+            return makeSupportControllerForUid(uid);
           },
           dispose: (_, value) => value?.dispose(),
         ),
