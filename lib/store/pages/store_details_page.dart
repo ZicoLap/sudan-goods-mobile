@@ -33,16 +33,16 @@ class StoreDetailsPage extends StatelessWidget {
           return Scaffold(
             backgroundColor: Colors.white,
             appBar: AppBar(
-              backgroundColor: Colors.white,
+              backgroundColor: AppColors.primary,
+              foregroundColor: Colors.white,
               elevation: 0,
               leading: IconButton(
                 icon: const Icon(
                   Icons.arrow_back_ios_new_rounded,
-                  color: AppColors.primary,
                 ),
                 onPressed: () => Navigator.of(context).pop(),
               ),
-              title: const Text('Store Details', style: AppTypography.heading6),
+              title: const Text('Store Details', style: TextStyle(color: Colors.white)),
               centerTitle: true,
             ),
             body: const _StoreDetailsSkeleton(),
@@ -56,16 +56,16 @@ class StoreDetailsPage extends StatelessWidget {
           return Scaffold(
             backgroundColor: Colors.white,
             appBar: AppBar(
-              backgroundColor: Colors.white,
+              backgroundColor: AppColors.primary,
+              foregroundColor: Colors.white,
               elevation: 0,
               leading: IconButton(
                 icon: const Icon(
                   Icons.arrow_back_ios_new_rounded,
-                  color: AppColors.primary,
                 ),
                 onPressed: () => Navigator.of(context).pop(),
               ),
-              title: const Text('Store not found', style: AppTypography.heading6),
+              title: const Text('Store not found', style: TextStyle(color: Colors.white)),
               centerTitle: true,
             ),
             body: const Center(child: Text('Store not found')),
@@ -77,20 +77,30 @@ class StoreDetailsPage extends StatelessWidget {
         return Scaffold(
           backgroundColor: Colors.white,
           appBar: AppBar(
-            backgroundColor: Colors.white,
+            backgroundColor: AppColors.primary,
+            foregroundColor: Colors.white,
             elevation: 0,
             leading: IconButton(
               icon: const Icon(
                 Icons.arrow_back_ios_new_rounded,
-                color: AppColors.primary,
               ),
               onPressed: () => Navigator.of(context).pop(),
             ),
-            title: Text(store.name, style: AppTypography.heading6),
+            title: Text(store.name, style: const TextStyle(color: Colors.white)),
             centerTitle: true,
           ),
-          body: SingleChildScrollView(
-            child: Column(
+          body: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Color(0xFFF8FBFF), Colors.white, Color(0xFFF8FBFF)],
+                stops: [0.0, 0.6, 1.0],
+              ),
+            ),
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 StoreCoverSection(store: store),
@@ -101,6 +111,7 @@ class StoreDetailsPage extends StatelessWidget {
                 CollectionsSection(storeId: storeId),
                 const SizedBox(height: DesignTokens.space64),
               ],
+              ),
             ),
           ),
           bottomNavigationBar: SafeArea(

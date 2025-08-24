@@ -4,6 +4,9 @@ import 'package:sudan_goods/cart/cart_controller.dart';
 import 'package:sudan_goods/cart/widgets/cart_bottom_sheet_widget.dart';
 import 'package:sudan_goods/cart/widgets/store_cart_card.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
+import 'package:sudan_goods/theme/design_tokens.dart';
+import 'package:sudan_goods/theme/app_theme.dart';
+import 'package:sudan_goods/checkout/pages/checkout_page.dart';
 
 class CartOverviewPage extends StatelessWidget {
   const CartOverviewPage({super.key});
@@ -16,8 +19,44 @@ class CartOverviewPage extends StatelessWidget {
 
     if (storeCarts.isEmpty) {
       return Scaffold(
-        appBar: AppBar(title: Text(l10n.cartTitle)),
-        body: Center(child: Text(l10n.cartEmpty)),
+        appBar: AppBar(
+          title: Text(l10n.cartTitle, style: const TextStyle(color: Colors.white)),
+          backgroundColor: AppColors.primary,
+          foregroundColor: Colors.white,
+          elevation: 0,
+          centerTitle: true,
+        ),
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                AppColors.primary.withOpacity(0.06),
+                Colors.transparent,
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+          child: Center(
+            child: Padding(
+              padding: DesignTokens.paddingPageHorizontal.add(
+                const EdgeInsets.symmetric(vertical: DesignTokens.space32),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _iconBubble(Icons.shopping_cart_outlined),
+                  const SizedBox(height: DesignTokens.space16),
+                  Text(
+                    l10n.cartEmpty,
+                    style: AppTypography.heading5,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
       );
     }
 
@@ -25,125 +64,196 @@ class CartOverviewPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           '🛒 ${l10n.cartsAllTitle}',
-          style: const TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
+        backgroundColor: AppColors.primary,
+        foregroundColor: Colors.white,
+        elevation: 0,
         centerTitle: true,
       ),
-
-      body: ListView.builder(
-        padding: const EdgeInsets.all(12),
-        itemCount: storeCarts.length,
-
-        itemBuilder: (context, index) {
-          final storeId = storeCarts.keys.elementAt(index);
-          final items = storeCarts[storeId]!;
-          final subtotal = cartController.getSubtotal(storeId);
-          final itemCount = items.fold<int>(
-            0,
-            (sum, item) => sum + item.quantity,
-          );
-
-          return FutureBuilder(
-            future: cartController.getStoreDetails(storeId),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  child: LinearProgressIndicator(),
-                );
-              }
-
-              if (snapshot.hasError || !snapshot.hasData) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 18),
-                  child: Text(l10n.failedToLoadStoreData),
-                );
-              }
-
-              final store = snapshot.data!;
-
-              return Dismissible(
-                key: Key(storeId),
-                direction: DismissDirection.endToStart,
-                background: Container(
-                  color: Colors.red,
-                  alignment: Alignment.centerRight,
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: const Icon(Icons.delete, color: Colors.white),
-                ),
-                confirmDismiss: (_) async {
-                  return await showDialog<bool>(
-                    context: context,
-                    builder:
-                        (_) => AlertDialog(
-                          title: Text(l10n.removeCart),
-                          content: Text(
-                            l10n.removeCartConfirmation,
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context, false),
-                              child: Text(l10n.cancel),
-                            ),
-                            ElevatedButton(
-                              onPressed: () => Navigator.pop(context, true),
-                              child: Text(l10n.remove),
-                            ),
-                          ],
-                        ),
-                  );
-                },
-                onDismissed: (_) {
-                  cartController.clearCart(storeId);
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text(l10n.cartRemoved)));
-                },
-                child: StoreCartCard(
-                  storeId: storeId,
-                  storeName: store.name,
-                  storeLogoUrl: store.logoUrl,
-                  itemCount: itemCount,
-                  subtotal: subtotal,
-                  onTap: () {
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      builder: (_) => CartBottomSheet(storeId: storeId),
-                    );
-                  },
-                  onCheckout: () {
-                    // TODO: implement checkout flow
-                  },
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              AppColors.primary.withOpacity(0.06),
+              Colors.transparent,
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: ListView.builder(
+          physics: const BouncingScrollPhysics(),
+          padding: DesignTokens.paddingPageHorizontal.add(
+            const EdgeInsets.only(
+              top: DesignTokens.space32,
+              bottom: 120,
+            ),
+          ),
+          itemCount: storeCarts.length + 1,
+          itemBuilder: (context, index) {
+            if (index == 0) {
+              return Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    _iconBubble(Icons.shopping_cart_rounded),
+                    const SizedBox(height: DesignTokens.space12),
+                    Text(
+                      '🛒 ${l10n.cartsAllTitle}',
+                      style: AppTypography.heading4,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: DesignTokens.space16),
+                  ],
                 ),
               );
-            },
-          );
-        },
+            }
+
+            final storeId = storeCarts.keys.elementAt(index - 1);
+            final items = storeCarts[storeId]!;
+            final subtotal = cartController.getSubtotal(storeId);
+            final itemCount = items.fold<int>(
+              0,
+              (sum, item) => sum + item.quantity,
+            );
+
+            return FutureBuilder(
+              future: cartController.getStoreDetails(storeId),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                    child: LinearProgressIndicator(),
+                  );
+                }
+
+                if (snapshot.hasError || !snapshot.hasData) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 18),
+                    child: Text(l10n.failedToLoadStoreData),
+                  );
+                }
+
+                final store = snapshot.data!;
+
+                return Dismissible(
+                  key: Key(storeId),
+                  direction: DismissDirection.endToStart,
+                  background: Container(
+                    color: Colors.red,
+                    alignment: Alignment.centerRight,
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: const Icon(Icons.delete, color: Colors.white),
+                  ),
+                  confirmDismiss: (_) async {
+                    return await showDialog<bool>(
+                      context: context,
+                      builder: (_) => AlertDialog(
+                        title: Text(l10n.removeCart),
+                        content: Text(l10n.removeCartConfirmation),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, false),
+                            child: Text(l10n.cancel),
+                          ),
+                          ElevatedButton(
+                            onPressed: () => Navigator.pop(context, true),
+                            child: Text(l10n.remove),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  onDismissed: (_) {
+                    cartController.clearCart(storeId);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(l10n.cartRemoved)),
+                    );
+                  },
+                  child: StoreCartCard(
+                    storeId: storeId,
+                    storeName: store.name,
+                    storeLogoUrl: store.logoUrl,
+                    itemCount: itemCount,
+                    subtotal: subtotal,
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        builder: (_) => CartBottomSheet(storeId: storeId),
+                      );
+                    },
+                    onCheckout: () async {
+                      try {
+                        final storeDetails = await cartController.getStoreDetails(storeId);
+                        final totalWeight = cartController.getTotalWeight(storeId);
+                        // Navigate to checkout for this store
+                        // ignore: use_build_context_synchronously
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => CheckoutPage(
+                              store: storeDetails,
+                              subtotal: subtotal,
+                              totalWeight: totalWeight,
+                            ),
+                          ),
+                        );
+                      } catch (e) {
+                        // ignore: use_build_context_synchronously
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(l10n.errorWithMessage(e.toString()))),
+                        );
+                      }
+                    },
+                  ),
+                );
+              },
+            );
+          },
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: SafeArea(
-        minimum: const EdgeInsets.symmetric(horizontal: 12),
+        minimum: DesignTokens.paddingPageHorizontal,
         child: SizedBox(
           width: double.infinity,
+          height: 56,
           child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.orange.shade700,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-            ),
             onPressed: () {
-              // TODO: handle "checkout all"
+              // No multi-store checkout flow yet
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(l10n.comingSoonWithFeature(l10n.checkoutAllCarts))),
+              );
             },
-            child: Text(
-              l10n.checkoutAllCarts,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            ),
+            child: Text(l10n.checkoutAllCarts),
           ),
         ),
       ),
     );
   }
+}
+
+Widget _iconBubble(IconData icon) {
+  return Container(
+    width: 72,
+    height: 72,
+    decoration: BoxDecoration(
+      shape: BoxShape.circle,
+      gradient: LinearGradient(
+        colors: [
+          AppColors.primary.withOpacity(0.95),
+          AppColors.primary.withOpacity(0.75),
+        ],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
+      boxShadow: const [
+        BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 4)),
+      ],
+    ),
+    child: Icon(icon, color: Colors.white, size: 36),
+  );
 }

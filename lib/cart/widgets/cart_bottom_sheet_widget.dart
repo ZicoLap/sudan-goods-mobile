@@ -39,7 +39,12 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
     if (items.isEmpty) {
       return Container(
         decoration: const BoxDecoration(
-          color: Colors.white,
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFFF8FBFF), Colors.white, Color(0xFFF8FBFF)],
+            stops: [0.0, 0.6, 1.0],
+          ),
           borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
         padding: const EdgeInsets.all(24),
@@ -51,17 +56,39 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
               height: 4,
               width: 40,
               decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(4),
+                color: Colors.grey.shade300,
+                borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
               ),
             ),
-            const SizedBox(height: 24),
-            const Icon(Icons.shopping_bag_outlined, size: 40, color: Colors.black54),
-            const SizedBox(height: 12),
-            Text(l10n.cartIsEmptyTitle, style: AppTypography.bodyBold),
+            const SizedBox(height: DesignTokens.space24),
+            Container(
+              width: 72,
+              height: 72,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  colors: [
+                    AppColors.primary.withOpacity(0.95),
+                    AppColors.primary.withOpacity(0.75),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                boxShadow: const [
+                  BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 4)),
+                ],
+              ),
+              child: const Icon(Icons.shopping_bag_outlined, size: 36, color: Colors.white),
+            ),
+            const SizedBox(height: DesignTokens.space12),
+            Text(l10n.cartIsEmptyTitle, style: AppTypography.bodyBold, textAlign: TextAlign.center),
             const SizedBox(height: 4),
-            Text(l10n.addItemsToBeginCheckout, style: AppTypography.small.copyWith(color: Colors.black54)),
-            const SizedBox(height: 16),
+            Text(
+              l10n.addItemsToBeginCheckout,
+              style: AppTypography.small.copyWith(color: Colors.black54),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: DesignTokens.space16),
           ],
         ),
       );
@@ -75,7 +102,12 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
       builder: (context, scrollController) {
         return Container(
           decoration: const BoxDecoration(
-            color: Colors.white,
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Color(0xFFF8FBFF), Colors.white, Color(0xFFF8FBFF)],
+              stops: [0.0, 0.6, 1.0],
+            ),
             borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
           ),
           child: Column(
@@ -86,8 +118,8 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
                   height: 4,
                   width: 40,
                   decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(4),
+                    color: Colors.grey.shade300,
+                    borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
                   ),
                 ),
               ),
@@ -115,6 +147,7 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
                       final bool canCheckout = subtotal >= store.minimumOrderAmount;
                       return CustomScrollView(
                         controller: scrollController,
+                        physics: const BouncingScrollPhysics(),
                         slivers: [
                           // Header
                           SliverToBoxAdapter(
@@ -126,10 +159,24 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
                                     if ((store.logoUrl ?? '').isNotEmpty)
                                       CircleAvatar(radius: 18, backgroundImage: NetworkImage(store.logoUrl!))
                                     else
-                                      const CircleAvatar(
-                                        radius: 18,
-                                        backgroundColor: AppColors.primary,
-                                        child: Icon(Icons.store_rounded, color: Colors.white),
+                                      Container(
+                                        width: 36,
+                                        height: 36,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              AppColors.primary.withOpacity(0.95),
+                                              AppColors.primary.withOpacity(0.75),
+                                            ],
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                          ),
+                                          boxShadow: const [
+                                            BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3)),
+                                          ],
+                                        ),
+                                        child: const Icon(Icons.store_rounded, color: Colors.white, size: 20),
                                       ),
                                     const SizedBox(width: DesignTokens.space12),
                                     Expanded(
@@ -182,8 +229,9 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
                                 Container(
                                   padding: DesignTokens.paddingCard,
                                   decoration: BoxDecoration(
-                                    color: Colors.grey.shade50,
+                                    color: Colors.white,
                                     borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
+                                    border: Border.all(color: Colors.black.withOpacity(0.06)),
                                     boxShadow: DesignTokens.shadowSmall,
                                   ),
                                   child: Column(
@@ -219,22 +267,49 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
                                   top: false,
                                   child: SizedBox(
                                     width: double.infinity,
-                                    child: ElevatedButton(
-                                      onPressed: canCheckout
-                                          ? () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (_) => CheckoutPage(
-                                                    store: store,
-                                                    subtotal: subtotal,
-                                                    totalWeight: totalWeight,
-                                                  ),
-                                                ),
-                                              );
-                                            }
-                                          : null,
-                                      child: Text(l10n.checkout),
+                                    child: IgnorePointer(
+                                      ignoring: !canCheckout,
+                                      child: Opacity(
+                                        opacity: canCheckout ? 1 : 0.6,
+                                        child: GestureDetector(
+                                          onTap: canCheckout
+                                              ? () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (_) => CheckoutPage(
+                                                        store: store,
+                                                        subtotal: subtotal,
+                                                        totalWeight: totalWeight,
+                                                      ),
+                                                    ),
+                                                  );
+                                                }
+                                              : null,
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(vertical: 14),
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
+                                              gradient: LinearGradient(
+                                                colors: [
+                                                  AppColors.primary.withOpacity(0.95),
+                                                  AppColors.primary.withOpacity(0.75),
+                                                ],
+                                                begin: Alignment.topLeft,
+                                                end: Alignment.bottomRight,
+                                              ),
+                                              boxShadow: const [
+                                                BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3)),
+                                              ],
+                                            ),
+                                            alignment: Alignment.center,
+                                            child: Text(
+                                              l10n.checkout,
+                                              style: AppTypography.bodyLarge.copyWith(color: Colors.white),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -343,15 +418,26 @@ class _CartItemRow extends StatelessWidget {
   Widget _buildImage() {
     final imageUrl = item.imageUrl;
     final radius = BorderRadius.circular(DesignTokens.radiusMedium);
-    return ClipRRect(
-      borderRadius: radius,
-      child: Container(
-        width: 64,
-        height: 64,
-        color: Colors.grey.shade200,
+    return Container(
+      width: 64,
+      height: 64,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
+        border: Border.all(color: Colors.black.withOpacity(0.06)),
+        boxShadow: const [
+          BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2)),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: radius,
         child: imageUrl == null || imageUrl.isEmpty
             ? const Icon(Icons.image_not_supported_outlined, color: Colors.black26)
-            : Image.network(imageUrl, fit: BoxFit.cover, errorBuilder: (_, __, ___) => const Icon(Icons.broken_image_outlined, color: Colors.black26)),
+            : Image.network(
+                imageUrl,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => const Icon(Icons.broken_image_outlined, color: Colors.black26),
+              ),
       ),
     );
   }
@@ -359,21 +445,61 @@ class _CartItemRow extends StatelessWidget {
   Widget _stepper(BuildContext context, int qty) {
     final cart = context.read<CartController>();
     return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
-        borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
-        border: Border.all(color: Colors.grey.shade300),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: Colors.black.withOpacity(0.06)),
       ),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          IconButton(
-            icon: const Icon(Icons.remove_rounded),
-            onPressed: () => cart.updateQuantity(storeId, item.productId, qty - 1),
+          GestureDetector(
+            onTap: () => cart.updateQuantity(storeId, item.productId, qty - 1),
+            child: Container(
+              width: 28,
+              height: 28,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  colors: [
+                    AppColors.primary.withOpacity(0.95),
+                    AppColors.primary.withOpacity(0.75),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                boxShadow: const [
+                  BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3)),
+                ],
+              ),
+              child: const Icon(Icons.remove, size: 18, color: Colors.white),
+            ),
           ),
+          const SizedBox(width: 12),
           Text('$qty', style: AppTypography.bodyBold),
-          IconButton(
-            icon: const Icon(Icons.add_rounded),
-            onPressed: () => cart.updateQuantity(storeId, item.productId, qty + 1),
+          const SizedBox(width: 12),
+          GestureDetector(
+            onTap: () => cart.updateQuantity(storeId, item.productId, qty + 1),
+            child: Container(
+              width: 28,
+              height: 28,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  colors: [
+                    AppColors.primary.withOpacity(0.95),
+                    AppColors.primary.withOpacity(0.75),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                boxShadow: const [
+                  BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3)),
+                ],
+              ),
+              child: const Icon(Icons.add, size: 18, color: Colors.white),
+            ),
           ),
         ],
       ),

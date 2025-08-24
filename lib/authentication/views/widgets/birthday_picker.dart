@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sudan_goods/theme/app_theme.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
 
 class BirthdayPicker extends StatelessWidget {
@@ -15,39 +14,42 @@ class BirthdayPicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return Row(
-      children: [
-        Text(l10n.birthdayLabel, style: const TextStyle(fontWeight: FontWeight.bold)),
-        const SizedBox(width: 16),
-        TextButton(
+    final materialL10n = MaterialLocalizations.of(context);
+    final textController = TextEditingController(
+      text: materialL10n.formatFullDate(birthday),
+    );
+    return TextFormField(
+      readOnly: true,
+      controller: textController,
+      decoration: InputDecoration(
+        labelText: l10n.birthdayLabel,
+        prefixIcon: const Icon(Icons.cake_rounded),
+        suffixIcon: IconButton(
+          icon: const Icon(Icons.calendar_today_rounded),
           onPressed: () async {
             final picked = await showDatePicker(
               context: context,
               initialDate: birthday,
               firstDate: DateTime(1900),
               lastDate: DateTime.now(),
-              builder: (context, child) {
-                return Theme(
-                  data: ThemeData.light().copyWith(
-                    primaryColor: AppColors.primary,
-                    colorScheme: ThemeData.light().colorScheme.copyWith(
-                      primary: AppColors.primary,
-                    ),
-                    dialogTheme: DialogTheme(
-                      backgroundColor: AppColors.inputField,
-                    ),
-                  ),
-                  child: child!,
-                );
-              },
             );
             if (picked != null) {
               onPicked(picked);
             }
           },
-          child: Text("${birthday.toLocal()}".split(' ')[0]),
         ),
-      ],
+      ),
+      onTap: () async {
+        final picked = await showDatePicker(
+          context: context,
+          initialDate: birthday,
+          firstDate: DateTime(1900),
+          lastDate: DateTime.now(),
+        );
+        if (picked != null) {
+          onPicked(picked);
+        }
+      },
     );
   }
 }

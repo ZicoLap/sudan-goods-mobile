@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
+import 'package:sudan_goods/theme/app_theme.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
 import 'package:sudan_goods/Home/pages/edit_profile_page.dart';
@@ -80,7 +81,10 @@ class _ProfilePageState extends State<ProfilePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.navProfile),
+        backgroundColor: AppColors.primary,
+        foregroundColor: Colors.white,
+        elevation: 0,
+        title: Text(AppLocalizations.of(context)!.navProfile, style: const TextStyle(color: Colors.white)),
         centerTitle: true,
         actions: [
           IconButton(
@@ -94,46 +98,56 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ],
       ),
-      body: SafeArea(
-        child: _hasError
-            ? _errorBanner()
-            : (!isLoaded
-                ? _buildLoadingSkeleton()
-                : SingleChildScrollView(
-                    padding: const EdgeInsets.all(DesignTokens.space16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        _buildHeaderCard(userProvider.currentUser),
-                        const SizedBox(height: DesignTokens.space16),
-                        _buildStatsRow(),
-                        const SizedBox(height: DesignTokens.space16),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                          child: Text(
-                            // No l10n key available yet
-                            'Followed Stores',
-                            style: AppTypography.cardTitle,
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFFF7F9FC), Colors.white, Color(0xFFF7F9FC)],
+          ),
+        ),
+        child: SafeArea(
+          child: _hasError
+              ? _errorBanner()
+              : (!isLoaded
+                  ? _buildLoadingSkeleton()
+                  : SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      padding: const EdgeInsets.all(DesignTokens.space16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          _buildHeaderCard(userProvider.currentUser),
+                          const SizedBox(height: DesignTokens.space16),
+                          _buildStatsRow(),
+                          const SizedBox(height: DesignTokens.space16),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                            child: Text(
+                              // No l10n key available yet
+                              'Followed Stores',
+                              style: AppTypography.cardTitle,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: DesignTokens.space8),
-                        _buildFollowedStores(),
-                        const SizedBox(height: DesignTokens.space16),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 4.0,
+                          const SizedBox(height: DesignTokens.space8),
+                          _buildFollowedStores(),
+                          const SizedBox(height: DesignTokens.space16),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 4.0,
+                            ),
+                            child: Text(
+                              AppLocalizations.of(context)!.recentActivity,
+                              style: AppTypography.cardTitle,
+                            ),
                           ),
-                          child: Text(
-                            AppLocalizations.of(context)!.recentActivity,
-                            style: AppTypography.cardTitle,
-                          ),
-                        ),
-                        const SizedBox(height: DesignTokens.space8),
-                        _buildRecentActivity(),
-                        const SizedBox(height: DesignTokens.space24),
-                      ],
-                    ),
-                  )),
+                          const SizedBox(height: DesignTokens.space8),
+                          _buildRecentActivity(),
+                          const SizedBox(height: DesignTokens.space24),
+                        ],
+                      ),
+                    )),
+        ),
       ),
     );
   }
@@ -148,6 +162,7 @@ class _ProfilePageState extends State<ProfilePage> {
           decoration: BoxDecoration(
             color: Colors.red.withOpacity(0.08),
             borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
+            border: Border.all(color: Colors.red.withOpacity(0.15)),
           ),
           child: Row(
             children: [
@@ -197,6 +212,8 @@ class _ProfilePageState extends State<ProfilePage> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
+                boxShadow: DesignTokens.shadowSmall,
+                border: Border.all(color: Colors.black.withOpacity(0.05)),
               ),
               child: Column(
                 children: [
@@ -245,6 +262,8 @@ class _ProfilePageState extends State<ProfilePage> {
   BoxDecoration _skeletonCardDecoration() => BoxDecoration(
     color: Colors.white,
     borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
+    boxShadow: DesignTokens.shadowSmall,
+    border: Border.all(color: Colors.black.withOpacity(0.05)),
   );
 
   Widget _buildHeaderCard(AppUser user) {
@@ -254,6 +273,7 @@ class _ProfilePageState extends State<ProfilePage> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
         boxShadow: DesignTokens.shadowSmall,
+        border: Border.all(color: Colors.black.withOpacity(0.05)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -263,13 +283,32 @@ class _ProfilePageState extends State<ProfilePage> {
             onTap: _showChangePhotoSheet,
             child: Semantics(
               label: AppLocalizations.of(context)!.profilePhoto,
-              child: CircleAvatar(
-                radius: 42,
-                backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.12),
-                child: Text(
-                  _initialsFromName(user.fullName),
-                  style: AppTypography.heading6.copyWith(
-                    color: Theme.of(context).colorScheme.primary,
+              child: Container(
+                width: 96,
+                height: 96,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppColors.primary.withOpacity(0.18),
+                      AppColors.primary.withOpacity(0.06),
+                    ],
+                  ),
+                  boxShadow: DesignTokens.shadowSmall,
+                  border: Border.all(color: Colors.black.withOpacity(0.05)),
+                ),
+                child: Center(
+                  child: CircleAvatar(
+                    radius: 42,
+                    backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.12),
+                    child: Text(
+                      _initialsFromName(user.fullName),
+                      style: AppTypography.heading6.copyWith(
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -279,6 +318,12 @@ class _ProfilePageState extends State<ProfilePage> {
           Text(
             user.fullName,
             style: AppTypography.heading6,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: DesignTokens.space4),
+          Text(
+            user.email,
+            style: AppTypography.small.copyWith(color: Colors.black54),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: DesignTokens.space12),
@@ -343,11 +388,25 @@ class _ProfilePageState extends State<ProfilePage> {
           color: Colors.white,
           borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
           boxShadow: DesignTokens.shadowSmall,
+          border: Border.all(color: Colors.black.withOpacity(0.05)),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 20),
+            Container(
+              height: 36,
+              width: 36,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Theme.of(context).primaryColor.withOpacity(0.15), Theme.of(context).primaryColor.withOpacity(0.06)],
+                ),
+                boxShadow: DesignTokens.shadowSmall,
+              ),
+              child: Icon(icon, size: 20, color: Theme.of(context).primaryColor),
+            ),
             const SizedBox(height: 6),
             Text('$value', style: AppTypography.bodyBold),
             const SizedBox(height: 2),
@@ -368,6 +427,7 @@ class _ProfilePageState extends State<ProfilePage> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
         boxShadow: DesignTokens.shadowSmall,
+        border: Border.all(color: Colors.black.withOpacity(0.05)),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: DesignTokens.space8),
@@ -449,11 +509,12 @@ class _ProfilePageState extends State<ProfilePage> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
         boxShadow: DesignTokens.shadowSmall,
+        border: Border.all(color: Colors.black.withOpacity(0.05)),
       ),
       child: Column(
         children: [
           ListTile(
-            leading: const Icon(Icons.receipt_long_outlined),
+            leading: _iconBubble(Icons.receipt_long_outlined, Colors.blueGrey),
             title: Text(AppLocalizations.of(context)!.recentOrder),
             subtitle: Text('#ORD-2301 • ${AppLocalizations.of(context)!.itemsCount(2)}', style: AppTypography.small),
             trailing: const Icon(Icons.chevron_right),
@@ -461,7 +522,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           const Divider(height: 1),
           ListTile(
-            leading: const Icon(Icons.storefront_outlined),
+            leading: _iconBubble(Icons.storefront_outlined, Colors.blue),
             title: Text(AppLocalizations.of(context)!.viewedAStore),
             subtitle: Text('Spices of Sudan', style: AppTypography.small),
             trailing: const Icon(Icons.chevron_right),
@@ -469,7 +530,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           const Divider(height: 1),
           ListTile(
-            leading: const Icon(Icons.star_border),
+            leading: _iconBubble(Icons.star_border, Colors.amber),
             title: Text(AppLocalizations.of(context)!.leftAReview),
             subtitle: Text('Coffee beans • 4★', style: AppTypography.small),
             trailing: const Icon(Icons.chevron_right),
@@ -477,6 +538,23 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _iconBubble(IconData icon, Color color) {
+    return Container(
+      height: 40,
+      width: 40,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [color.withOpacity(0.18), color.withOpacity(0.06)],
+        ),
+        boxShadow: DesignTokens.shadowSmall,
+      ),
+      child: Icon(icon, color: color),
     );
   }
 

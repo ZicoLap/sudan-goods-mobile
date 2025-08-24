@@ -14,7 +14,7 @@ class ShimmerProductGridCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
-          border: Border.all(color: Colors.grey.shade200),
+          border: Border.all(color: Colors.black.withOpacity(0.06)),
         ),
         padding: const EdgeInsets.all(DesignTokens.space12),
         child: Column(

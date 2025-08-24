@@ -7,6 +7,7 @@ import 'package:sudan_goods/cart/cart_controller.dart';
 import 'package:sudan_goods/models/store/cart_item_model.dart';
 import 'package:sudan_goods/store/widgets/product_detail_bottom_sheet.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
+import 'package:sudan_goods/theme/app_theme.dart';
 import 'featured_product_card.dart';
 
 class FeaturedProductsSection extends StatelessWidget {
@@ -27,14 +28,39 @@ class FeaturedProductsSection extends StatelessWidget {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Padding(
+              Padding(
                 padding: DesignTokens.paddingPageHorizontal,
-                child: Text('Featured Products', style: AppTypography.sectionTitle),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 28,
+                      height: 28,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          colors: [
+                            AppColors.primary.withOpacity(0.95),
+                            AppColors.primary.withOpacity(0.75),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        boxShadow: const [
+                          BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3)),
+                        ],
+                      ),
+                      child: const Icon(Icons.star_rounded, size: 18, color: Colors.white),
+                    ),
+                    const SizedBox(width: DesignTokens.space8),
+                    const Text('Featured Products', style: AppTypography.sectionTitle),
+                  ],
+                ),
               ),
               const SizedBox(height: DesignTokens.space8),
               SizedBox(
                 height: 110,
                 child: ListView.separated(
+                  physics: const BouncingScrollPhysics(),
                   padding: const EdgeInsets.symmetric(horizontal: DesignTokens.space20),
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (_, __) => const _ShimmerFeaturedItem(),
@@ -57,14 +83,39 @@ class FeaturedProductsSection extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Padding(
+            Padding(
               padding: DesignTokens.paddingPageHorizontal,
-              child: Text('Featured Products', style: AppTypography.sectionTitle),
+              child: Row(
+                children: [
+                  Container(
+                    width: 28,
+                    height: 28,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        colors: [
+                          AppColors.primary.withOpacity(0.95),
+                          AppColors.primary.withOpacity(0.75),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      boxShadow: const [
+                        BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3)),
+                      ],
+                    ),
+                    child: const Icon(Icons.star_rounded, size: 18, color: Colors.white),
+                  ),
+                  const SizedBox(width: DesignTokens.space8),
+                  const Text('Featured Products', style: AppTypography.sectionTitle),
+                ],
+              ),
             ),
             const SizedBox(height: DesignTokens.space8),
             SizedBox(
               height: 110,
               child: ListView.separated(
+                physics: const BouncingScrollPhysics(),
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.symmetric(horizontal: DesignTokens.space20),
                 itemCount: products.length,
@@ -135,6 +186,8 @@ class _ShimmerFeaturedItem extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
+          boxShadow: DesignTokens.shadowSmall,
+          border: Border.all(color: Colors.black.withOpacity(0.06)),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

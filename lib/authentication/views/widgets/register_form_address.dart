@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:sudan_goods/authentication/data/register_form_data.dart';
-import 'package:sudan_goods/theme/app_theme.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
+import 'package:sudan_goods/theme/design_tokens.dart';
 
 class RegisterFormAddress extends StatelessWidget {
   final RegisterFormData formData;
@@ -23,75 +22,49 @@ class RegisterFormAddress extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return SingleChildScrollView(
+    return Column(
       key: const ValueKey('address_form'),
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            l10n.addressTitle,
-            style: GoogleFonts.staatliches(
-              fontSize: 48,
-              fontWeight: FontWeight.bold,
-              color: AppColors.text,
-            ),
-          ),
-          const SizedBox(height: 24),
-          Form(
-            key: formKey,
-            child: Column(
-              children: [
-                _textField(context, formData.addressLabel, l10n.addressLabelPlaceholder),
-                const SizedBox(height: 16),
-                _textField(context, formData.street, l10n.street),
-                const SizedBox(height: 16),
-                _textField(context, formData.city, l10n.city),
-                const SizedBox(height: 16),
-                _textField(context, formData.country, l10n.country),
-                const SizedBox(height: 16),
-                _textField(context, formData.postalCode, l10n.postalCode),
-              ],
-            ),
-          ),
-          const SizedBox(height: 24),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Form(
+          key: formKey,
+          child: Column(
             children: [
-              ElevatedButton(
-                onPressed: isLoading ? null : onSubmit,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 22),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(36),
-                  ),
-                ),
-                child: isLoading
-                    ? const CircularProgressIndicator(color: Colors.white)
-                    : Text(l10n.register),
-              ),
-              const SizedBox(height: 24),
-              OutlinedButton(
-                onPressed: isLoading ? null : onBack,
-                style: OutlinedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: AppColors.primary,
-                  padding: const EdgeInsets.symmetric(vertical: 22),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(36),
-                    side: const BorderSide(color: AppColors.primary),
-                  ),
-                ),
-                child: isLoading
-                    ? const CircularProgressIndicator(color: Colors.white)
-                    : Text(l10n.back),
-              ),
+              _textField(context, formData.addressLabel, l10n.addressLabelPlaceholder),
+              const SizedBox(height: DesignTokens.space16),
+              _textField(context, formData.street, l10n.street),
+              const SizedBox(height: DesignTokens.space16),
+              _textField(context, formData.city, l10n.city),
+              const SizedBox(height: DesignTokens.space16),
+              _textField(context, formData.country, l10n.country),
+              const SizedBox(height: DesignTokens.space16),
+              _textField(context, formData.postalCode, l10n.postalCode),
             ],
           ),
-        ],
-      ),
+        ),
+        const SizedBox(height: DesignTokens.space24),
+        SizedBox(
+          height: 56,
+          child: ElevatedButton(
+            onPressed: isLoading ? null : onSubmit,
+            child: isLoading
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                  )
+                : Text(l10n.register),
+          ),
+        ),
+        const SizedBox(height: DesignTokens.space16),
+        SizedBox(
+          height: 56,
+          child: OutlinedButton(
+            onPressed: isLoading ? null : onBack,
+            child: Text(l10n.back),
+          ),
+        ),
+      ],
     );
   }
 
@@ -100,13 +73,6 @@ class RegisterFormAddress extends StatelessWidget {
       controller: controller,
       decoration: InputDecoration(
         labelText: label,
-        border: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12)),
-        ),
-        contentPadding: const EdgeInsets.symmetric(
-          vertical: 20,
-          horizontal: 16,
-        ),
       ),
       validator: (val) => val == null || val.isEmpty
           ? AppLocalizations.of(context)!.pleaseEnterField(label)

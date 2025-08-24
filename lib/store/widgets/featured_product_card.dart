@@ -20,6 +20,10 @@ class FeaturedProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isOutOfStock = product.quantity == 0;
+    final bool hasDiscount = product.discountPrice != null && product.discountPrice! > 0;
+    final int? discountPercent = hasDiscount
+        ? (100 - ((product.discountPrice! / product.price) * 100)).round()
+        : null;
 
     return Container(
       width: 260,
@@ -27,7 +31,7 @@ class FeaturedProductCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: Colors.black.withOpacity(0.06)),
         boxShadow: DesignTokens.shadowSmall,
       ),
       child: Stack(
@@ -49,22 +53,38 @@ class FeaturedProductCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: AppTypography.cardTitle,
                     ),
-                    const SizedBox(height: DesignTokens.space8),
+                    const SizedBox(height: 6),
                     Text(
                       product.quantity > 0
                           ? '${product.weight}g • ${product.quantity} in stock'
                           : 'Out of stock',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: AppTypography.small.copyWith(
                         color: isOutOfStock ? Colors.red : Colors.black87,
                       ),
                     ),
-                    const SizedBox(height: DesignTokens.space12),
-                    if (product.discountPrice != null && product.discountPrice! > 0)
+                    const SizedBox(height: 6),
+                    if (hasDiscount)
                       Row(
                         children: [
-                          Text(
-                            '€${product.discountPrice!.toStringAsFixed(2)}',
-                            style: AppTypography.bodyBold.copyWith(color: Colors.red),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(999),
+                              gradient: LinearGradient(
+                                colors: [
+                                  AppColors.primary.withOpacity(0.95),
+                                  AppColors.primary.withOpacity(0.75),
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                            ),
+                            child: Text(
+                              '€${product.discountPrice!.toStringAsFixed(2)}',
+                              style: AppTypography.bodyBold.copyWith(color: Colors.white),
+                            ),
                           ),
                           const SizedBox(width: DesignTokens.space8),
                           Text(
@@ -88,32 +108,98 @@ class FeaturedProductCard extends StatelessWidget {
               // Image
               ClipRRect(
                 borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
-                child: CachedNetworkImage(
-                  imageUrl: product.images.isNotEmpty ? product.images.first : '',
-                  width: 80,
-                  height: 80,
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) => Shimmer.fromColors(
-                    baseColor: Colors.grey.shade300,
-                    highlightColor: Colors.grey.shade100,
-                    child: Container(width: 80, height: 80, color: Colors.white),
-                  ),
-                  errorWidget: (_, __, ___) => Container(
-                    width: 80,
-                    height: 80,
-                    color: Colors.grey.shade100,
-                    alignment: Alignment.center,
-                    child: const Icon(Icons.image_outlined, size: 28, color: Colors.grey),
-                  ),
+                child: Stack(
+                  children: [
+                    CachedNetworkImage(
+                      imageUrl: product.images.isNotEmpty ? product.images.first : '',
+                      width: 76,
+                      height: 76,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => Shimmer.fromColors(
+                        baseColor: Colors.grey.shade300,
+                        highlightColor: Colors.grey.shade100,
+                        child: Container(width: 76, height: 76, color: Colors.white),
+                      ),
+                      errorWidget: (_, __, ___) => Container(
+                        width: 76,
+                        height: 76,
+                        color: Colors.grey.shade100,
+                        alignment: Alignment.center,
+                        child: const Icon(Icons.image_outlined, size: 28, color: Colors.grey),
+                      ),
+                    ),
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      height: 24,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [Colors.transparent, Colors.black.withOpacity(0.06)],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
 
+          // Discount/Stock badge (top-left)
+          if (hasDiscount && discountPercent != null)
+            PositionedDirectional(
+              top: 8,
+              start: 8,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(999),
+                  gradient: LinearGradient(
+                    colors: [
+                      AppColors.primary.withOpacity(0.95),
+                      AppColors.primary.withOpacity(0.75),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2))],
+                ),
+                child: Text(
+                  '-$discountPercent%',
+                  style: AppTypography.smallBold.copyWith(color: Colors.white),
+                ),
+              ),
+            )
+          else if (isOutOfStock)
+            PositionedDirectional(
+              top: 8,
+              start: 8,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(999),
+                  gradient: LinearGradient(
+                    colors: [Colors.grey.shade700, Colors.grey.shade500],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2))],
+                ),
+                child: Text(
+                  'OUT',
+                  style: AppTypography.smallBold.copyWith(color: Colors.white),
+                ),
+              ),
+            ),
+
           // ➕ Add Button (top-right corner)
-          Positioned(
+          PositionedDirectional(
             top: 8,
-            right: 8,
+            end: 8,
             child: IgnorePointer(
               ignoring: isOutOfStock,
               child: Opacity(
@@ -122,14 +208,21 @@ class FeaturedProductCard extends StatelessWidget {
                   onTap: isOutOfStock ? null : onAdd,
                   child: Container(
                     padding: const EdgeInsets.all(6),
-                    decoration: const BoxDecoration(
-                      color: AppColors.primary,
+                    decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      boxShadow: [
+                      gradient: LinearGradient(
+                        colors: [
+                          AppColors.primary.withOpacity(0.95),
+                          AppColors.primary.withOpacity(0.75),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      boxShadow: const [
                         BoxShadow(
                           color: Colors.black12,
-                          blurRadius: 4,
-                          offset: Offset(0, 2),
+                          blurRadius: 6,
+                          offset: Offset(0, 3),
                         ),
                       ],
                     ),
@@ -140,11 +233,7 @@ class FeaturedProductCard extends StatelessWidget {
                             alignment: Alignment.center,
                             child: Text(
                               '$cartQuantity',
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
+                              style: AppTypography.smallBold.copyWith(color: Colors.white),
                             ),
                           )
                         : const Icon(Icons.add, color: Colors.white, size: 20),

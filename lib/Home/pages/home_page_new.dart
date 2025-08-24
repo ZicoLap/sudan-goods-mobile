@@ -33,7 +33,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.appTitle),
+        title: Text(AppLocalizations.of(context)!.appTitle, style: const TextStyle(color: Colors.white)),
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
         elevation: 0,
@@ -45,21 +45,17 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Colors.grey.shade50,
-              Colors.white,
-              Colors.grey.shade50,
-            ],
-            stops: const [0.0, 0.3, 1.0],
+            colors: [Color(0xFFF7F9FC), Colors.white, Color(0xFFF7F9FC)],
           ),
         ),
         child: SafeArea(
           top: false,
           child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -83,7 +79,7 @@ class _HomePageState extends State<HomePage> {
                           Icon(
                             Icons.location_on,
                             size: 18,
-                            color: Colors.orange,
+                            color: AppColors.primary,
                           ),
                           const SizedBox(width: DesignTokens.space4),
                           Text(
@@ -100,10 +96,17 @@ class _HomePageState extends State<HomePage> {
 
                 // Hero Banner
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: DesignTokens.space8,
+                  padding: DesignTokens.paddingPageHorizontal,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
+                      boxShadow: DesignTokens.shadowMedium,
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
+                      child: HeroCarousel(),
+                    ),
                   ),
-                  child: HeroCarousel(),
                 ),
 
                 const SizedBox(height: DesignTokens.sectionSpacingMedium),

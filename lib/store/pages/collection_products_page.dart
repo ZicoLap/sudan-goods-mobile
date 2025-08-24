@@ -24,148 +24,222 @@ class CollectionProductsPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.primary,
+        foregroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back_ios_new_rounded,
-            color: AppColors.primary,
           ),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
           collection.name,
-          style: AppTypography.heading6.copyWith(color: Colors.black),
+          style: AppTypography.heading6.copyWith(color: Colors.white),
         ),
         centerTitle: true,
         actions: [
           IconButton(
             onPressed: () {},
-            icon: const Icon(Icons.filter_list_rounded, color: Colors.black87),
+            icon: const Icon(Icons.filter_list_rounded, color: Colors.white),
             tooltip: 'Filter',
           ),
         ],
       ),
 
-      body: StreamBuilder<QuerySnapshot>(
-        stream:
-            FirebaseFirestore.instance
-                .collection('products')
-                .where('storeId', isEqualTo: collection.storeId)
-                .where('collectionIds', arrayContains: collection.id)
-                .where('isAvailable', isEqualTo: true)
-                .snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFFF8FBFF), Colors.white, Color(0xFFF8FBFF)],
+            stops: [0.0, 0.6, 1.0],
+          ),
+        ),
+        child: StreamBuilder<QuerySnapshot>(
+          stream:
+              FirebaseFirestore.instance
+                  .collection('products')
+                  .where('storeId', isEqualTo: collection.storeId)
+                  .where('collectionIds', arrayContains: collection.id)
+                  .where('isAvailable', isEqualTo: true)
+                  .snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(DesignTokens.space20, DesignTokens.space16, DesignTokens.space20, DesignTokens.space16),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 28,
+                          height: 28,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              colors: [
+                                AppColors.primary.withOpacity(0.95),
+                                AppColors.primary.withOpacity(0.75),
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            boxShadow: const [
+                              BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3)),
+                            ],
+                          ),
+                          child: const Icon(Icons.grid_view_rounded, size: 18, color: Colors.white),
+                        ),
+                        const SizedBox(width: DesignTokens.space8),
+                        Text(
+                          collection.name,
+                          style: AppTypography.sectionTitle,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: GridView.builder(
+                      padding: DesignTokens.paddingPageHorizontal,
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: 6,
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: DesignTokens.space12,
+                        crossAxisSpacing: DesignTokens.space12,
+                        childAspectRatio: 0.62,
+                      ),
+                      itemBuilder: (_, __) => const ShimmerProductGridCard(),
+                    ),
+                  ),
+                ],
+              );
+            }
+
+            if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: DesignTokens.space20),
+                child: Column(
+                  children: [
+                    const SizedBox(height: DesignTokens.space24),
+                    Container(
+                      width: 64,
+                      height: 64,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          colors: [
+                            AppColors.primary.withOpacity(0.95),
+                            AppColors.primary.withOpacity(0.75),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        boxShadow: const [
+                          BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0, 4)),
+                        ],
+                      ),
+                      child: const Icon(Icons.inventory_2_rounded, size: 32, color: Colors.white),
+                    ),
+                    const SizedBox(height: DesignTokens.space12),
+                    Text('No products in this collection', style: AppTypography.bodyBold),
+                    const SizedBox(height: DesignTokens.space8),
+                    Text(
+                      'Please check back later or browse other collections.',
+                      style: AppTypography.small.copyWith(color: Colors.black54),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            final products =
+                snapshot.data!.docs
+                    .map((doc) => Product.fromDocument(doc))
+                    .toList();
+
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(DesignTokens.space20, DesignTokens.space16, DesignTokens.space20, DesignTokens.space16),
-                  child: Text(
-                    collection.name,
-                    style: AppTypography.sectionTitle,
+                  padding: const EdgeInsets.fromLTRB(DesignTokens.space20, DesignTokens.space16, DesignTokens.space20, DesignTokens.space8),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 28,
+                        height: 28,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            colors: [
+                              AppColors.primary.withOpacity(0.95),
+                              AppColors.primary.withOpacity(0.75),
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          boxShadow: const [
+                            BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3)),
+                          ],
+                        ),
+                        child: const Icon(Icons.grid_view_rounded, size: 18, color: Colors.white),
+                      ),
+                      const SizedBox(width: DesignTokens.space8),
+                      Expanded(child: Text(collection.name, style: AppTypography.sectionTitle)),
+                      const SizedBox(width: DesignTokens.space8),
+                      Text('${products.length} items', style: AppTypography.small.copyWith(color: Colors.black54)),
+                    ],
                   ),
                 ),
                 Expanded(
                   child: GridView.builder(
-                    padding: DesignTokens.paddingPageHorizontal,
-                    itemCount: 6,
+                    padding: const EdgeInsets.symmetric(horizontal: DesignTokens.space20, vertical: DesignTokens.space12),
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: products.length,
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       mainAxisSpacing: DesignTokens.space12,
                       crossAxisSpacing: DesignTokens.space12,
                       childAspectRatio: 0.62,
                     ),
-                    itemBuilder: (_, __) => const ShimmerProductGridCard(),
+                    itemBuilder: (context, index) {
+                      final product = products[index];
+                      return Selector<CartController, int>(
+                        selector: (_, c) => c.getProductQuantity(product.storeId, product.id),
+                        builder: (context, qty, _) {
+                          return ProductGridCard(
+                            key: ValueKey(product.id),
+                            product: product,
+                            onTap: () {
+                              showProductDetailsBottomSheet(context, product);
+                            },
+                            onAdd: () {
+                              cart.addItem(
+                                CartItem(
+                                  productId: product.id,
+                                  storeId: product.storeId,
+                                  name: product.name,
+                                  price: product.discountPrice ?? product.price,
+                                  weight: product.weight,
+                                  imageUrl: product.images.isNotEmpty ? product.images.first : null,
+                                  quantity: 1,
+                                ),
+                              );
+                            },
+                            cartQuantity: qty,
+                          );
+                        },
+                      );
+                    },
                   ),
                 ),
               ],
             );
-          }
-
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: DesignTokens.space20),
-              child: Column(
-                children: [
-                  const SizedBox(height: DesignTokens.space24),
-                  Icon(Icons.inventory_2_outlined, size: 64, color: Colors.grey.shade400),
-                  const SizedBox(height: DesignTokens.space12),
-                  Text('No products in this collection', style: AppTypography.bodyBold),
-                  const SizedBox(height: DesignTokens.space8),
-                  Text(
-                    'Please check back later or browse other collections.',
-                    style: AppTypography.small.copyWith(color: Colors.black54),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            );
-          }
-
-          final products =
-              snapshot.data!.docs
-                  .map((doc) => Product.fromDocument(doc))
-                  .toList();
-
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(DesignTokens.space20, DesignTokens.space16, DesignTokens.space20, DesignTokens.space8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(collection.name, style: AppTypography.sectionTitle),
-                    Text('${products.length} items', style: AppTypography.small.copyWith(color: Colors.black54)),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: GridView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: DesignTokens.space20, vertical: DesignTokens.space12),
-                  itemCount: products.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: DesignTokens.space12,
-                    crossAxisSpacing: DesignTokens.space12,
-                    childAspectRatio: 0.62,
-                  ),
-                  itemBuilder: (context, index) {
-                    final product = products[index];
-                    return Selector<CartController, int>(
-                      selector: (_, c) => c.getProductQuantity(product.storeId, product.id),
-                      builder: (context, qty, _) {
-                        return ProductGridCard(
-                          key: ValueKey(product.id),
-                          product: product,
-                          onTap: () {
-                            showProductDetailsBottomSheet(context, product);
-                          },
-                          onAdd: () {
-                            cart.addItem(
-                              CartItem(
-                                productId: product.id,
-                                storeId: product.storeId,
-                                name: product.name,
-                                price: product.discountPrice ?? product.price,
-                                weight: product.weight,
-                                imageUrl: product.images.isNotEmpty ? product.images.first : null,
-                                quantity: 1,
-                              ),
-                            );
-                          },
-                          cartQuantity: qty,
-                        );
-                      },
-                    );
-                  },
-                ),
-              ),
-            ],
-          );
-        },
+          },
+        ),
       ),
       bottomNavigationBar: SafeArea(
        // minimum: const EdgeInsets.only(bottom: 32),

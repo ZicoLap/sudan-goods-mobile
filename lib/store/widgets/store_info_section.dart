@@ -67,7 +67,22 @@ class StoreInfoSection extends StatelessWidget {
           // Location
           Row(
             children: [
-              const Icon(Icons.location_on, color: Colors.red, size: 18),
+              Container(
+                width: 24,
+                height: 24,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    colors: [
+                      AppColors.primary.withOpacity(0.9),
+                      AppColors.primary.withOpacity(0.6),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+                child: const Icon(Icons.location_on, color: Colors.white, size: 14),
+              ),
               const SizedBox(width: DesignTokens.space8),
               Text(
                 '${store.address.country} / ${store.address.city}',
@@ -227,13 +242,29 @@ class _MetaChip extends StatelessWidget {
         vertical: DesignTokens.space8,
       ),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
+        border: Border.all(color: Colors.black.withOpacity(0.06)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, color: iconColor, size: 16),
+          Container(
+            width: 22,
+            height: 22,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                colors: [
+                  iconColor.withOpacity(0.9),
+                  iconColor.withOpacity(0.6),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            child: Icon(icon, color: Colors.white, size: 12),
+          ),
           const SizedBox(width: DesignTokens.space8),
           Text(label, style: AppTypography.small),
         ],

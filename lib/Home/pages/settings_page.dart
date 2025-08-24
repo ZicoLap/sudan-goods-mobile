@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
+import 'package:sudan_goods/theme/app_theme.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:sudan_goods/l10n/locale_controller.dart';
@@ -48,13 +49,17 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.settingsTitle),
+        backgroundColor: AppColors.primary,
+        foregroundColor: Colors.white,
+        elevation: 0,
+        title: Text(AppLocalizations.of(context)!.settingsTitle, style: const TextStyle(color: Colors.white)),
         centerTitle: true,
       ),
-      body:
+      body: _gradientBody(
           _isLoading
               ? _buildLoadingSkeleton()
               : SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
                 padding: const EdgeInsets.all(DesignTokens.space16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -62,6 +67,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     if (_hasError) _errorBanner(),
                     _sectionHeader(
                       AppLocalizations.of(context)!.sectionAccount,
+                      icon: Icons.manage_accounts_outlined,
                     ),
                     _card(
                       children: [
@@ -93,6 +99,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
                     _sectionHeader(
                       AppLocalizations.of(context)!.sectionNotifications,
+                      icon: Icons.notifications_active_outlined,
                     ),
                     _card(
                       children: [
@@ -110,9 +117,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             )!.pushNotificationsSubtitle,
                             style: AppTypography.small,
                           ),
-                          secondary: const Icon(
-                            Icons.notifications_active_outlined,
-                          ),
+                          secondary: _iconBubble(Icons.notifications_active_outlined),
                           contentPadding: const EdgeInsets.symmetric(
                             horizontal: DesignTokens.space16,
                           ),
@@ -132,9 +137,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             )!.emailNotificationsSubtitle,
                             style: AppTypography.small,
                           ),
-                          secondary: const Icon(
-                            Icons.mark_email_unread_outlined,
-                          ),
+                          secondary: _iconBubble(Icons.mark_email_unread_outlined),
                           contentPadding: const EdgeInsets.symmetric(
                             horizontal: DesignTokens.space16,
                           ),
@@ -154,7 +157,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             )!.orderStatusUpdatesSubtitle,
                             style: AppTypography.small,
                           ),
-                          secondary: const Icon(Icons.local_shipping_outlined),
+                          secondary: _iconBubble(Icons.local_shipping_outlined),
                           contentPadding: const EdgeInsets.symmetric(
                             horizontal: DesignTokens.space16,
                           ),
@@ -166,6 +169,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
                     _sectionHeader(
                       AppLocalizations.of(context)!.sectionPrivacySecurity,
+                      icon: Icons.verified_user_outlined,
                     ),
                     _card(
                       children: [
@@ -180,7 +184,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             AppLocalizations.of(context)!.twoFactorAuthSubtitle,
                             style: AppTypography.small,
                           ),
-                          secondary: const Icon(Icons.verified_user_outlined),
+                          secondary: _iconBubble(Icons.verified_user_outlined),
                           contentPadding: const EdgeInsets.symmetric(
                             horizontal: DesignTokens.space16,
                           ),
@@ -206,11 +210,12 @@ class _SettingsPageState extends State<SettingsPage> {
 
                     _sectionHeader(
                       AppLocalizations.of(context)!.sectionGeneral,
+                      icon: Icons.tune,
                     ),
                     _card(
                       children: [
                         ListTile(
-                          leading: const Icon(Icons.language_outlined),
+                          leading: _iconBubble(Icons.language_outlined),
                           title: Text(
                             AppLocalizations.of(context)!.language,
                             style: AppTypography.body,
@@ -230,7 +235,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                         const Divider(height: 1),
                         ListTile(
-                          leading: const Icon(Icons.brightness_6_outlined),
+                          leading: _iconBubble(Icons.brightness_6_outlined),
                           title: Text(
                             AppLocalizations.of(context)!.theme,
                             style: AppTypography.body,
@@ -247,7 +252,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                         const Divider(height: 1),
                         ListTile(
-                          leading: const Icon(Icons.public_outlined),
+                          leading: _iconBubble(Icons.public_outlined),
                           title: Text(
                             AppLocalizations.of(context)!.regionAndCurrency,
                             style: AppTypography.body,
@@ -266,6 +271,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
                     _sectionHeader(
                       AppLocalizations.of(context)!.sectionHelpSupport,
+                      icon: Icons.support_agent_outlined,
                     ),
                     _card(
                       children: [
@@ -280,7 +286,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                         const Divider(height: 1),
                         ListTile(
-                          leading: const Icon(Icons.info_outline),
+                          leading: _iconBubble(Icons.info_outline),
                           title: Text(
                             AppLocalizations.of(context)!.appVersion,
                             style: AppTypography.body,
@@ -296,7 +302,10 @@ class _SettingsPageState extends State<SettingsPage> {
 
                     const SizedBox(height: DesignTokens.space24),
 
-                    _sectionHeader(AppLocalizations.of(context)!.dangerZone),
+                    _sectionHeader(
+                      AppLocalizations.of(context)!.dangerZone,
+                      icon: Icons.warning_amber_outlined,
+                    ),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton.icon(
@@ -350,17 +359,27 @@ class _SettingsPageState extends State<SettingsPage> {
                   ],
                 ),
               ),
+          ),
     );
   }
 
-  Widget _sectionHeader(String text) => Padding(
+  Widget _sectionHeader(String text, {IconData? icon}) => Padding(
     padding: const EdgeInsets.only(left: 4.0, bottom: DesignTokens.space8),
-    child: Text(text, style: AppTypography.cardTitle),
+    child: Row(
+      children: [
+        if (icon != null) ...[
+          _iconBubble(icon),
+          const SizedBox(width: DesignTokens.space8),
+        ],
+        Text(text, style: AppTypography.cardTitle),
+      ],
+    ),
   );
 
   Widget _card({required List<Widget> children}) => Container(
     decoration: BoxDecoration(
       color: Colors.white,
+      border: Border.all(color: Colors.black.withOpacity(0.06)),
       borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
       boxShadow: DesignTokens.shadowSmall,
     ),
@@ -374,12 +393,13 @@ class _SettingsPageState extends State<SettingsPage> {
     VoidCallback? onTap,
     Widget? trailing,
   }) => ListTile(
-    leading: Icon(icon),
+    leading: _iconBubble(icon),
     title: Text(title, style: AppTypography.body),
     subtitle:
         subtitle != null ? Text(subtitle, style: AppTypography.small) : null,
     trailing: trailing ?? const Icon(Icons.chevron_right),
     onTap: onTap ?? () => _comingSoon(title),
+    contentPadding: const EdgeInsets.symmetric(horizontal: DesignTokens.space12),
   );
 
   // Helpers to map codes to localized labels
@@ -680,6 +700,7 @@ class _SettingsPageState extends State<SettingsPage> {
       padding: const EdgeInsets.all(DesignTokens.space12),
       decoration: BoxDecoration(
         color: Colors.red.withOpacity(0.08),
+        border: Border.all(color: Colors.red.withOpacity(0.15)),
         borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
       ),
       child: Row(
@@ -753,6 +774,50 @@ class _SettingsPageState extends State<SettingsPage> {
 
   BoxDecoration _skeletonCardDecoration() => BoxDecoration(
     color: Colors.white,
+    border: Border.all(color: Colors.black.withOpacity(0.06)),
     borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
+    boxShadow: DesignTokens.shadowSmall,
   );
+
+  Widget _iconBubble(IconData icon, {double size = 36}) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: LinearGradient(
+          colors: [
+            AppColors.primary.withOpacity(0.9),
+            AppColors.primary.withOpacity(0.6),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Center(
+        child: Icon(icon, color: Colors.white, size: size * 0.55),
+      ),
+    );
+  }
+
+  Widget _gradientBody(Widget child) {
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0xFFF8FBFF), Colors.white, Color(0xFFF8FBFF)],
+          stops: [0.0, 0.6, 1.0],
+        ),
+      ),
+      child: SafeArea(top: false, child: child),
+    );
+  }
 }

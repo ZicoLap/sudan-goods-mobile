@@ -10,6 +10,7 @@ import 'package:sudan_goods/messaging/presentation/controllers/support_controlle
 import 'package:sudan_goods/messaging/presentation/pages/support_chat_page.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
+import 'package:sudan_goods/theme/app_theme.dart';
 
 class MessagesPage extends StatefulWidget {
   const MessagesPage({super.key});
@@ -208,11 +209,28 @@ class _MessagesPageState extends State<MessagesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.navMessages),
+        title: Text(AppLocalizations.of(context)!.navMessages, style: const TextStyle(color: Colors.white)),
+        backgroundColor: AppColors.primary,
+        foregroundColor: Colors.white,
+        elevation: 0,
         centerTitle: true,
       ),
-      body: SafeArea(
-        child: _hasError
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.grey.shade50,
+              Colors.white,
+              Colors.grey.shade50,
+            ],
+            stops: const [0.0, 0.3, 1.0],
+          ),
+        ),
+        child: SafeArea(
+          top: false,
+          child: _hasError
             ? _errorBanner()
             : (_isLoading
                 ? _buildLoadingSkeleton()
@@ -228,28 +246,75 @@ class _MessagesPageState extends State<MessagesPage> {
                       ],
                     ),
                   )),
+        ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _composeNewMessage,
-        label: Text(AppLocalizations.of(context)!.newMessage),
-        icon: const Icon(Icons.edit_outlined),
+      floatingActionButton: Container(
+        height: 70,
+        width: 70,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [AppColors.primary, AppColors.primary.withOpacity(0.8)],
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primary.withOpacity(0.3),
+              blurRadius: 15,
+              offset: const Offset(0, 8),
+              spreadRadius: 0,
+            ),
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+              spreadRadius: 0,
+            ),
+          ],
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(35),
+            onTap: _composeNewMessage,
+            child: Container(
+              height: 70,
+              width: 70,
+              decoration: const BoxDecoration(shape: BoxShape.circle),
+              child: const Icon(
+                Icons.edit_outlined,
+                size: 28,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
     );
   }
 
   Widget _searchField() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
         borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
         boxShadow: DesignTokens.shadowSmall,
       ),
-      padding: const EdgeInsets.symmetric(horizontal: DesignTokens.space12),
       child: TextField(
         decoration: InputDecoration(
           hintText: AppLocalizations.of(context)!.searchMessagesHint,
-          border: InputBorder.none,
-          prefixIcon: const Icon(Icons.search),
+          filled: true,
+          fillColor: AppColors.inputField,
+          prefixIcon: const Icon(Icons.search, color: AppColors.primary),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
+            borderSide: BorderSide.none,
+          ),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: DesignTokens.space12,
+            vertical: DesignTokens.space12,
+          ),
         ),
         onChanged: (value) {
           // Placeholder: no real filtering yet
@@ -380,10 +445,21 @@ class _MessagesPageState extends State<MessagesPage> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               decoration: BoxDecoration(
-                color: Colors.red,
+                gradient: const LinearGradient(colors: [Colors.red, Colors.redAccent]),
                 borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.white, width: 1.5),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.red.withOpacity(0.2),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
-              child: Text('${c.unreadCount}', style: AppTypography.caption.copyWith(color: Colors.white)),
+              child: Text(
+                '${c.unreadCount}',
+                style: AppTypography.captionBold.copyWith(color: Colors.white),
+              ),
             ),
         ],
       ),
@@ -542,36 +618,68 @@ class _MessagesPageState extends State<MessagesPage> {
   void _composeNewMessage() {
     showModalBottomSheet(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (ctx) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(height: 12),
-            Text(AppLocalizations.of(context)!.startNewMessage, style: AppTypography.cardTitle),
-            const SizedBox(height: 8),
-            ListTile(
-              leading: const Icon(Icons.storefront_outlined),
-              title: Text(AppLocalizations.of(context)!.messageAStore),
-              onTap: () {
-                Navigator.pop(ctx);
-                _showStoreSearchSheet();
-              },
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return SafeArea(
+          child: Container(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
             ),
-            ListTile(
-              leading: const Icon(Icons.support_agent_outlined),
-              title: Text(AppLocalizations.of(context)!.contactSupport),
-              onTap: () {
-                Navigator.pop(ctx);
-                _startSupportChat();
-              },
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 10, 16, 24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Drag handle
+                  Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.black12,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          AppLocalizations.of(context)!.startNewMessage,
+                          style: AppTypography.cardTitle,
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.close_rounded),
+                        onPressed: () => Navigator.pop(ctx),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  _SheetActionCard(
+                    icon: Icons.storefront_outlined,
+                    title: AppLocalizations.of(context)!.messageAStore,
+                    onTap: () {
+                      Navigator.pop(ctx);
+                      _showStoreSearchSheet();
+                    },
+                  ),
+                  const SizedBox(height: 12),
+                  _SheetActionCard(
+                    icon: Icons.support_agent_outlined,
+                    title: AppLocalizations.of(context)!.contactSupport,
+                    onTap: () {
+                      Navigator.pop(ctx);
+                      _startSupportChat();
+                    },
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: 12),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -625,4 +733,106 @@ class _Conversation {
     this.avatarIcon,
     this.storeLogoUrl,
   });
+}
+
+class _SheetActionCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final VoidCallback onTap;
+
+  const _SheetActionCard({
+    required this.icon,
+    required this.title,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: onTap,
+        splashColor: AppColors.primary.withOpacity(0.10),
+        highlightColor: AppColors.primary.withOpacity(0.06),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Colors.white,
+                AppColors.inputField.withOpacity(0.25),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppColors.primary.withOpacity(0.08)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+              BoxShadow(
+                color: AppColors.primary.withOpacity(0.08),
+                blurRadius: 20,
+                offset: const Offset(0, 8),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [AppColors.primary, AppColors.primary.withOpacity(0.85)],
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primary.withOpacity(0.25),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Icon(icon, color: Colors.white),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  title,
+                  style: AppTypography.bodyLarge.copyWith(fontWeight: FontWeight.w600),
+                ),
+              ),
+              Container(
+                width: 28,
+                height: 28,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white,
+                  border: Border.all(color: Colors.black12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.06),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: const Center(
+                  child: Icon(Icons.arrow_forward_ios_rounded, size: 14, color: Colors.black54),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }

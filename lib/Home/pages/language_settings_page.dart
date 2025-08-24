@@ -15,7 +15,7 @@ class LanguageSettingsPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.language),
+        title: Text(l10n.language, style: const TextStyle(color: Colors.white)),
         centerTitle: true,
       ),
       body: ListView(

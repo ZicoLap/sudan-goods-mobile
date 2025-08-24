@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:sudan_goods/order/order_details_page.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
+import 'package:sudan_goods/theme/app_theme.dart';
 
 class OrdersPage extends StatelessWidget {
   const OrdersPage({super.key});
@@ -27,12 +28,23 @@ class OrdersPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.myOrders),
+        backgroundColor: AppColors.primary,
+        foregroundColor: Colors.white,
+        elevation: 0,
+        title: Text(l10n.myOrders, style: const TextStyle(color: Colors.white)),
         centerTitle: true,
       ),
-      body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-        stream: ordersQuery.snapshots(),
-        builder: (context, snapshot) {
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFFF7F9FC), Colors.white, Color(0xFFF7F9FC)],
+          ),
+        ),
+        child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+          stream: ordersQuery.snapshots(),
+          builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
@@ -46,7 +58,7 @@ class OrdersPage extends StatelessWidget {
           }
 
           return ListView.separated(
-            physics: NeverScrollableScrollPhysics(),
+            physics: const BouncingScrollPhysics(),
             padding: const EdgeInsets.all(DesignTokens.space12),
             itemCount: docs.length,
             separatorBuilder: (_, __) => const SizedBox(height: DesignTokens.space12),
@@ -80,7 +92,8 @@ class OrdersPage extends StatelessWidget {
               );
             },
           );
-        },
+          },
+        ),
       ),
     );
   }
@@ -138,14 +151,28 @@ class _EmptyOrdersState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.shopping_bag_outlined, size: 64, color: Colors.grey),
-            const SizedBox(height: 12),
-            Text(l10n.noOrdersYet, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-            const SizedBox(height: 6),
+            Container(
+              width: 84,
+              height: 84,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Color(0xFFFFEDD9), Colors.white],
+                ),
+              ),
+              child: const Center(
+                child: Icon(Icons.shopping_bag_outlined, size: 40, color: Colors.black45),
+              ),
+            ),
+            const SizedBox(height: DesignTokens.space12),
+            Text(l10n.noOrdersYet, style: AppTypography.heading6, textAlign: TextAlign.center),
+            const SizedBox(height: DesignTokens.space8),
             Text(
               l10n.ordersEmptyHint,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.black54),
+              style: AppTypography.body.copyWith(color: Colors.black54),
             ),
           ],
         ),
@@ -178,29 +205,23 @@ class _OrderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    print(orderId);
     final dateStr = createdAt != null ? DateFormat('MMM d, yyyy • HH:mm').format(createdAt!) : '-';
     final shortId = orderId.length > 6 ? orderId.substring(orderId.length - 6).toUpperCase() : orderId;
     final statusChip = _buildStatusChip(context, status);
 
     return Material(
       color: Colors.white,
-      borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
+      borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
       elevation: 0,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
+        borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
         child: Container(
           padding: const EdgeInsets.all(DesignTokens.space12),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.04),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
+            borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
+            boxShadow: DesignTokens.shadowMedium,
+            border: Border.all(color: Colors.black.withOpacity(0.05)),
             color: Colors.white,
           ),
           child: Row(
@@ -277,13 +298,29 @@ class _OrderCard extends StatelessWidget {
 
   Widget _iconBox(IconData icon, Color color) {
     return Container(
-      height: 44,
-      width: 44,
+      height: 48,
+      width: 48,
       decoration: BoxDecoration(
-        color: color.withOpacity(0.08),
-        borderRadius: BorderRadius.circular(12),
+        shape: BoxShape.circle,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [color.withOpacity(0.18), color.withOpacity(0.06)],
+        ),
+        boxShadow: DesignTokens.shadowSmall,
       ),
-      child: Icon(icon, color: color),
+      child: Center(
+        child: Container(
+          height: 36,
+          width: 36,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.white,
+            border: Border.all(color: color.withOpacity(0.15)),
+          ),
+          child: Icon(icon, color: color),
+        ),
+      ),
     );
   }
 
@@ -323,10 +360,15 @@ class _OrderCard extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.12),
         borderRadius: BorderRadius.circular(100),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [color.shade100.withOpacity(0.6), color.shade50],
+        ),
+        border: Border.all(color: color.shade200),
       ),
       child: Text(
         label,

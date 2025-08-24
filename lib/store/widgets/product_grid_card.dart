@@ -24,14 +24,19 @@ class ProductGridCard extends StatelessWidget {
     final hasDiscount =
         product.discountPrice != null && product.discountPrice! > 0;
     final isOutOfStock = product.quantity == 0;
+    final int? discountPercent = hasDiscount
+        ? (100 - ((product.discountPrice! / product.price) * 100)).round()
+        : null;
 
     return RepaintBoundary(
-      child: SizedBox(
-        height: 260,
-        child: Material(
+      child: Material(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
         elevation: 1,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
+          side: BorderSide(color: Colors.black.withOpacity(0.06)),
+        ),
+        clipBehavior: Clip.antiAlias,
         child: InkWell(
           borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
           onTap: onTap,
@@ -41,6 +46,7 @@ class ProductGridCard extends StatelessWidget {
                 padding: const EdgeInsets.all(DesignTokens.space12),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     // 🖼️ Product Image
                     ClipRRect(
@@ -64,6 +70,21 @@ class ProductGridCard extends StatelessWidget {
                                 child: const Icon(Icons.image_outlined, size: 40, color: Colors.grey),
                               ),
                             ),
+                            Positioned(
+                              left: 0,
+                              right: 0,
+                              bottom: 0,
+                              height: 24,
+                              child: DecoratedBox(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [Colors.transparent, Colors.black.withOpacity(0.06)],
+                                  ),
+                                ),
+                              ),
+                            ),
                             if (isOutOfStock)
                               Container(
                                 color: Colors.black45,
@@ -78,52 +99,69 @@ class ProductGridCard extends StatelessWidget {
                       ),
                     ),
 
-                    const SizedBox(height: DesignTokens.space8),
+                    const SizedBox(height: 6),
 
                     // 📦 Info: name, meta, price
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Text(
-                            product.name,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: AppTypography.cardTitle,
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          product.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTypography.cardTitle,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          isOutOfStock
+                              ? 'Out of stock'
+                              : '${product.weight}g • ${product.quantity} in stock',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTypography.small.copyWith(
+                            color: isOutOfStock ? Colors.red : Colors.black87,
                           ),
-                          Text(
-                            '${product.weight} kg',
-                            style: AppTypography.small,
-                          ),
-                          Text(
-                            product.quantity > 0 ? '${product.quantity} in stock' : 'Out of stock',
-                            style: AppTypography.small.copyWith(
-                              color: isOutOfStock ? Colors.red : Colors.black87,
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                '€${(hasDiscount ? product.discountPrice! : product.price).toStringAsFixed(2)}',
-                                style: AppTypography.bodyBold.copyWith(
-                                  color: hasDiscount ? Colors.red : Colors.black,
-                                ),
-                              ),
-                              if (hasDiscount) ...[
-                                const SizedBox(width: DesignTokens.space8),
-                                Text(
-                                  '€${product.price.toStringAsFixed(2)}',
-                                  style: AppTypography.small.copyWith(
-                                    color: Colors.grey,
-                                    decoration: TextDecoration.lineThrough,
+                        ),
+                        const SizedBox(height: 6),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: hasDiscount
+                              ? [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(999),
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          AppColors.primary.withOpacity(0.95),
+                                          AppColors.primary.withOpacity(0.75),
+                                        ],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                      ),
+                                    ),
+                                    child: Text(
+                                      '€${product.discountPrice!.toStringAsFixed(2)}',
+                                      style: AppTypography.bodyBold.copyWith(color: Colors.white),
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ],
-                          ),
-                        ],
-                      ),
+                                  const SizedBox(width: DesignTokens.space8),
+                                  Text(
+                                    '€${product.price.toStringAsFixed(2)}',
+                                    style: AppTypography.small.copyWith(
+                                      color: Colors.grey,
+                                      decoration: TextDecoration.lineThrough,
+                                    ),
+                                  ),
+                                ]
+                              : [
+                                  Text(
+                                    '€${product.price.toStringAsFixed(2)}',
+                                    style: AppTypography.bodyBold,
+                                  ),
+                                ],
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -141,9 +179,19 @@ class ProductGridCard extends StatelessWidget {
                       onTap: isOutOfStock ? null : onAdd,
                       child: Container(
                         padding: const EdgeInsets.all(6),
-                        decoration: const BoxDecoration(
+                        decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: AppColors.primary,
+                          gradient: LinearGradient(
+                            colors: [
+                              AppColors.primary.withOpacity(0.95),
+                              AppColors.primary.withOpacity(0.75),
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          boxShadow: const [
+                            BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3)),
+                          ],
                         ),
                         child: cartQuantity > 0
                             ? Container(
@@ -152,11 +200,7 @@ class ProductGridCard extends StatelessWidget {
                                 alignment: Alignment.center,
                                 child: Text(
                                   '$cartQuantity',
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
+                                  style: AppTypography.smallBold.copyWith(color: Colors.white),
                                 ),
                               )
                             : const Icon(
@@ -170,19 +214,54 @@ class ProductGridCard extends StatelessWidget {
                 ),
               ),
 
-              // Out of stock badge
-              if (isOutOfStock)
-                const Positioned(
+              // Discount/Stock badge (top-left)
+              if (hasDiscount && discountPercent != null)
+                Positioned(
                   top: 8,
                   left: 8,
-                  child: Chip(
-                    label: Text('Out of stock'),
-                    visualDensity: VisualDensity.compact,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(999),
+                      gradient: LinearGradient(
+                        colors: [
+                          AppColors.primary.withOpacity(0.95),
+                          AppColors.primary.withOpacity(0.75),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2))],
+                    ),
+                    child: Text(
+                      '-$discountPercent%',
+                      style: AppTypography.smallBold.copyWith(color: Colors.white),
+                    ),
+                  ),
+                )
+              else if (isOutOfStock)
+                Positioned(
+                  top: 8,
+                  left: 8,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(999),
+                      gradient: LinearGradient(
+                        colors: [Colors.grey.shade700, Colors.grey.shade500],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2))],
+                    ),
+                    child: Text(
+                      'OUT',
+                      style: AppTypography.smallBold.copyWith(color: Colors.white),
+                    ),
                   ),
                 ),
             ],
           ),
-        ),
         ),
       ),
     );
