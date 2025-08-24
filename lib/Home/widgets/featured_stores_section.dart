@@ -77,6 +77,7 @@ class FeaturedStoresSection extends StatelessWidget {
                 separatorBuilder: (_, __) => const SizedBox(width: DesignTokens.space16),
                 itemBuilder: (context, index) {
                   return StoreCard(
+                    key: ValueKey(stores[index].id),
                     store: stores[index],
                     onTap: () {
                       Navigator.push(

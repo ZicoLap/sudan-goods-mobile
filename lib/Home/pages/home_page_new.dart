@@ -13,8 +13,21 @@ import 'package:sudan_goods/theme/app_theme.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
 import 'package:sudan_goods/Home/controller/store_filter_controller.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  late final Future<List<Category>> _categoriesFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _categoriesFuture = CategoryService().fetchActiveCategories();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +108,7 @@ class HomePage extends StatelessWidget {
 
                 const SizedBox(height: DesignTokens.sectionSpacingMedium),
                 FutureBuilder<List<Category>>(
-                  future: CategoryService().fetchActiveCategories(),
+                  future: _categoriesFuture,
                   builder: (context, snapshot) {
                     final selectedId = context.select<StoreFilterController, String>((c) => c.selectedCategoryId);
                     final onSelect = context.read<StoreFilterController>().selectCategory;

@@ -99,6 +99,7 @@ class _AllStoresSectionState extends State<AllStoresSection> {
                   separatorBuilder: (_, __) => const SizedBox(height: DesignTokens.space20),
                   itemBuilder: (context, index) {
                     return BigStoreCard(
+                      key: ValueKey(stores[index].id),
                       store: stores[index],
                       onTap: () {
                         // TODO: Navigate to StoreDetailsPage

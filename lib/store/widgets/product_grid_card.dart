@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:sudan_goods/models/store/product_model.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
@@ -24,9 +25,10 @@ class ProductGridCard extends StatelessWidget {
         product.discountPrice != null && product.discountPrice! > 0;
     final isOutOfStock = product.quantity == 0;
 
-    return SizedBox(
-      height: 260,
-      child: Material(
+    return RepaintBoundary(
+      child: SizedBox(
+        height: 260,
+        child: Material(
         color: Colors.white,
         borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
         elevation: 1,
@@ -48,18 +50,15 @@ class ProductGridCard extends StatelessWidget {
                         child: Stack(
                           fit: StackFit.expand,
                           children: [
-                            Image.network(
-                              product.images.isNotEmpty ? product.images.first : '',
+                            CachedNetworkImage(
+                              imageUrl: product.images.isNotEmpty ? product.images.first : '',
                               fit: BoxFit.cover,
-                              loadingBuilder: (context, child, loadingProgress) {
-                                if (loadingProgress == null) return child;
-                                return Shimmer.fromColors(
-                                  baseColor: Colors.grey.shade300,
-                                  highlightColor: Colors.grey.shade100,
-                                  child: Container(color: Colors.white),
-                                );
-                              },
-                              errorBuilder: (_, __, ___) => Container(
+                              placeholder: (context, url) => Shimmer.fromColors(
+                                baseColor: Colors.grey.shade300,
+                                highlightColor: Colors.grey.shade100,
+                                child: Container(color: Colors.white),
+                              ),
+                              errorWidget: (_, __, ___) => Container(
                                 color: Colors.grey.shade100,
                                 alignment: Alignment.center,
                                 child: const Icon(Icons.image_outlined, size: 40, color: Colors.grey),
@@ -183,6 +182,7 @@ class ProductGridCard extends StatelessWidget {
                 ),
             ],
           ),
+        ),
         ),
       ),
     );

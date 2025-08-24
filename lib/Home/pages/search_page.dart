@@ -235,7 +235,7 @@ class _SearchPageState extends State<SearchPage> {
                             separatorBuilder: (_, __) => const SizedBox(height: DesignTokens.space16),
                             itemBuilder: (context, index) {
                               final group = results[index];
-                              return _StoreSection(group: group);
+                              return _StoreSection(key: ValueKey(group.store.id), group: group);
                             },
                           );
                         },
@@ -253,7 +253,7 @@ class _SearchPageState extends State<SearchPage> {
 
 class _StoreSection extends StatelessWidget {
   final StoreWithProducts group;
-  const _StoreSection({required this.group});
+  const _StoreSection({super.key, required this.group});
 
   @override
   Widget build(BuildContext context) {
@@ -262,7 +262,7 @@ class _StoreSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Store header
-        BigStoreCard(store: group.store),
+        BigStoreCard(key: ValueKey(group.store.id), store: group.store),
         const SizedBox(height: DesignTokens.space12),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: DesignTokens.space12),
@@ -288,6 +288,7 @@ class _StoreSection extends StatelessWidget {
               selector: (_, c) => c.getProductQuantity(product.storeId, product.id),
               builder: (context, qty, _) {
                 return ProductGridCard(
+                  key: ValueKey(product.id),
                   product: product,
                   onTap: () {
                     showModalBottomSheet(

@@ -46,6 +46,7 @@ class CategoriesSection extends StatelessWidget {
             itemBuilder: (context, index) {
               final category = categories[index];
               return CategoryChip(
+                key: ValueKey(category.id),
                 category: category,
                 isSelected: category.id == selectedCategoryId,
                 onTap: () {

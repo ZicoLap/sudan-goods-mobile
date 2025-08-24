@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:sudan_goods/models/store/store_model.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
@@ -25,7 +26,7 @@ class StoreCoverSection extends StatelessWidget {
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: store.coverImageUrl != null && store.coverImageUrl!.isNotEmpty
-                      ? NetworkImage(store.coverImageUrl!)
+                      ? CachedNetworkImageProvider(store.coverImageUrl!)
                       : const AssetImage('assets/images/sudanese_spices.png') as ImageProvider,
                   fit: BoxFit.cover,
                 ),

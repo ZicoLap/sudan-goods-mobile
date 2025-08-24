@@ -1,0 +1,51 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Users can read/write only their own following subcollection
+    match /users/{userId}/following/{storeId} {
+      allow read: if isSignedIn() && request.auth.uid == userId;
+
+      allow create: if isSignedIn() && request.auth.uid == userId
+        && request.resource.data.storeId == storeId
+        && request.resource.data.keys().hasOnly(['storeId','storeName','storeLogoUrl','storeIsActive','followedAt'])
+        && get(/databases/$(database)/documents/stores/$(storeId)).data.isActive == true
+        && get(/databases/$(database)/documents/stores/$(storeId)).data.isApproved == true;
+
+      // For simplicity, block updates; clients can only create (follow) or delete (unfollow)
+      allow update: if false;
+
+      // Unfollow allowed by the user themselves
+      allow delete: if isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Mirror followers under each store. For emulator/dev we allow clients to
+    // write their own follower document. In production you should restrict this
+    // and perform writes via Cloud Functions.
+    match /stores/{storeId}/followers/{userId} {
+      allow read: if isSignedIn();
+
+      allow create: if isSignedIn() && request.auth.uid == userId
+        && request.resource.data.keys().hasOnly(['userId','followedAt'])
+        && request.resource.data.userId == userId
+        && get(/databases/$(database)/documents/stores/$(storeId)).data.isActive == true
+        && get(/databases/$(database)/documents/stores/$(storeId)).data.isApproved == true;
+
+      // Prevent arbitrary updates; clients can only create or delete
+      allow update: if false;
+      allow delete: if isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Note: You may have other rules for /stores/{storeId}. This draft intentionally
+    // does not permit client writes to followersCount; leave updates to backend.
+    match /stores/{storeId} {
+      allow read: if true; // public store data
+      // Do not allow client updates in this draft.
+      allow write: if false;
+    }
+  }
+}

@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:sudan_goods/models/store/store_model.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
+import 'package:provider/provider.dart';
+import 'package:sudan_goods/follow/presentation/controllers/follow_controller.dart';
+import 'package:sudan_goods/follow/domain/entities/store_summary.dart';
 
 class StoreInfoSection extends StatelessWidget {
   final Store store;
@@ -28,27 +31,7 @@ class StoreInfoSection extends StatelessWidget {
                   style: AppTypography.heading5,
                 ),
               ),
-              ElevatedButton(
-                onPressed: () {
-                  // TODO: Follow/unfollow logic
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: DesignTokens.space16,
-                    vertical: DesignTokens.space8,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
-                  ),
-                  elevation: 0,
-                ),
-                child: const Text(
-                  '+ Follow',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
+              _FollowButton(store: store),
             ],
           ),
           const SizedBox(height: DesignTokens.space8),
@@ -94,6 +77,138 @@ class StoreInfoSection extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _FollowButton extends StatefulWidget {
+  final Store store;
+  const _FollowButton({required this.store});
+
+  @override
+  State<_FollowButton> createState() => _FollowButtonState();
+}
+
+class _FollowButtonState extends State<_FollowButton> {
+  bool _busy = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Warm up the stream so that first build has the latest state ASAP.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final ctrl = context.read<FollowController?>();
+      ctrl?.watchIsFollowing(widget.store.id);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final ctrl = Provider.of<FollowController?>(context, listen: false);
+
+    // If controller not available yet (e.g., user not loaded), show disabled button
+    if (ctrl == null) {
+      return ElevatedButton(
+        onPressed: null,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.primary,
+          foregroundColor: Colors.white,
+          padding: const EdgeInsets.symmetric(
+            horizontal: DesignTokens.space16,
+            vertical: DesignTokens.space8,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
+          ),
+          elevation: 0,
+        ),
+        child: const Text(
+          '+ Follow',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+      );
+    }
+
+    final storeId = widget.store.id;
+    final initial = ctrl.getCachedFollowing(storeId) ?? false;
+
+    return StreamBuilder<bool>(
+      stream: ctrl.watchIsFollowing(storeId),
+      initialData: initial,
+      builder: (context, snapshot) {
+        final isFollowing = snapshot.data ?? false;
+        return ElevatedButton(
+          onPressed: _busy
+              ? null
+              : () async {
+                  setState(() => _busy = true);
+                  final targetState = !isFollowing; // optimistic target
+                  await ctrl.toggleFollow(
+                    storeId,
+                    knownSummary: StoreSummary.fromStore(widget.store),
+                  );
+                  if (!mounted) return;
+                  setState(() => _busy = false);
+                  if (ctrl.lastError != null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Could not update follow: ${ctrl.lastError}')),
+                    );
+                  } else {
+                    // Success snackbar
+                    final messenger = ScaffoldMessenger.of(context);
+                    messenger.hideCurrentSnackBar();
+                    messenger.showSnackBar(
+                      SnackBar(
+                        behavior: SnackBarBehavior.floating,
+                        margin: const EdgeInsets.all(DesignTokens.space12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
+                        ),
+                        backgroundColor: targetState
+                            ? Colors.green.shade600
+                            : Colors.grey.shade800,
+                        duration: const Duration(seconds: 2),
+                        content: Row(
+                          children: [
+                            Icon(
+                              targetState ? Icons.check_circle : Icons.remove_circle,
+                              color: Colors.white,
+                            ),
+                            const SizedBox(width: DesignTokens.space8),
+                            Expanded(
+                              child: Text(
+                                targetState
+                                    ? "You're now following ${widget.store.name}"
+                                    : 'Unfollowed ${widget.store.name}',
+                                style: AppTypography.body.copyWith(color: Colors.white),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+                },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.primary,
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(
+              horizontal: DesignTokens.space16,
+              vertical: DesignTokens.space8,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
+            ),
+            elevation: 0,
+          ),
+          child: Text(
+            isFollowing ? 'Following' : (_busy ? '...' : '+ Follow'),
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+        );
+      },
     );
   }
 }

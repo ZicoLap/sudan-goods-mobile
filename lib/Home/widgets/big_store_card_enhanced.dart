@@ -51,10 +51,14 @@ class _BigStoreCardState extends State<BigStoreCard> with SingleTickerProviderSt
       builder: (context, child) {
         return Transform.scale(
           scale: _scaleAnimation.value,
-          child: Material(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
-            child: InkWell(
+          child: child,
+        );
+      },
+      child: RepaintBoundary(
+        child: Material(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
+          child: InkWell(
               onTap: () {
                 Navigator.push(
                   context,
@@ -78,8 +82,8 @@ class _BigStoreCardState extends State<BigStoreCard> with SingleTickerProviderSt
               borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
               splashColor: AppColors.primary.withOpacity(0.1),
               highlightColor: AppColors.primary.withOpacity(0.05),
-              child: Container(
-                decoration: BoxDecoration(
+            child: Container(
+              decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -110,9 +114,9 @@ class _BigStoreCardState extends State<BigStoreCard> with SingleTickerProviderSt
                     width: 1,
                   ),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                     // Cover image with logo overlay and gradient
                     Stack(
                       children: [
@@ -435,13 +439,12 @@ class _BigStoreCardState extends State<BigStoreCard> with SingleTickerProviderSt
                         ],
                       ),
                     ),
-                  ],
-                ),
+                ],
               ),
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }

@@ -12,6 +12,8 @@ import 'package:sudan_goods/l10n/locale_controller.dart';
 import 'package:sudan_goods/l10n/locale_persistence_service.dart';
 import 'package:sudan_goods/onboarding/app_start_gate.dart';
 import 'package:sudan_goods/Home/controller/store_filter_controller.dart';
+import 'package:sudan_goods/follow/presentation/controllers/follow_controller.dart';
+import 'package:sudan_goods/follow/presentation/wiring/follow_wiring_example.dart';
 
 import 'firebase_options.dart';
 
@@ -21,6 +23,9 @@ import 'firebase_options.dart';
 /// platform-specific options, and bootstraps the widget tree with providers.
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // We intentionally provide a ChangeNotifier (FollowController) using ProxyProvider,
+  // and we manage disposal manually. Disable Provider's debug check for this case.
+  Provider.debugCheckInvalidValueType = null;
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   if (kDebugMode) {
     print("Firebase initialized successfully");
@@ -29,9 +34,23 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) => CartController()..loadCartsFromFirestore(),
+          create: (_) => CartController(),
         ),
         ChangeNotifierProvider(create: (_) => UserProvider()),
+        // FollowController depends on the authenticated user. It will be created
+        // once the user has been loaded in UserProvider.
+        ProxyProvider<UserProvider, FollowController?>(
+          update: (_, userProvider, previous) {
+            if (!userProvider.isUserLoaded) {
+              return previous; // user not loaded yet
+            }
+            // Reuse previous instance if available; otherwise create one.
+            if (previous != null) return previous;
+            final uid = userProvider.currentUser.uid;
+            return makeFollowControllerForUid(uid);
+          },
+          dispose: (_, value) => value?.dispose(),
+        ),
         ChangeNotifierProvider(
           create: (_) => CheckoutController(
             checkoutService: CheckoutService(),
@@ -59,7 +78,8 @@ class MyApp extends StatelessWidget {
       valueListenable: localeController.locale,
       builder: (context, locale, _) {
         return MaterialApp(
-          onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
+          onGenerateTitle: (context) =>
+              AppLocalizations.of(context)?.appTitle ?? 'Sudan Goods',
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           locale: locale,

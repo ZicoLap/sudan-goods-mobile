@@ -1,0 +1,11 @@
+{
+  "name": "sudan-goods-follow-rules-tests",
+  "private": true,
+  "scripts": {
+    "test": "jest --runInBand"
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "^3.0.2",
+    "jest": "^29.7.0"
+  }
+}

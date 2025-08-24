@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:sudan_goods/models/store/product_model.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
@@ -87,20 +88,17 @@ class FeaturedProductCard extends StatelessWidget {
               // Image
               ClipRRect(
                 borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
-                child: Image.network(
-                  product.images.isNotEmpty ? product.images.first : '',
+                child: CachedNetworkImage(
+                  imageUrl: product.images.isNotEmpty ? product.images.first : '',
                   width: 80,
                   height: 80,
                   fit: BoxFit.cover,
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return Shimmer.fromColors(
-                      baseColor: Colors.grey.shade300,
-                      highlightColor: Colors.grey.shade100,
-                      child: Container(width: 80, height: 80, color: Colors.white),
-                    );
-                  },
-                  errorBuilder: (_, __, ___) => Container(
+                  placeholder: (context, url) => Shimmer.fromColors(
+                    baseColor: Colors.grey.shade300,
+                    highlightColor: Colors.grey.shade100,
+                    child: Container(width: 80, height: 80, color: Colors.white),
+                  ),
+                  errorWidget: (_, __, ___) => Container(
                     width: 80,
                     height: 80,
                     color: Colors.grey.shade100,

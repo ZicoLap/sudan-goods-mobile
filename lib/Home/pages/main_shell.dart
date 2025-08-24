@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sudan_goods/cart/cart_controller.dart';
 import 'package:sudan_goods/Home/pages/home_page_new.dart';
 import 'package:sudan_goods/Home/pages/orders_page.dart';
 import 'package:sudan_goods/Home/pages/messages_page.dart';
@@ -23,6 +25,16 @@ class _MainShellState extends State<MainShell> {
     GlobalKey<NavigatorState>(), // Messages
     GlobalKey<NavigatorState>(), // Profile
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    // Defer Firestore cart load until the first frame after MainShell mounts.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final cart = Provider.of<CartController>(context, listen: false);
+      cart.loadCartsFromFirestore();
+    });
+  }
 
   Future<bool> _onWillPop() async {
     final nav = _navigatorKeys[_currentIndex].currentState!;

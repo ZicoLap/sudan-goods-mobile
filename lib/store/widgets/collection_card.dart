@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:sudan_goods/models/store/collection_model.dart';
@@ -29,10 +30,22 @@ class CollectionCard extends StatelessWidget {
               Expanded(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
-                  child: Image.network(
-                    collection.imageUrl.isNotEmpty ? collection.imageUrl : '',
+                  child: CachedNetworkImage(
+                    imageUrl: collection.imageUrl.isNotEmpty ? collection.imageUrl : '',
                     fit: BoxFit.cover,
-                    loadingBuilder: (context, child, loadingProgress) {
+                    placeholder: (context, url) => Shimmer.fromColors(
+                    baseColor: Colors.grey.shade300,
+                    highlightColor: Colors.grey.shade100,
+                    child: Container(width: 80, height: 80, color: Colors.white),
+                  ),
+                  errorWidget: (_, __, ___) => Container(
+                    width: 80,
+                    height: 80,
+                    color: Colors.grey.shade100,
+                    alignment: Alignment.center,
+                    child: const Icon(Icons.image_outlined, size: 28, color: Colors.grey),
+                  ),
+                    /* loadingBuilder: (context, child, loadingProgress) {
                       if (loadingProgress == null) return child;
                       return Shimmer.fromColors(
                         baseColor: Colors.grey.shade300,
@@ -44,7 +57,7 @@ class CollectionCard extends StatelessWidget {
                       color: Colors.grey.shade100,
                       alignment: Alignment.center,
                       child: const Icon(Icons.collections_outlined, color: Colors.grey, size: 28),
-                    ),
+                    ), */
                   ),
                 ),
               ),

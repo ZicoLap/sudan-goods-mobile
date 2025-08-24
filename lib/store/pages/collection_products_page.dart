@@ -138,6 +138,7 @@ class CollectionProductsPage extends StatelessWidget {
                       selector: (_, c) => c.getProductQuantity(product.storeId, product.id),
                       builder: (context, qty, _) {
                         return ProductGridCard(
+                          key: ValueKey(product.id),
                           product: product,
                           onTap: () {
                             showProductDetailsBottomSheet(context, product);

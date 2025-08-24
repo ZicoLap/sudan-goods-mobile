@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
@@ -8,6 +9,8 @@ import 'package:sudan_goods/Home/pages/edit_profile_page.dart';
 import 'package:sudan_goods/Home/pages/settings_page.dart';
 import 'package:sudan_goods/models/user/user_model.dart';
 import 'package:sudan_goods/user/user_provider.dart';
+import 'package:sudan_goods/follow/presentation/controllers/follow_controller.dart';
+import 'package:sudan_goods/follow/domain/entities/store_summary.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -20,8 +23,12 @@ class _ProfilePageState extends State<ProfilePage> {
   bool _hasError = false;
 
   int _ordersCount = 0;
-  int _favorites = 0;
-  int _reviews = 0;
+  final int _favorites = 0;
+  final int _reviews = 0;
+
+  // Hoisted once-per-lifecycle stream to prevent StreamBuilder churn
+  Stream<List<StoreSummary>>? _followingStream;
+  FollowController? _lastFollowCtrl;
 
   @override
   void initState() {
@@ -37,6 +44,17 @@ class _ProfilePageState extends State<ProfilePage> {
         // Ignore if provider not ready yet
       }
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Initialize or update the followed stores stream when controller changes
+    final followCtrl = Provider.of<FollowController?>(context);
+    if (followCtrl != null && followCtrl != _lastFollowCtrl) {
+      _followingStream = followCtrl.getFollowingPage(limit: 20);
+      _lastFollowCtrl = followCtrl;
+    }
   }
 
   Future<void> _fetchOrdersCount(String uid) async {
@@ -89,6 +107,17 @@ class _ProfilePageState extends State<ProfilePage> {
                         _buildHeaderCard(userProvider.currentUser),
                         const SizedBox(height: DesignTokens.space16),
                         _buildStatsRow(),
+                        const SizedBox(height: DesignTokens.space16),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                          child: Text(
+                            // No l10n key available yet
+                            'Followed Stores',
+                            style: AppTypography.cardTitle,
+                          ),
+                        ),
+                        const SizedBox(height: DesignTokens.space8),
+                        _buildFollowedStores(),
                         const SizedBox(height: DesignTokens.space16),
                         Padding(
                           padding: const EdgeInsets.symmetric(
@@ -328,6 +357,88 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildFollowedStores() {
+    final followCtrl = Provider.of<FollowController?>(context);
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
+        boxShadow: DesignTokens.shadowSmall,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: DesignTokens.space8),
+        child: followCtrl == null
+            ? Padding(
+                padding: const EdgeInsets.all(DesignTokens.space12),
+                child: Text(
+                  'Please sign in to follow stores',
+                  style: AppTypography.body,
+                ),
+              )
+            : StreamBuilder<List<StoreSummary>>(
+                stream: _followingStream,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Padding(
+                      padding: EdgeInsets.all(DesignTokens.space12),
+                      child: LinearProgressIndicator(minHeight: 2),
+                    );
+                  }
+                  if (snapshot.hasError) {
+                    return Padding(
+                      padding: const EdgeInsets.all(DesignTokens.space12),
+                      child: Text(
+                        AppLocalizations.of(context)!.failedToLoadProfile,
+                        style: AppTypography.body,
+                      ),
+                    );
+                  }
+                  final items = snapshot.data ?? const <StoreSummary>[];
+                  if (items.isEmpty) {
+                    return Padding(
+                      padding: const EdgeInsets.all(DesignTokens.space12),
+                      child: Text(
+                        'No followed stores yet',
+                        style: AppTypography.body,
+                      ),
+                    );
+                  }
+                  return ListView.separated(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: items.length,
+                    separatorBuilder: (_, __) => const Divider(height: 1),
+                    itemBuilder: (context, index) {
+                      final s = items[index];
+                      return ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: Theme.of(context).primaryColor.withOpacity(0.12),
+                          child: Text(
+                            s.name.isNotEmpty ? s.name[0].toUpperCase() : '?',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          foregroundImage: s.logoUrl != null && s.logoUrl!.isNotEmpty
+                              ? CachedNetworkImageProvider(s.logoUrl!)
+                              : null,
+                        ),
+                        title: Text(s.name, style: AppTypography.bodyBold),
+                        subtitle: s.isActive
+                            ? null
+                            : Text('Inactive', style: AppTypography.small.copyWith(color: Colors.redAccent)),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () {
+                          // TODO: Navigate to store details if route is available
+                        },
+                      );
+                    },
+                  );
+                },
+              ),
       ),
     );
   }
