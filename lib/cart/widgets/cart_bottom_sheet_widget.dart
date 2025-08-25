@@ -75,13 +75,25 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
                   end: Alignment.bottomRight,
                 ),
                 boxShadow: const [
-                  BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 4)),
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 8,
+                    offset: Offset(0, 4),
+                  ),
                 ],
               ),
-              child: const Icon(Icons.shopping_bag_outlined, size: 36, color: Colors.white),
+              child: const Icon(
+                Icons.shopping_bag_outlined,
+                size: 36,
+                color: Colors.white,
+              ),
             ),
             const SizedBox(height: DesignTokens.space12),
-            Text(l10n.cartIsEmptyTitle, style: AppTypography.bodyBold, textAlign: TextAlign.center),
+            Text(
+              l10n.cartIsEmptyTitle,
+              style: AppTypography.bodyBold,
+              textAlign: TextAlign.center,
+            ),
             const SizedBox(height: 4),
             Text(
               l10n.addItemsToBeginCheckout,
@@ -119,7 +131,9 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
                   width: 40,
                   decoration: BoxDecoration(
                     color: Colors.grey.shade300,
-                    borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
+                    borderRadius: BorderRadius.circular(
+                      DesignTokens.radiusRound,
+                    ),
                   ),
                 ),
               ),
@@ -134,7 +148,12 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
                         return const Center(child: CircularProgressIndicator());
                       }
                       if (snapshot.hasError || !snapshot.hasData) {
-                        return Center(child: Text(l10n.failedToLoadStore, style: AppTypography.body));
+                        return Center(
+                          child: Text(
+                            l10n.failedToLoadStore,
+                            style: AppTypography.body,
+                          ),
+                        );
                       }
 
                       final store = snapshot.data!;
@@ -144,7 +163,8 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
                         totalWeight: totalWeight,
                       );
                       final double total = subtotal + deliveryFee;
-                      final bool canCheckout = subtotal >= store.minimumOrderAmount;
+                      final bool canCheckout =
+                          subtotal >= store.minimumOrderAmount;
                       return CustomScrollView(
                         controller: scrollController,
                         physics: const BouncingScrollPhysics(),
@@ -157,7 +177,12 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
                                 Row(
                                   children: [
                                     if ((store.logoUrl ?? '').isNotEmpty)
-                                      CircleAvatar(radius: 18, backgroundImage: NetworkImage(store.logoUrl!))
+                                      CircleAvatar(
+                                        radius: 18,
+                                        backgroundImage: NetworkImage(
+                                          store.logoUrl!,
+                                        ),
+                                      )
                                     else
                                       Container(
                                         width: 36,
@@ -166,37 +191,71 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
                                           shape: BoxShape.circle,
                                           gradient: LinearGradient(
                                             colors: [
-                                              AppColors.primary.withOpacity(0.95),
-                                              AppColors.primary.withOpacity(0.75),
+                                              AppColors.primary.withOpacity(
+                                                0.95,
+                                              ),
+                                              AppColors.primary.withOpacity(
+                                                0.75,
+                                              ),
                                             ],
                                             begin: Alignment.topLeft,
                                             end: Alignment.bottomRight,
                                           ),
                                           boxShadow: const [
-                                            BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3)),
+                                            BoxShadow(
+                                              color: Colors.black12,
+                                              blurRadius: 6,
+                                              offset: Offset(0, 3),
+                                            ),
                                           ],
                                         ),
-                                        child: const Icon(Icons.store_rounded, color: Colors.white, size: 20),
+                                        child: const Icon(
+                                          Icons.store_rounded,
+                                          color: Colors.white,
+                                          size: 20,
+                                        ),
                                       ),
                                     const SizedBox(width: DesignTokens.space12),
                                     Expanded(
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          Text(store.name, style: AppTypography.heading6),
-                                          Text(l10n.itemsCount(items.fold<int>(0, (s, i) => s + i.quantity)), style: AppTypography.small.copyWith(color: Colors.black54)),
+                                          Text(
+                                            store.name,
+                                            style: AppTypography.heading6,
+                                          ),
+                                          Text(
+                                            l10n.itemsCount(
+                                              items.fold<int>(
+                                                0,
+                                                (s, i) => s + i.quantity,
+                                              ),
+                                            ),
+                                            style: AppTypography.small.copyWith(
+                                              color: Colors.black54,
+                                            ),
+                                          ),
                                         ],
                                       ),
                                     ),
                                     TextButton.icon(
                                       onPressed: () {
                                         cart.clearCart(store.id);
-                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.cartCleared)));
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          SnackBar(
+                                            content: Text(l10n.cartCleared),
+                                          ),
+                                        );
                                         Navigator.of(context).maybePop();
                                       },
                                       icon: const Icon(Icons.delete_outline),
                                       label: Text(l10n.clear),
-                                      style: TextButton.styleFrom(foregroundColor: Colors.redAccent),
+                                      style: TextButton.styleFrom(
+                                        foregroundColor: Colors.redAccent,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -207,18 +266,19 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
 
                           // Items with separators
                           SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                              (context, i) {
-                                final item = items[i];
-                                return Column(
-                                  children: [
-                                    _CartItemRow(storeId: widget.storeId, item: item),
-                                    if (i != items.length - 1) const Divider(height: 24),
-                                  ],
-                                );
-                              },
-                              childCount: items.length,
-                            ),
+                            delegate: SliverChildBuilderDelegate((context, i) {
+                              final item = items[i];
+                              return Column(
+                                children: [
+                                  _CartItemRow(
+                                    storeId: widget.storeId,
+                                    item: item,
+                                  ),
+                                  if (i != items.length - 1)
+                                    const Divider(height: 24),
+                                ],
+                              );
+                            }, childCount: items.length),
                           ),
 
                           // Totals and actions
@@ -230,8 +290,12 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
                                   padding: DesignTokens.paddingCard,
                                   decoration: BoxDecoration(
                                     color: Colors.white,
-                                    borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
-                                    border: Border.all(color: Colors.black.withOpacity(0.06)),
+                                    borderRadius: BorderRadius.circular(
+                                      DesignTokens.radiusLarge,
+                                    ),
+                                    border: Border.all(
+                                      color: Colors.black.withOpacity(0.06),
+                                    ),
                                     boxShadow: DesignTokens.shadowSmall,
                                   ),
                                   child: Column(
@@ -240,7 +304,11 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
                                       _weightRow(l10n.totalWeight, totalWeight),
                                       _priceRow(l10n.deliveryFee, deliveryFee),
                                       const Divider(height: 24),
-                                      _priceRow(l10n.total, total, isBold: true),
+                                      _priceRow(
+                                        l10n.total,
+                                        total,
+                                        isBold: true,
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -253,11 +321,17 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
                                     decoration: BoxDecoration(
                                       color: Colors.orange.shade50,
                                       borderRadius: BorderRadius.circular(12),
-                                      border: Border.all(color: Colors.orange.shade200),
+                                      border: Border.all(
+                                        color: Colors.orange.shade200,
+                                      ),
                                     ),
                                     child: Text(
-                                      l10n.minOrderWithAmount('€${store.minimumOrderAmount.toStringAsFixed(2)}'),
-                                      style: AppTypography.small.copyWith(color: Colors.orange.shade800),
+                                      l10n.minOrderWithAmount(
+                                        '€${store.minimumOrderAmount.toStringAsFixed(2)}',
+                                      ),
+                                      style: AppTypography.small.copyWith(
+                                        color: Colors.orange.shade800,
+                                      ),
                                       textAlign: TextAlign.center,
                                     ),
                                   ),
@@ -272,40 +346,60 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
                                       child: Opacity(
                                         opacity: canCheckout ? 1 : 0.6,
                                         child: GestureDetector(
-                                          onTap: canCheckout
-                                              ? () {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (_) => CheckoutPage(
-                                                        store: store,
-                                                        subtotal: subtotal,
-                                                        totalWeight: totalWeight,
+                                          onTap:
+                                              canCheckout
+                                                  ? () {
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder:
+                                                            (_) => CheckoutPage(
+                                                              store: store,
+                                                              subtotal:
+                                                                  subtotal,
+                                                              totalWeight:
+                                                                  totalWeight,
+                                                            ),
                                                       ),
-                                                    ),
-                                                  );
-                                                }
-                                              : null,
+                                                    );
+                                                  }
+                                                  : null,
                                           child: Container(
-                                            padding: const EdgeInsets.symmetric(vertical: 14),
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 14,
+                                            ),
                                             decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                    DesignTokens.radiusRound,
+                                                  ),
                                               gradient: LinearGradient(
                                                 colors: [
-                                                  AppColors.primary.withOpacity(0.95),
-                                                  AppColors.primary.withOpacity(0.75),
+                                                  AppColors.primary.withOpacity(
+                                                    0.95,
+                                                  ),
+                                                  AppColors.primary.withOpacity(
+                                                    0.75,
+                                                  ),
                                                 ],
                                                 begin: Alignment.topLeft,
                                                 end: Alignment.bottomRight,
                                               ),
                                               boxShadow: const [
-                                                BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3)),
+                                                BoxShadow(
+                                                  color: Colors.black12,
+                                                  blurRadius: 6,
+                                                  offset: Offset(0, 3),
+                                                ),
                                               ],
                                             ),
                                             alignment: Alignment.center,
                                             child: Text(
                                               l10n.checkout,
-                                              style: AppTypography.bodyLarge.copyWith(color: Colors.white),
+                                              style: AppTypography.bodyLarge
+                                                  .copyWith(
+                                                    color: Colors.white,
+                                                  ),
                                             ),
                                           ),
                                         ),
@@ -335,8 +429,14 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: isBold ? AppTypography.bodyBold : AppTypography.body),
-          Text('€${value.toStringAsFixed(2)}', style: isBold ? AppTypography.bodyBold : AppTypography.body),
+          Text(
+            label,
+            style: isBold ? AppTypography.bodyBold : AppTypography.body,
+          ),
+          Text(
+            '€${value.toStringAsFixed(2)}',
+            style: isBold ? AppTypography.bodyBold : AppTypography.body,
+          ),
         ],
       ),
     );
@@ -349,7 +449,10 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(label, style: AppTypography.body),
-          Text('${weight.toStringAsFixed(2)} ${AppLocalizations.of(context)!.kg}', style: AppTypography.body),
+          Text(
+            '${weight.toStringAsFixed(2)} ${AppLocalizations.of(context)!.kg}',
+            style: AppTypography.body,
+          ),
         ],
       ),
     );
@@ -378,8 +481,15 @@ class _CartItemRow extends StatelessWidget {
                     child: Text(item.name, style: AppTypography.bodyBold),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
-                    onPressed: () => context.read<CartController>().removeItem(storeId, item.productId),
+                    icon: const Icon(
+                      Icons.delete_outline,
+                      color: Colors.redAccent,
+                    ),
+                    onPressed:
+                        () => context.read<CartController>().removeItem(
+                          storeId,
+                          item.productId,
+                        ),
                     tooltip: AppLocalizations.of(context)!.remove,
                   ),
                 ],
@@ -387,23 +497,35 @@ class _CartItemRow extends StatelessWidget {
               const SizedBox(height: 6),
               Row(
                 children: [
-                  Text('€${item.price.toStringAsFixed(2)}', style: AppTypography.small.copyWith(color: Colors.black54)),
+                  Text(
+                    '€${item.price.toStringAsFixed(2)}',
+                    style: AppTypography.small.copyWith(color: Colors.black54),
+                  ),
                   if (item.weight > 0) ...[
                     const SizedBox(width: 8),
-                    Text('· ${item.weight.toStringAsFixed(2)} ${AppLocalizations.of(context)!.kg}', style: AppTypography.small.copyWith(color: Colors.black45)),
-                  ]
+                    Text(
+                      '· ${item.weight.toStringAsFixed(2)} ${AppLocalizations.of(context)!.kg}',
+                      style: AppTypography.small.copyWith(
+                        color: Colors.black45,
+                      ),
+                    ),
+                  ],
                 ],
               ),
               const SizedBox(height: 10),
               Selector<CartController, int>(
-                selector: (_, c) => c.getProductQuantity(storeId, item.productId),
+                selector:
+                    (_, c) => c.getProductQuantity(storeId, item.productId),
                 builder: (context, qty, _) {
                   final total = item.price * qty;
                   return Row(
                     children: [
                       _stepper(context, qty),
                       const Spacer(),
-                      Text('€${total.toStringAsFixed(2)}', style: AppTypography.bodyBold),
+                      Text(
+                        '€${total.toStringAsFixed(2)}',
+                        style: AppTypography.bodyBold,
+                      ),
                     ],
                   );
                 },
@@ -431,13 +553,21 @@ class _CartItemRow extends StatelessWidget {
       ),
       child: ClipRRect(
         borderRadius: radius,
-        child: imageUrl == null || imageUrl.isEmpty
-            ? const Icon(Icons.image_not_supported_outlined, color: Colors.black26)
-            : Image.network(
-                imageUrl,
-                fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => const Icon(Icons.broken_image_outlined, color: Colors.black26),
-              ),
+        child:
+            imageUrl == null || imageUrl.isEmpty
+                ? const Icon(
+                  Icons.image_not_supported_outlined,
+                  color: Colors.black26,
+                )
+                : Image.network(
+                  imageUrl,
+                  fit: BoxFit.cover,
+                  errorBuilder:
+                      (_, __, ___) => const Icon(
+                        Icons.broken_image_outlined,
+                        color: Colors.black26,
+                      ),
+                ),
       ),
     );
   }
@@ -470,7 +600,11 @@ class _CartItemRow extends StatelessWidget {
                   end: Alignment.bottomRight,
                 ),
                 boxShadow: const [
-                  BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3)),
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 6,
+                    offset: Offset(0, 3),
+                  ),
                 ],
               ),
               child: const Icon(Icons.remove, size: 18, color: Colors.white),
@@ -495,7 +629,11 @@ class _CartItemRow extends StatelessWidget {
                   end: Alignment.bottomRight,
                 ),
                 boxShadow: const [
-                  BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3)),
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 6,
+                    offset: Offset(0, 3),
+                  ),
                 ],
               ),
               child: const Icon(Icons.add, size: 18, color: Colors.white),

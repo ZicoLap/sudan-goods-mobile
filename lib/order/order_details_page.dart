@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
+import 'package:sudan_goods/l10n/app_localizations.dart';
 
 /// Displays a read-only view of an order with live updates from Firestore.
 ///
@@ -18,10 +19,11 @@ class OrderDetailsPage extends StatelessWidget {
   /// rendering loading/error states and the full details on success.
   Widget build(BuildContext context) {
     final docRef = FirebaseFirestore.instance.collection('orders').doc(orderId);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Order Details'),
+        title: Text(l10n.orderDetailsTitle),
         centerTitle: true,
       ),
       body: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
@@ -31,11 +33,15 @@ class OrderDetailsPage extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasError) {
-            return Center(child: Text('Failed to load order: ${snapshot.error}'));
+            return Center(
+              child: Text(
+                l10n.failedToLoadOrderWithError('${snapshot.error}'),
+              ),
+            );
           }
           final data = snapshot.data?.data();
           if (data == null) {
-            return const Center(child: Text('Order not found'));
+            return Center(child: Text(l10n.orderNotFound));
           }
 
           final status = (data['status'] as String?) ?? 'pending';
@@ -50,238 +56,275 @@ class OrderDetailsPage extends StatelessWidget {
           final totalWeight = (data['totalWeight'] as num?)?.toDouble() ?? 0.0;
 
           final items = (data['items'] as List<dynamic>?) ?? [];
-          final name = (data['name'] as String?) ?? '-';
-          final phone = (data['phone'] as String?) ?? '-';
-          final address = (data['address'] as Map<String, dynamic>?) ?? {};
           final storeId = (data['storeId'] as String?) ?? '';
+          final recipientName = (data['recipientName'] as String?) ?? (data['name'] as String?) ?? '-';
+          final recipientPhone = (data['recipientPhone'] as String?) ?? (data['phone'] as String?) ?? '-';
+          final address = (data['address'] as Map<String, dynamic>?) ??
+              (data['deliveryAddress'] as Map<String, dynamic>?) ??
+              <String, dynamic>{};
 
           final shortId = orderId.length > 6
               ? orderId.substring(orderId.length - 6).toUpperCase()
-              : orderId;
+              : orderId.toUpperCase();
 
-          return SingleChildScrollView(
-            padding: const EdgeInsets.all(DesignTokens.space16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Header
-                Container(
+          return Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.grey.shade100, Colors.white],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+            child: SafeArea(
+              top: false,
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: Padding(
                   padding: const EdgeInsets.all(DesignTokens.space16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
-                    boxShadow: DesignTokens.shadowSmall,
-                  ),
-                  child: Row(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _statusIcon(status),
-                      const SizedBox(width: DesignTokens.space12),
-                      Expanded(
+                      // Header
+                      Container(
+                        padding: const EdgeInsets.all(DesignTokens.space16),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
+                          border: Border.all(color: Colors.black.withOpacity(0.06)),
+                          boxShadow: DesignTokens.shadowSmall,
+                        ),
+                        child: Row(
+                          children: [
+                            _statusIcon(status),
+                            const SizedBox(width: DesignTokens.space12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text(
+                                        l10n.orderNumber(shortId),
+                                        style: AppTypography.bodyBold,
+                                      ),
+                                      const SizedBox(width: DesignTokens.space8),
+                                      _buildStatusChip(context, status),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 6),
+                                  if (storeId.isNotEmpty) _storeInline(storeId),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    createdAt != null
+                                        ? l10n.placedOnWithDate(
+                                            DateFormat('MMM d, yyyy • HH:mm').format(createdAt),
+                                          )
+                                        : '-',
+                                    style: AppTypography.caption.copyWith(color: Colors.black54),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            if (status.toLowerCase() == 'pending')
+                              IconButton(
+                                tooltip: l10n.deleteOrder,
+                                onPressed: () => _confirmAndDelete(context),
+                                icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+                              ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: DesignTokens.space16),
+
+                      // Items
+                      Container(
+                        padding: const EdgeInsets.all(DesignTokens.space16),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
+                          border: Border.all(color: Colors.black.withOpacity(0.06)),
+                          boxShadow: DesignTokens.shadowSmall,
+                        ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            Text(l10n.itemsTitle, style: AppTypography.sectionTitle),
+                            const SizedBox(height: DesignTokens.space12),
+                            ...List.generate(items.length, (i) {
+                              final raw = items[i] as Map<String, dynamic>;
+                              final title = (raw['name'] as String?) ?? '-';
+                              final qty = (raw['quantity'] as num?)?.toInt() ?? 0;
+                              final price = (raw['price'] as num?)?.toDouble() ?? 0.0;
+                              final imageUrl = (raw['imageUrl'] as String?);
+                              final lineTotal = price * qty;
+                              return Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Container(
+                                        width: 56,
+                                        height: 56,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
+                                          border: Border.all(color: Colors.black.withOpacity(0.06)),
+                                          boxShadow: DesignTokens.shadowSmall,
+                                        ),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
+                                          child: imageUrl != null && imageUrl.isNotEmpty
+                                              ? Image.network(imageUrl, fit: BoxFit.cover)
+                                              : const Icon(Icons.image_outlined, color: Colors.black26),
+                                        ),
+                                      ),
+                                      const SizedBox(width: DesignTokens.space12),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(title, style: AppTypography.bodyBold),
+                                            const SizedBox(height: 2),
+                                            Text(
+                                              l10n.qtyAndPrice(qty, price.toStringAsFixed(2)),
+                                              style: AppTypography.caption.copyWith(color: Colors.black54),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(width: DesignTokens.space12),
+                                      Text(lineTotal.toStringAsFixed(2), style: AppTypography.bodyBold),
+                                    ],
+                                  ),
+                                  if (i != items.length - 1) const Divider(height: 24),
+                                ],
+                              );
+                            }),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: DesignTokens.space16),
+
+                      // Delivery
+                      Container(
+                        padding: const EdgeInsets.all(DesignTokens.space16),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
+                          border: Border.all(color: Colors.black.withOpacity(0.06)),
+                          boxShadow: DesignTokens.shadowSmall,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(l10n.deliverySectionTitle, style: AppTypography.sectionTitle),
+                            const SizedBox(height: 8),
                             Row(
                               children: [
-                                Text(
-                                  'Order #$shortId',
-                                  style: AppTypography.bodyBold,
-                                ),
-                                const SizedBox(width: DesignTokens.space8),
-                                _buildStatusChip(status),
+                                const Icon(Icons.person_outline, size: 20),
+                                const SizedBox(width: 8),
+                                Expanded(child: Text(recipientName, style: AppTypography.body)),
                               ],
                             ),
-                            const SizedBox(height: 6),
-                            if (storeId.isNotEmpty) _storeInline(storeId),
-                            const SizedBox(height: 4),
-                            Text(
-                              createdAt != null
-                                  ? 'Placed on ${DateFormat('MMM d, yyyy • HH:mm').format(createdAt)}'
-                                  : '-',
-                              style: AppTypography.caption.copyWith(color: Colors.black54),
+                            const SizedBox(height: 8),
+                            Row(
+                              children: [
+                                const Icon(Icons.phone_outlined, size: 20),
+                                const SizedBox(width: 8),
+                                Expanded(child: Text(recipientPhone, style: AppTypography.body)),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Icon(Icons.location_on_outlined, size: 20),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    _formatAddress(address),
+                                    style: AppTypography.body,
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
                       ),
-                      if (status.toLowerCase() == 'pending')
-                        IconButton(
-                          tooltip: 'Delete order',
-                          onPressed: () => _confirmAndDelete(context),
-                          icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+
+                      const SizedBox(height: DesignTokens.space16),
+
+                      // Payment & Status
+                      Container(
+                        padding: const EdgeInsets.all(DesignTokens.space16),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
+                          border: Border.all(color: Colors.black.withOpacity(0.06)),
+                          boxShadow: DesignTokens.shadowSmall,
                         ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: DesignTokens.space16),
-
-                // Items
-                Container(
-                  padding: const EdgeInsets.all(DesignTokens.space16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
-                    boxShadow: DesignTokens.shadowSmall,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Items', style: AppTypography.cardTitle),
-                      const SizedBox(height: DesignTokens.space12),
-                      ...items.map((raw) {
-                        final item = (raw as Map<String, dynamic>);
-                        final title = (item['name'] as String?) ?? '-';
-                        final qty = (item['quantity'] as num?)?.toInt() ?? 0;
-                        final price = (item['price'] as num?)?.toDouble() ?? 0.0;
-                        final imageUrl = (item['imageUrl'] as String?);
-                        final lineTotal = price * qty;
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: DesignTokens.space12),
-                          child: Row(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: Container(
-                                  color: Colors.grey.shade200,
-                                  height: 48,
-                                  width: 48,
-                                  child: imageUrl != null && imageUrl.isNotEmpty
-                                      ? Image.network(imageUrl, fit: BoxFit.cover)
-                                      : const Icon(Icons.image_outlined, color: Colors.black38),
-                                ),
-                              ),
-                              const SizedBox(width: DesignTokens.space12),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(title, style: AppTypography.bodyBold),
-                                    const SizedBox(height: 2),
-                                    Text('Qty: $qty  •  Price: ${price.toStringAsFixed(2)}',
-                                        style: AppTypography.caption.copyWith(color: Colors.black54)),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(width: DesignTokens.space12),
-                              Text(lineTotal.toStringAsFixed(2), style: AppTypography.bodyBold),
-                            ],
-                          ),
-                        );
-                      }),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: DesignTokens.space16),
-
-                // Address & Contact
-                Container(
-                  padding: const EdgeInsets.all(DesignTokens.space16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
-                    boxShadow: DesignTokens.shadowSmall,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Delivery', style: AppTypography.cardTitle),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          const Icon(Icons.person_outline, size: 20),
-                          const SizedBox(width: 8),
-                          Expanded(child: Text(name, style: AppTypography.body)),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          const Icon(Icons.phone_outlined, size: 20),
-                          const SizedBox(width: 8),
-                          Expanded(child: Text(phone, style: AppTypography.body)),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Icon(Icons.location_on_outlined, size: 20),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              _formatAddress(address),
-                              style: AppTypography.body,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(l10n.statusSectionTitle, style: AppTypography.sectionTitle),
+                            const SizedBox(height: 8),
+                            _twoCol(l10n.orderStatusLabel, _localizedStatus(context, status)),
+                            _twoCol(l10n.paymentLabel, '$paymentStatus • $paymentMethod'),
+                            _twoCol(
+                              l10n.createdAtLabel,
+                              createdAt != null
+                                  ? DateFormat('MMM d, yyyy • HH:mm').format(createdAt)
+                                  : '-',
                             ),
-                          ),
-                        ],
+                            _twoCol(
+                              l10n.updatedAtLabel,
+                              updatedAt != null
+                                  ? DateFormat('MMM d, yyyy • HH:mm').format(updatedAt)
+                                  : '-',
+                            ),
+                          ],
+                        ),
                       ),
+
+                      const SizedBox(height: DesignTokens.space16),
+
+                      // Summary
+                      Container(
+                        padding: const EdgeInsets.all(DesignTokens.space16),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
+                          border: Border.all(color: Colors.black.withOpacity(0.06)),
+                          boxShadow: DesignTokens.shadowSmall,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(l10n.summarySectionTitle, style: AppTypography.sectionTitle),
+                            const SizedBox(height: 8),
+                            _twoCol(l10n.itemsTitle, '${items.length}'),
+                            _twoCol(l10n.totalWeight, '${totalWeight.toStringAsFixed(2)} ${l10n.kg}'),
+                            const Divider(height: 24),
+                            _twoCol(l10n.subtotal, subtotal.toStringAsFixed(2)),
+                            _twoCol(l10n.deliveryFee, deliveryFee.toStringAsFixed(2)),
+                            const SizedBox(height: 8),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(l10n.total, style: AppTypography.bodyBold),
+                                Text(total.toStringAsFixed(2), style: AppTypography.bodyBold),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: DesignTokens.space24),
                     ],
                   ),
                 ),
-
-                const SizedBox(height: DesignTokens.space16),
-
-                // Payment & Status
-                Container(
-                  padding: const EdgeInsets.all(DesignTokens.space16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
-                    boxShadow: DesignTokens.shadowSmall,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Status', style: AppTypography.cardTitle),
-                      const SizedBox(height: 8),
-                      _twoCol('Order status', status),
-                      _twoCol('Payment', '$paymentStatus • $paymentMethod'),
-                      _twoCol(
-                        'Created',
-                        createdAt != null ? DateFormat('MMM d, yyyy • HH:mm').format(createdAt) : '-',
-                      ),
-                      _twoCol(
-                        'Updated',
-                        updatedAt != null ? DateFormat('MMM d, yyyy • HH:mm').format(updatedAt) : '-',
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: DesignTokens.space16),
-
-                // Summary
-                Container(
-                  padding: const EdgeInsets.all(DesignTokens.space16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
-                    boxShadow: DesignTokens.shadowSmall,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Summary', style: AppTypography.cardTitle),
-                      const SizedBox(height: 8),
-                      _twoCol('Items', '${items.length}'),
-                      _twoCol('Total weight', '${totalWeight.toStringAsFixed(2)} kg'),
-                      const Divider(height: 24),
-                      _twoCol('Subtotal', subtotal.toStringAsFixed(2)),
-                      _twoCol('Delivery', deliveryFee.toStringAsFixed(2)),
-                      const SizedBox(height: 8),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('Total', style: AppTypography.bodyBold),
-                          Text(total.toStringAsFixed(2), style: AppTypography.bodyBold),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: DesignTokens.space24),
-              ],
+              ),
             ),
           );
         },
@@ -294,23 +337,22 @@ class OrderDetailsPage extends StatelessWidget {
   /// Intended for pending orders only; shows snackbar feedback and pops the
   /// page when deletion succeeds.
   Future<void> _confirmAndDelete(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Order?'),
-        content: const Text(
-          'This order has not been confirmed yet. Do you want to delete it?',
-        ),
+        title: Text(l10n.deleteOrderQuestion),
+        content: Text(l10n.deleteOrderExplanation),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: Text(l10n.cancel),
           ),
           ElevatedButton.icon(
             icon: const Icon(Icons.delete),
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             onPressed: () => Navigator.of(context).pop(true),
-            label: const Text('Delete'),
+            label: Text(l10n.delete),
           ),
         ],
       ),
@@ -321,14 +363,14 @@ class OrderDetailsPage extends StatelessWidget {
         await FirebaseFirestore.instance.collection('orders').doc(orderId).delete();
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Order deleted')),
+            SnackBar(content: Text(l10n.orderDeleted)),
           );
           Navigator.of(context).pop();
         }
       } catch (e) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to delete order: $e')),
+            SnackBar(content: Text(l10n.failedToDeleteOrder)),
           );
         }
       }
@@ -359,7 +401,7 @@ class OrderDetailsPage extends StatelessWidget {
           Flexible(
             child: Text(
               value,
-              textAlign: TextAlign.right,
+              textAlign: TextAlign.end,
               style: AppTypography.bodyBold,
             ),
           ),
@@ -402,8 +444,31 @@ class OrderDetailsPage extends StatelessWidget {
     );
   }
 
+  /// Localizes an order status code to a user-facing string.
+  String _localizedStatus(BuildContext context, String status) {
+    final l10n = AppLocalizations.of(context)!;
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return l10n.orderStatusPending;
+      case 'confirmed':
+        return l10n.orderStatusConfirmed;
+      case 'preparing':
+        return l10n.orderStatusPreparing;
+      case 'processing':
+        return l10n.orderStatusProcessing;
+      case 'shipped':
+        return l10n.orderStatusShipped;
+      case 'delivered':
+        return l10n.orderStatusDelivered;
+      case 'cancelled':
+        return l10n.orderStatusCancelled;
+      default:
+        return status;
+    }
+  }
+
   /// Builds a small colored chip describing the order [status].
-  Widget _buildStatusChip(String status) {
+  Widget _buildStatusChip(BuildContext context, String status) {
     MaterialColor color;
     switch (status.toLowerCase()) {
       case 'pending':
@@ -436,7 +501,7 @@ class OrderDetailsPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(100),
       ),
       child: Text(
-        status,
+        _localizedStatus(context, status),
         style: AppTypography.caption.copyWith(
           color: color.shade700,
           fontWeight: FontWeight.w600,
@@ -452,7 +517,8 @@ class OrderDetailsPage extends StatelessWidget {
       builder: (context, snapshot) {
         final exists = snapshot.hasData && (snapshot.data?.exists ?? false);
         final data = exists ? snapshot.data!.data() : null;
-        final name = (data?['name'] as String?) ?? 'Unknown store';
+        final l10n = AppLocalizations.of(context)!;
+        final name = (data?['name'] as String?) ?? l10n.unknownStore;
         final logoUrl = (data?['logoUrl'] as String?);
 
         return Row(

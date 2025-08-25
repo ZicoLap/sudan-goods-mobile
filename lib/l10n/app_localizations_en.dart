@@ -254,6 +254,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noStoresAvailable => 'No stores available';
 
   @override
+  String get collectionsTitle => 'Collections';
+
+  @override
+  String get noCollectionsAvailable => 'No collections available';
+
+  @override
   String get browseCategories => 'Browse Categories';
 
   @override
@@ -267,6 +273,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get popularProducts => 'Popular Products';
+
+  @override
+  String get outOfStock => 'Out of stock';
 
   @override
   String get homeGreeting => 'Good day! 👋';
@@ -630,6 +639,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get checkoutThisStore => 'Checkout this store';
 
   @override
+  String get placeOrder => 'Place order';
+
+  @override
+  String get addDeliveryNotes => 'Add delivery notes';
+
+  @override
+  String get addNoteTitle => 'Add a note to this order';
+
+  @override
+  String get addNoteHint => 'e.g. Please ring the bell or leave at the door';
+
+  @override
+  String get saveNote => 'Save note';
+
+  @override
   String get langArabic => 'Arabic';
 
   @override
@@ -703,4 +727,49 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingResetSuccess => 'Onboarding reset. It will appear on next launch.';
+
+  @override
+  String get orderDetailsTitle => 'Order Details';
+
+  @override
+  String get itemsTitle => 'Items';
+
+  @override
+  String get deliverySectionTitle => 'Delivery';
+
+  @override
+  String get statusSectionTitle => 'Status';
+
+  @override
+  String get orderStatusLabel => 'Order status';
+
+  @override
+  String get paymentLabel => 'Payment';
+
+  @override
+  String get createdAtLabel => 'Created';
+
+  @override
+  String get updatedAtLabel => 'Updated';
+
+  @override
+  String get summarySectionTitle => 'Summary';
+
+  @override
+  String placedOnWithDate(String date) {
+    return 'Placed on $date';
+  }
+
+  @override
+  String failedToLoadOrderWithError(String error) {
+    return 'Failed to load order: $error';
+  }
+
+  @override
+  String get orderNotFound => 'Order not found';
+
+  @override
+  String qtyAndPrice(num qty, String price) {
+    return '$qty × $price';
+  }
 }

@@ -137,12 +137,15 @@
   "viewAll": "عرض الكل",
   "failedToLoadStores": "فشل تحميل المتاجر",
   "noStoresAvailable": "لا توجد متاجر متاحة",
+  "collectionsTitle": "المجموعات",
+  "noCollectionsAvailable": "لا توجد مجموعات متاحة",
 
   "browseCategories": "تصفح الفئات",
   "featuredStores": "متاجر مميزة",
   "topPicksBadge": "⭐ اختيارات مميزة",
   "noFeaturedStores": "لا توجد متاجر مميزة",
   "popularProducts": "المنتجات الشائعة",
+  "outOfStock": "غير متوفر",
   "homeGreeting": "يوم سعيد! 👋",
   "deliveringTo": "التوصيل إلى {place}",
   "@deliveringTo": {
@@ -308,6 +311,11 @@
   "checkout": "الدفع",
   "viewCart": "عرض السلة",
   "checkoutThisStore": "الدفع لهذا المتجر",
+  "placeOrder": "إتمام الطلب",
+  "addDeliveryNotes": "أضف ملاحظات التوصيل",
+  "addNoteTitle": "أضف ملاحظة لهذا الطلب",
+  "addNoteHint": "مثال: يرجى قرع الجرس أو تركها عند الباب",
+  "saveNote": "حفظ الملاحظة",
 
   "langArabic": "العربية",
   "langEnglish": "الإنجليزية",
@@ -333,5 +341,37 @@
   "resetOnboarding": "إعادة تشغيل الإرشادات",
   "resetOnboardingSubtitle": "عرض جولة الترحيب عند تشغيل التطبيق القادم",
   "reset": "إعادة تعيين",
-  "onboardingResetSuccess": "تمت إعادة الإرشادات. ستظهر عند التشغيل القادم."
+  "onboardingResetSuccess": "تمت إعادة الإرشادات. ستظهر عند التشغيل القادم.",
+  "orderDetailsTitle": "تفاصيل الطلب",
+  "itemsTitle": "العناصر",
+  "deliverySectionTitle": "التوصيل",
+  "statusSectionTitle": "الحالة",
+  "orderStatusLabel": "حالة الطلب",
+  "paymentLabel": "الدفع",
+  "createdAtLabel": "تم الإنشاء",
+  "updatedAtLabel": "تم التحديث",
+  "summarySectionTitle": "الملخص",
+  "placedOnWithDate": "تم الطلب في {date}",
+  "@placedOnWithDate": {
+    "description": "تاريخ إنشاء الطلب",
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "failedToLoadOrderWithError": "فشل تحميل الطلب: {error}",
+  "@failedToLoadOrderWithError": {
+    "description": "فشل تحميل تفاصيل الطلب مع عرض الخطأ",
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "orderNotFound": "الطلب غير موجود",
+  "qtyAndPrice": "{qty} × {price}",
+  "@qtyAndPrice": {
+    "description": "عرض الكمية والسعر للوحدة لبند الطلب",
+    "placeholders": {
+      "qty": { "type": "num" },
+      "price": { "type": "String" }
+    }
+  }
 }

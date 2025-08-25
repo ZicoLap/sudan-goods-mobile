@@ -34,7 +34,7 @@ class StoreSummary {
   }
 
   @override
-  String toString() => 'StoreSummary(id: ' + id + ', name: ' + name + ')';
+  String toString() => 'StoreSummary(id: $id, name: $name)';
 
   @override
   bool operator ==(Object other) {

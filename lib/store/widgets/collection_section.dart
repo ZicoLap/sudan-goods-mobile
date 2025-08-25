@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:sudan_goods/models/store/collection_model.dart';
 import 'package:sudan_goods/store/pages/collection_products_page.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
+import 'package:sudan_goods/theme/app_theme.dart';
+import 'package:sudan_goods/l10n/app_localizations.dart';
 import 'collection_card.dart';
 import 'shimmer_collection_card.dart';
 
@@ -23,9 +25,9 @@ class CollectionsSection extends StatelessWidget {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Padding(
+              Padding(
                 padding: DesignTokens.paddingPageHorizontal,
-                child: Text('Collections', style: AppTypography.sectionTitle),
+                child: Text(AppLocalizations.of(context)!.collectionsTitle, style: AppTypography.sectionTitle),
               ),
               const SizedBox(height: DesignTokens.space8),
               GridView.builder(
@@ -50,15 +52,15 @@ class CollectionsSection extends StatelessWidget {
             padding: const EdgeInsets.only(top: DesignTokens.space12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
+              children: [
                 Padding(
                   padding: DesignTokens.paddingPageHorizontal,
-                  child: Text('Collections', style: AppTypography.sectionTitle),
+                  child: Text(AppLocalizations.of(context)!.collectionsTitle, style: AppTypography.sectionTitle),
                 ),
-                SizedBox(height: DesignTokens.space12),
-                Padding(
+                const SizedBox(height: DesignTokens.space12),
+                const Padding(
                   padding: DesignTokens.paddingPageHorizontal,
-                  child: _EmptyCollectionsPlaceholder(),
+                  child: _EmptyCollectionsCard(),
                 ),
               ],
             ),
@@ -72,9 +74,9 @@ class CollectionsSection extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Padding(
+            Padding(
               padding: DesignTokens.paddingPageHorizontal,
-              child: Text('Collections', style: AppTypography.sectionTitle),
+              child: Text(AppLocalizations.of(context)!.collectionsTitle, style: AppTypography.sectionTitle),
             ),
             const SizedBox(height: DesignTokens.space8),
             GridView.builder(
@@ -111,30 +113,57 @@ class CollectionsSection extends StatelessWidget {
   }
 }
 
-class _EmptyCollectionsPlaceholder extends StatelessWidget {
-  const _EmptyCollectionsPlaceholder();
+class _EmptyCollectionsCard extends StatelessWidget {
+  const _EmptyCollectionsCard();
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            color: Colors.grey.shade100,
-            borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(
+        horizontal: DesignTokens.space16,
+        vertical: DesignTokens.space24,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
+        border: Border.all(color: Colors.black.withOpacity(0.06)),
+        boxShadow: DesignTokens.shadowSmall,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // Gradient icon bubble centered
+          Container(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                colors: [
+                  AppColors.primary.withOpacity(0.95),
+                  AppColors.primary.withOpacity(0.75),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              boxShadow: DesignTokens.shadowSmall,
+            ),
+            child: const Center(
+              child: Icon(Icons.category_outlined, color: Colors.white, size: 26),
+            ),
           ),
-          child: const Icon(Icons.category_outlined, color: Colors.grey),
-        ),
-        const SizedBox(width: DesignTokens.space12),
-        const Expanded(
-          child: Text(
-            'No collections available',
-            style: AppTypography.body,
+          const SizedBox(height: DesignTokens.space12),
+          // Message centered under the icon
+          Text(
+            AppLocalizations.of(context)!.noCollectionsAvailable,
+            style: AppTypography.bodyLarge.copyWith(fontWeight: FontWeight.w600),
+            textAlign: TextAlign.center,
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

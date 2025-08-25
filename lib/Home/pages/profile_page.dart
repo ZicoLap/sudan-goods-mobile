@@ -478,13 +478,13 @@ class _ProfilePageState extends State<ProfilePage> {
                       return ListTile(
                         leading: CircleAvatar(
                           backgroundColor: Theme.of(context).primaryColor.withOpacity(0.12),
+                          foregroundImage: s.logoUrl != null && s.logoUrl!.isNotEmpty
+                              ? CachedNetworkImageProvider(s.logoUrl!)
+                              : null,
                           child: Text(
                             s.name.isNotEmpty ? s.name[0].toUpperCase() : '?',
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          foregroundImage: s.logoUrl != null && s.logoUrl!.isNotEmpty
-                              ? CachedNetworkImageProvider(s.logoUrl!)
-                              : null,
                         ),
                         title: Text(s.name, style: AppTypography.bodyBold),
                         subtitle: s.isActive

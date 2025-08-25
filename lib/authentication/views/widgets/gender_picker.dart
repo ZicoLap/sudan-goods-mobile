@@ -31,7 +31,7 @@ class GenderPicker extends StatelessWidget {
           final thumbWidth = (constraints.maxWidth - (thumbPadding * 2)) / 2;
           final isMale = gender == 'male';
 
-          final Color trackColor = scheme.surfaceVariant.withOpacity(0.14);
+          final Color trackColor = scheme.surfaceContainerHighest.withOpacity(0.14);
           final Color borderColor = scheme.outline.withOpacity(0.35);
           final Color thumbColor = scheme.primaryContainer;
           final Color selectedFg = scheme.onPrimaryContainer;

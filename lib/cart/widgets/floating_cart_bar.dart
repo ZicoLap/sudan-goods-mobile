@@ -44,7 +44,14 @@ class FloatingCartBar extends StatelessWidget {
             margin: const EdgeInsets.all(12),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: AppColors.primary,
+              gradient: LinearGradient(
+                colors: [
+                  AppColors.primary.withOpacity(0.95),
+                  AppColors.primary.withOpacity(0.75),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
               borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
               boxShadow: DesignTokens.shadowLarge,
             ),
@@ -53,12 +60,19 @@ class FloatingCartBar extends StatelessWidget {
                 Stack(
                   clipBehavior: Clip.none,
                   children: [
-                    const Icon(Icons.shopping_cart_rounded, color: Colors.white, size: 28),
-                    Positioned(
-                      right: -6,
+                    const Icon(
+                      Icons.shopping_cart_rounded,
+                      color: Colors.white,
+                      size: 28,
+                    ),
+                    PositionedDirectional(
+                      end: -6,
                       top: -6,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.black87,
                           borderRadius: BorderRadius.circular(12),
@@ -66,7 +80,9 @@ class FloatingCartBar extends StatelessWidget {
                         ),
                         child: Text(
                           '${snap.count}',
-                          style: AppTypography.captionBold.copyWith(color: Colors.white),
+                          style: AppTypography.captionBold.copyWith(
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
@@ -78,16 +94,32 @@ class FloatingCartBar extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(l10n.viewCart, style: AppTypography.bodyBold.copyWith(color: Colors.white)),
+                      Text(
+                        l10n.viewCart,
+                        style: AppTypography.bodyBold.copyWith(
+                          color: Colors.white,
+                          height: 1.0,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                       const SizedBox(height: 2),
                       Text(
-                        '${l10n.total} €${snap.subtotal.toStringAsFixed(2)}',
-                        style: AppTypography.small.copyWith(color: Colors.white.withOpacity(0.9)),
+                        '${l10n.total} \u200E€${snap.subtotal.toStringAsFixed(2)}',
+                        style: AppTypography.small.copyWith(
+                          color: Colors.white.withOpacity(0.9),
+                          height: 1.0,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
                 ),
-                const Icon(Icons.keyboard_arrow_up_rounded, color: Colors.white),
+                const Icon(
+                  Icons.keyboard_arrow_up_rounded,
+                  color: Colors.white,
+                ),
               ],
             ),
           ),

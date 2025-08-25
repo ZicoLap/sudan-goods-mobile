@@ -52,314 +52,319 @@ class _SettingsPageState extends State<SettingsPage> {
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
         elevation: 0,
-        title: Text(AppLocalizations.of(context)!.settingsTitle, style: const TextStyle(color: Colors.white)),
+        title: Text(
+          AppLocalizations.of(context)!.settingsTitle,
+          style: const TextStyle(color: Colors.white),
+        ),
         centerTitle: true,
       ),
       body: _gradientBody(
-          _isLoading
-              ? _buildLoadingSkeleton()
-              : SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.all(DesignTokens.space16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    if (_hasError) _errorBanner(),
-                    _sectionHeader(
-                      AppLocalizations.of(context)!.sectionAccount,
-                      icon: Icons.manage_accounts_outlined,
-                    ),
-                    _card(
-                      children: [
-                        _navTile(
-                          Icons.alternate_email,
-                          AppLocalizations.of(context)!.changeEmail,
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => const ChangeEmailPage(),
-                              ),
-                            );
-                          },
-                        ),
-                        const Divider(height: 1),
-                        _navTile(
-                          Icons.lock_outline,
-                          AppLocalizations.of(context)!.changePassword,
-                        ),
-                        const Divider(height: 1),
-                        _navTile(
-                          Icons.location_city_outlined,
-                          AppLocalizations.of(context)!.manageAddresses,
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: DesignTokens.space16),
-
-                    _sectionHeader(
-                      AppLocalizations.of(context)!.sectionNotifications,
-                      icon: Icons.notifications_active_outlined,
-                    ),
-                    _card(
-                      children: [
-                        SwitchListTile.adaptive(
-                          value: _pushNotifications,
-                          onChanged:
-                              (v) => setState(() => _pushNotifications = v),
-                          title: Text(
-                            AppLocalizations.of(context)!.pushNotifications,
-                            style: AppTypography.body,
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!.pushNotificationsSubtitle,
-                            style: AppTypography.small,
-                          ),
-                          secondary: _iconBubble(Icons.notifications_active_outlined),
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: DesignTokens.space16,
-                          ),
-                        ),
-                        const Divider(height: 1),
-                        SwitchListTile.adaptive(
-                          value: _emailNotifications,
-                          onChanged:
-                              (v) => setState(() => _emailNotifications = v),
-                          title: Text(
-                            AppLocalizations.of(context)!.emailNotifications,
-                            style: AppTypography.body,
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!.emailNotificationsSubtitle,
-                            style: AppTypography.small,
-                          ),
-                          secondary: _iconBubble(Icons.mark_email_unread_outlined),
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: DesignTokens.space16,
-                          ),
-                        ),
-                        const Divider(height: 1),
-                        SwitchListTile.adaptive(
-                          value: _orderStatusUpdates,
-                          onChanged:
-                              (v) => setState(() => _orderStatusUpdates = v),
-                          title: Text(
-                            AppLocalizations.of(context)!.orderStatusUpdates,
-                            style: AppTypography.body,
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!.orderStatusUpdatesSubtitle,
-                            style: AppTypography.small,
-                          ),
-                          secondary: _iconBubble(Icons.local_shipping_outlined),
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: DesignTokens.space16,
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: DesignTokens.space16),
-
-                    _sectionHeader(
-                      AppLocalizations.of(context)!.sectionPrivacySecurity,
-                      icon: Icons.verified_user_outlined,
-                    ),
-                    _card(
-                      children: [
-                        SwitchListTile.adaptive(
-                          value: _twoFactorAuth,
-                          onChanged: (v) => setState(() => _twoFactorAuth = v),
-                          title: Text(
-                            AppLocalizations.of(context)!.twoFactorAuth,
-                            style: AppTypography.body,
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(context)!.twoFactorAuthSubtitle,
-                            style: AppTypography.small,
-                          ),
-                          secondary: _iconBubble(Icons.verified_user_outlined),
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: DesignTokens.space16,
-                          ),
-                        ),
-                        const Divider(height: 1),
-                        _navTile(
-                          Icons.block_outlined,
-                          AppLocalizations.of(context)!.blockedUsers,
-                        ),
-                        const Divider(height: 1),
-                        _navTile(
-                          Icons.privacy_tip_outlined,
-                          AppLocalizations.of(context)!.dataAndPrivacy,
-                          subtitle:
-                              AppLocalizations.of(
-                                context,
-                              )!.dataAndPrivacySubtitle,
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: DesignTokens.space16),
-
-                    _sectionHeader(
-                      AppLocalizations.of(context)!.sectionGeneral,
-                      icon: Icons.tune,
-                    ),
-                    _card(
-                      children: [
-                        ListTile(
-                          leading: _iconBubble(Icons.language_outlined),
-                          title: Text(
-                            AppLocalizations.of(context)!.language,
-                            style: AppTypography.body,
-                          ),
-                          subtitle: Text(
-                            _languageLabel(AppLocalizations.of(context)!),
-                            style: AppTypography.small,
-                          ),
-                          trailing: const Icon(Icons.chevron_right),
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => const LanguageSettingsPage(),
-                              ),
-                            );
-                          },
-                        ),
-                        const Divider(height: 1),
-                        ListTile(
-                          leading: _iconBubble(Icons.brightness_6_outlined),
-                          title: Text(
-                            AppLocalizations.of(context)!.theme,
-                            style: AppTypography.body,
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(context)!.themeSubtitle,
-                            style: AppTypography.small,
-                          ),
-                          trailing: Text(
-                            _themeLabel(AppLocalizations.of(context)!),
-                            style: AppTypography.smallBold,
-                          ),
-                          onTap: _selectTheme,
-                        ),
-                        const Divider(height: 1),
-                        ListTile(
-                          leading: _iconBubble(Icons.public_outlined),
-                          title: Text(
-                            AppLocalizations.of(context)!.regionAndCurrency,
-                            style: AppTypography.body,
-                          ),
-                          subtitle: Text(
-                            _regionCurrencyLabel(AppLocalizations.of(context)!),
-                            style: AppTypography.small,
-                          ),
-                          trailing: const Icon(Icons.chevron_right),
-                          onTap: _selectRegionCurrency,
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: DesignTokens.space16),
-
-                    _sectionHeader(
-                      AppLocalizations.of(context)!.sectionHelpSupport,
-                      icon: Icons.support_agent_outlined,
-                    ),
-                    _card(
-                      children: [
-                        _navTile(
-                          Icons.help_outline,
-                          AppLocalizations.of(context)!.faqs,
-                        ),
-                        const Divider(height: 1),
-                        _navTile(
-                          Icons.support_agent_outlined,
-                          AppLocalizations.of(context)!.contactSupport,
-                        ),
-                        const Divider(height: 1),
-                        ListTile(
-                          leading: _iconBubble(Icons.info_outline),
-                          title: Text(
-                            AppLocalizations.of(context)!.appVersion,
-                            style: AppTypography.body,
-                          ),
-                          trailing: Text(
-                            _appVersion.isNotEmpty ? _appVersion : 'v1.0.0+1',
-                            style: AppTypography.smallBold,
-                          ),
-                          enabled: false,
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: DesignTokens.space24),
-
-                    _sectionHeader(
-                      AppLocalizations.of(context)!.dangerZone,
-                      icon: Icons.warning_amber_outlined,
-                    ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton.icon(
-                        onPressed:
-                            () => _confirmAction(
-                              context,
-                              AppLocalizations.of(context)!.logout,
+        _isLoading
+            ? _buildLoadingSkeleton()
+            : SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.all(DesignTokens.space16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (_hasError) _errorBanner(),
+                  _sectionHeader(
+                    AppLocalizations.of(context)!.sectionAccount,
+                    icon: Icons.manage_accounts_outlined,
+                  ),
+                  _card(
+                    children: [
+                      _navTile(
+                        Icons.alternate_email,
+                        AppLocalizations.of(context)!.changeEmail,
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const ChangeEmailPage(),
                             ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              DesignTokens.radiusLarge,
-                            ),
-                          ),
-                        ),
-                        icon: const Icon(Icons.logout),
-                        label: Text(AppLocalizations.of(context)!.logout),
+                          );
+                        },
                       ),
-                    ),
+                      const Divider(height: 1),
+                      _navTile(
+                        Icons.lock_outline,
+                        AppLocalizations.of(context)!.changePassword,
+                      ),
+                      const Divider(height: 1),
+                      _navTile(
+                        Icons.location_city_outlined,
+                        AppLocalizations.of(context)!.manageAddresses,
+                      ),
+                    ],
+                  ),
 
-                    const SizedBox(height: DesignTokens.space8),
-                    SizedBox(
-                      width: double.infinity,
-                      child: OutlinedButton.icon(
-                        onPressed:
-                            () => _confirmAction(
-                              context,
-                              AppLocalizations.of(context)!.deleteAccount,
-                            ),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.red,
-                          side: const BorderSide(color: Colors.red),
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              DesignTokens.radiusLarge,
-                            ),
-                          ),
+                  const SizedBox(height: DesignTokens.space16),
+
+                  _sectionHeader(
+                    AppLocalizations.of(context)!.sectionNotifications,
+                    icon: Icons.notifications_active_outlined,
+                  ),
+                  _card(
+                    children: [
+                      SwitchListTile.adaptive(
+                        value: _pushNotifications,
+                        onChanged:
+                            (v) => setState(() => _pushNotifications = v),
+                        title: Text(
+                          AppLocalizations.of(context)!.pushNotifications,
+                          style: AppTypography.body,
                         ),
-                        icon: const Icon(Icons.delete_forever_outlined),
-                        label: Text(
-                          AppLocalizations.of(context)!.deleteAccount,
+                        subtitle: Text(
+                          AppLocalizations.of(
+                            context,
+                          )!.pushNotificationsSubtitle,
+                          style: AppTypography.small,
+                        ),
+                        secondary: _iconBubble(
+                          Icons.notifications_active_outlined,
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: DesignTokens.space16,
                         ),
                       ),
-                    ),
+                      const Divider(height: 1),
+                      SwitchListTile.adaptive(
+                        value: _emailNotifications,
+                        onChanged:
+                            (v) => setState(() => _emailNotifications = v),
+                        title: Text(
+                          AppLocalizations.of(context)!.emailNotifications,
+                          style: AppTypography.body,
+                        ),
+                        subtitle: Text(
+                          AppLocalizations.of(
+                            context,
+                          )!.emailNotificationsSubtitle,
+                          style: AppTypography.small,
+                        ),
+                        secondary: _iconBubble(
+                          Icons.mark_email_unread_outlined,
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: DesignTokens.space16,
+                        ),
+                      ),
+                      const Divider(height: 1),
+                      SwitchListTile.adaptive(
+                        value: _orderStatusUpdates,
+                        onChanged:
+                            (v) => setState(() => _orderStatusUpdates = v),
+                        title: Text(
+                          AppLocalizations.of(context)!.orderStatusUpdates,
+                          style: AppTypography.body,
+                        ),
+                        subtitle: Text(
+                          AppLocalizations.of(
+                            context,
+                          )!.orderStatusUpdatesSubtitle,
+                          style: AppTypography.small,
+                        ),
+                        secondary: _iconBubble(Icons.local_shipping_outlined),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: DesignTokens.space16,
+                        ),
+                      ),
+                    ],
+                  ),
 
-                    const SizedBox(height: DesignTokens.space16),
-                    SizedBox(height: MediaQuery.of(context).padding.bottom),
-                  ],
-                ),
+                  const SizedBox(height: DesignTokens.space16),
+
+                  _sectionHeader(
+                    AppLocalizations.of(context)!.sectionPrivacySecurity,
+                    icon: Icons.verified_user_outlined,
+                  ),
+                  _card(
+                    children: [
+                      SwitchListTile.adaptive(
+                        value: _twoFactorAuth,
+                        onChanged: (v) => setState(() => _twoFactorAuth = v),
+                        title: Text(
+                          AppLocalizations.of(context)!.twoFactorAuth,
+                          style: AppTypography.body,
+                        ),
+                        subtitle: Text(
+                          AppLocalizations.of(context)!.twoFactorAuthSubtitle,
+                          style: AppTypography.small,
+                        ),
+                        secondary: _iconBubble(Icons.verified_user_outlined),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: DesignTokens.space16,
+                        ),
+                      ),
+                      const Divider(height: 1),
+                      _navTile(
+                        Icons.block_outlined,
+                        AppLocalizations.of(context)!.blockedUsers,
+                      ),
+                      const Divider(height: 1),
+                      _navTile(
+                        Icons.privacy_tip_outlined,
+                        AppLocalizations.of(context)!.dataAndPrivacy,
+                        subtitle:
+                            AppLocalizations.of(
+                              context,
+                            )!.dataAndPrivacySubtitle,
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: DesignTokens.space16),
+
+                  _sectionHeader(
+                    AppLocalizations.of(context)!.sectionGeneral,
+                    icon: Icons.tune,
+                  ),
+                  _card(
+                    children: [
+                      ListTile(
+                        leading: _iconBubble(Icons.language_outlined),
+                        title: Text(
+                          AppLocalizations.of(context)!.language,
+                          style: AppTypography.body,
+                        ),
+                        subtitle: Text(
+                          _languageLabel(AppLocalizations.of(context)!),
+                          style: AppTypography.small,
+                        ),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const LanguageSettingsPage(),
+                            ),
+                          );
+                        },
+                      ),
+                      const Divider(height: 1),
+                      ListTile(
+                        leading: _iconBubble(Icons.brightness_6_outlined),
+                        title: Text(
+                          AppLocalizations.of(context)!.theme,
+                          style: AppTypography.body,
+                        ),
+                        subtitle: Text(
+                          AppLocalizations.of(context)!.themeSubtitle,
+                          style: AppTypography.small,
+                        ),
+                        trailing: Text(
+                          _themeLabel(AppLocalizations.of(context)!),
+                          style: AppTypography.smallBold,
+                        ),
+                        onTap: _selectTheme,
+                      ),
+                      const Divider(height: 1),
+                      ListTile(
+                        leading: _iconBubble(Icons.public_outlined),
+                        title: Text(
+                          AppLocalizations.of(context)!.regionAndCurrency,
+                          style: AppTypography.body,
+                        ),
+                        subtitle: Text(
+                          _regionCurrencyLabel(AppLocalizations.of(context)!),
+                          style: AppTypography.small,
+                        ),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: _selectRegionCurrency,
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: DesignTokens.space16),
+
+                  _sectionHeader(
+                    AppLocalizations.of(context)!.sectionHelpSupport,
+                    icon: Icons.support_agent_outlined,
+                  ),
+                  _card(
+                    children: [
+                      _navTile(
+                        Icons.help_outline,
+                        AppLocalizations.of(context)!.faqs,
+                      ),
+                      const Divider(height: 1),
+                      _navTile(
+                        Icons.support_agent_outlined,
+                        AppLocalizations.of(context)!.contactSupport,
+                      ),
+                      const Divider(height: 1),
+                      ListTile(
+                        leading: _iconBubble(Icons.info_outline),
+                        title: Text(
+                          AppLocalizations.of(context)!.appVersion,
+                          style: AppTypography.body,
+                        ),
+                        trailing: Text(
+                          _appVersion.isNotEmpty ? _appVersion : 'v1.0.0+1',
+                          style: AppTypography.smallBold,
+                        ),
+                        enabled: false,
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: DesignTokens.space24),
+
+                  _sectionHeader(
+                    AppLocalizations.of(context)!.dangerZone,
+                    icon: Icons.warning_amber_outlined,
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed:
+                          () => _confirmAction(
+                            context,
+                            AppLocalizations.of(context)!.logout,
+                          ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            DesignTokens.radiusLarge,
+                          ),
+                        ),
+                      ),
+                      icon: const Icon(Icons.logout),
+                      label: Text(AppLocalizations.of(context)!.logout),
+                    ),
+                  ),
+
+                  const SizedBox(height: DesignTokens.space8),
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      onPressed:
+                          () => _confirmAction(
+                            context,
+                            AppLocalizations.of(context)!.deleteAccount,
+                          ),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.red,
+                        side: const BorderSide(color: Colors.red),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            DesignTokens.radiusLarge,
+                          ),
+                        ),
+                      ),
+                      icon: const Icon(Icons.delete_forever_outlined),
+                      label: Text(AppLocalizations.of(context)!.deleteAccount),
+                    ),
+                  ),
+
+                  const SizedBox(height: DesignTokens.space16),
+                  SizedBox(height: MediaQuery.of(context).padding.bottom),
+                ],
               ),
-          ),
+            ),
+      ),
     );
   }
 
@@ -399,7 +404,9 @@ class _SettingsPageState extends State<SettingsPage> {
         subtitle != null ? Text(subtitle, style: AppTypography.small) : null,
     trailing: trailing ?? const Icon(Icons.chevron_right),
     onTap: onTap ?? () => _comingSoon(title),
-    contentPadding: const EdgeInsets.symmetric(horizontal: DesignTokens.space12),
+    contentPadding: const EdgeInsets.symmetric(
+      horizontal: DesignTokens.space12,
+    ),
   );
 
   // Helpers to map codes to localized labels
@@ -801,9 +808,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
         ],
       ),
-      child: Center(
-        child: Icon(icon, color: Colors.white, size: size * 0.55),
-      ),
+      child: Center(child: Icon(icon, color: Colors.white, size: size * 0.55)),
     );
   }
 

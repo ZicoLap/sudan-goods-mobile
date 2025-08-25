@@ -254,6 +254,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get noStoresAvailable => 'لا توجد متاجر متاحة';
 
   @override
+  String get collectionsTitle => 'المجموعات';
+
+  @override
+  String get noCollectionsAvailable => 'لا توجد مجموعات متاحة';
+
+  @override
   String get browseCategories => 'تصفح الفئات';
 
   @override
@@ -267,6 +273,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get popularProducts => 'المنتجات الشائعة';
+
+  @override
+  String get outOfStock => 'غير متوفر';
 
   @override
   String get homeGreeting => 'يوم سعيد! 👋';
@@ -630,6 +639,21 @@ class AppLocalizationsAr extends AppLocalizations {
   String get checkoutThisStore => 'الدفع لهذا المتجر';
 
   @override
+  String get placeOrder => 'إتمام الطلب';
+
+  @override
+  String get addDeliveryNotes => 'أضف ملاحظات التوصيل';
+
+  @override
+  String get addNoteTitle => 'أضف ملاحظة لهذا الطلب';
+
+  @override
+  String get addNoteHint => 'مثال: يرجى قرع الجرس أو تركها عند الباب';
+
+  @override
+  String get saveNote => 'حفظ الملاحظة';
+
+  @override
   String get langArabic => 'العربية';
 
   @override
@@ -703,4 +727,49 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get onboardingResetSuccess => 'تمت إعادة الإرشادات. ستظهر عند التشغيل القادم.';
+
+  @override
+  String get orderDetailsTitle => 'تفاصيل الطلب';
+
+  @override
+  String get itemsTitle => 'العناصر';
+
+  @override
+  String get deliverySectionTitle => 'التوصيل';
+
+  @override
+  String get statusSectionTitle => 'الحالة';
+
+  @override
+  String get orderStatusLabel => 'حالة الطلب';
+
+  @override
+  String get paymentLabel => 'الدفع';
+
+  @override
+  String get createdAtLabel => 'تم الإنشاء';
+
+  @override
+  String get updatedAtLabel => 'تم التحديث';
+
+  @override
+  String get summarySectionTitle => 'الملخص';
+
+  @override
+  String placedOnWithDate(String date) {
+    return 'تم الطلب في $date';
+  }
+
+  @override
+  String failedToLoadOrderWithError(String error) {
+    return 'فشل تحميل الطلب: $error';
+  }
+
+  @override
+  String get orderNotFound => 'الطلب غير موجود';
+
+  @override
+  String qtyAndPrice(num qty, String price) {
+    return '$qty × $price';
+  }
 }

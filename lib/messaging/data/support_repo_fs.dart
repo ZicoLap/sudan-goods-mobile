@@ -14,7 +14,7 @@ class FirestoreSupportRepo implements SupportRepo {
   final FirebaseFirestore _db;
   FirestoreSupportRepo({FirebaseFirestore? firestore}) : _db = firestore ?? FirebaseFirestore.instance;
 
-  String _threadIdFor(String userId) => 'u_${userId}';
+  String _threadIdFor(String userId) => 'u_$userId';
 
   @override
   Future<String> startThread(String userId) async {

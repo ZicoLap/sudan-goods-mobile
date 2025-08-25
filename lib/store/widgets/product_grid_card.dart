@@ -4,6 +4,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:sudan_goods/models/store/product_model.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
+import 'package:sudan_goods/l10n/app_localizations.dart';
 
 class ProductGridCard extends StatelessWidget {
   final Product product;
@@ -21,6 +22,7 @@ class ProductGridCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final hasDiscount =
         product.discountPrice != null && product.discountPrice! > 0;
     final isOutOfStock = product.quantity == 0;
@@ -89,9 +91,9 @@ class ProductGridCard extends StatelessWidget {
                               Container(
                                 color: Colors.black45,
                                 alignment: Alignment.center,
-                                child: const Text(
-                                  'Out of stock',
-                                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                child: Text(
+                                  l10n.outOfStock,
+                                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                                 ),
                               ),
                           ],
@@ -114,12 +116,12 @@ class ProductGridCard extends StatelessWidget {
                         const SizedBox(height: 4),
                         Text(
                           isOutOfStock
-                              ? 'Out of stock'
+                              ? l10n.outOfStock
                               : '${product.weight}g • ${product.quantity} in stock',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: AppTypography.small.copyWith(
-                            color: isOutOfStock ? Colors.red : Colors.black87,
+                            color: isOutOfStock ? Colors.black54 : Colors.black87,
                           ),
                         ),
                         const SizedBox(height: 6),
@@ -167,58 +169,53 @@ class ProductGridCard extends StatelessWidget {
                 ),
               ),
 
-              // ➕ Add to cart button
-              Positioned(
-                top: 8,
-                right: 8,
-                child: IgnorePointer(
-                  ignoring: isOutOfStock,
-                  child: Opacity(
-                    opacity: isOutOfStock ? 0.5 : 1,
-                    child: GestureDetector(
-                      onTap: isOutOfStock ? null : onAdd,
-                      child: Container(
-                        padding: const EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: LinearGradient(
-                            colors: [
-                              AppColors.primary.withOpacity(0.95),
-                              AppColors.primary.withOpacity(0.75),
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          boxShadow: const [
-                            BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3)),
+              // ➕ Add to cart button — hidden when out of stock
+              if (!isOutOfStock)
+                PositionedDirectional(
+                  top: 8,
+                  end: 8,
+                  child: GestureDetector(
+                    onTap: onAdd,
+                    child: Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          colors: [
+                            AppColors.primary.withOpacity(0.95),
+                            AppColors.primary.withOpacity(0.75),
                           ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
                         ),
-                        child: cartQuantity > 0
-                            ? Container(
-                                width: 20,
-                                height: 20,
-                                alignment: Alignment.center,
-                                child: Text(
-                                  '$cartQuantity',
-                                  style: AppTypography.smallBold.copyWith(color: Colors.white),
-                                ),
-                              )
-                            : const Icon(
-                                Icons.add,
-                                size: 20,
-                                color: Colors.white,
-                              ),
+                        boxShadow: const [
+                          BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3)),
+                        ],
                       ),
+                      child: cartQuantity > 0
+                          ? Container(
+                              width: 20,
+                              height: 20,
+                              alignment: Alignment.center,
+                              child: Text(
+                                '$cartQuantity',
+                                style: AppTypography.smallBold.copyWith(color: Colors.white),
+                              ),
+                            )
+                          : const Icon(
+                              Icons.add,
+                              size: 20,
+                              color: Colors.white,
+                            ),
                     ),
                   ),
                 ),
-              ),
 
               // Discount/Stock badge (top-left)
               if (hasDiscount && discountPercent != null)
-                Positioned(
+                PositionedDirectional(
                   top: 8,
-                  left: 8,
+                  start: 8,
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     decoration: BoxDecoration(
@@ -240,9 +237,9 @@ class ProductGridCard extends StatelessWidget {
                   ),
                 )
               else if (isOutOfStock)
-                Positioned(
+                PositionedDirectional(
                   top: 8,
-                  left: 8,
+                  start: 8,
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     decoration: BoxDecoration(
@@ -255,7 +252,7 @@ class ProductGridCard extends StatelessWidget {
                       boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2))],
                     ),
                     child: Text(
-                      'OUT',
+                      l10n.outOfStock,
                       style: AppTypography.smallBold.copyWith(color: Colors.white),
                     ),
                   ),

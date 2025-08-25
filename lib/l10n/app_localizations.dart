@@ -539,6 +539,18 @@ abstract class AppLocalizations {
   /// **'No stores available'**
   String get noStoresAvailable;
 
+  /// No description provided for @collectionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Collections'**
+  String get collectionsTitle;
+
+  /// No description provided for @noCollectionsAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No collections available'**
+  String get noCollectionsAvailable;
+
   /// No description provided for @browseCategories.
   ///
   /// In en, this message translates to:
@@ -568,6 +580,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Popular Products'**
   String get popularProducts;
+
+  /// No description provided for @outOfStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Out of stock'**
+  String get outOfStock;
 
   /// No description provided for @homeGreeting.
   ///
@@ -1259,6 +1277,36 @@ abstract class AppLocalizations {
   /// **'Checkout this store'**
   String get checkoutThisStore;
 
+  /// No description provided for @placeOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Place order'**
+  String get placeOrder;
+
+  /// No description provided for @addDeliveryNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Add delivery notes'**
+  String get addDeliveryNotes;
+
+  /// No description provided for @addNoteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a note to this order'**
+  String get addNoteTitle;
+
+  /// No description provided for @addNoteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Please ring the bell or leave at the door'**
+  String get addNoteHint;
+
+  /// No description provided for @saveNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Save note'**
+  String get saveNote;
+
   /// No description provided for @langArabic.
   ///
   /// In en, this message translates to:
@@ -1408,6 +1456,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Onboarding reset. It will appear on next launch.'**
   String get onboardingResetSuccess;
+
+  /// No description provided for @orderDetailsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Details'**
+  String get orderDetailsTitle;
+
+  /// No description provided for @itemsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Items'**
+  String get itemsTitle;
+
+  /// No description provided for @deliverySectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery'**
+  String get deliverySectionTitle;
+
+  /// No description provided for @statusSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get statusSectionTitle;
+
+  /// No description provided for @orderStatusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Order status'**
+  String get orderStatusLabel;
+
+  /// No description provided for @paymentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment'**
+  String get paymentLabel;
+
+  /// No description provided for @createdAtLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Created'**
+  String get createdAtLabel;
+
+  /// No description provided for @updatedAtLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated'**
+  String get updatedAtLabel;
+
+  /// No description provided for @summarySectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Summary'**
+  String get summarySectionTitle;
+
+  /// Order placed timestamp label
+  ///
+  /// In en, this message translates to:
+  /// **'Placed on {date}'**
+  String placedOnWithDate(String date);
+
+  /// Order details loading failure with error details
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load order: {error}'**
+  String failedToLoadOrderWithError(String error);
+
+  /// No description provided for @orderNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Order not found'**
+  String get orderNotFound;
+
+  /// Displays quantity and unit price for a line item
+  ///
+  /// In en, this message translates to:
+  /// **'{qty} × {price}'**
+  String qtyAndPrice(num qty, String price);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

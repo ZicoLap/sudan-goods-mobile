@@ -168,5 +168,5 @@ class FirestoreChatRepo implements ChatRepo {
     });
   }
 
-  String _conversationIdFor(String userId, String storeId) => 'u_${userId}__s_${storeId}';
+  String _conversationIdFor(String userId, String storeId) => 'u_${userId}__s_$storeId';
 }

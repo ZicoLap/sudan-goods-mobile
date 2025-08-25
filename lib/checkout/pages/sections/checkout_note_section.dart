@@ -1,6 +1,9 @@
 
 // ✅ lib/domains/customer/checkout/sections/checkout_note_section.dart
 import 'package:flutter/material.dart';
+import 'package:sudan_goods/theme/design_tokens.dart';
+import 'package:sudan_goods/theme/app_theme.dart';
+import 'package:sudan_goods/l10n/app_localizations.dart';
 
 class CheckoutNoteSection extends StatefulWidget {
   final TextEditingController controller;
@@ -13,7 +16,6 @@ class CheckoutNoteSection extends StatefulWidget {
 
 
 class _CheckoutNoteSectionState extends State<CheckoutNoteSection> {
-  String note = "Add delivery notes";
 
 void _editNote() async {
   final updated = await showModalBottomSheet<String>(
@@ -24,30 +26,58 @@ void _editNote() async {
   if (updated != null && updated.trim().isNotEmpty) {
     setState(() {
       widget.controller.text = updated.trim();
-      note = widget.controller.text;
     });
   }
 }
 
+  Widget _iconBubble(IconData icon) {
+    return Container(
+      width: 36,
+      height: 36,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: LinearGradient(
+          colors: [
+            AppColors.primary.withOpacity(0.95),
+            AppColors.primary.withOpacity(0.75),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        boxShadow: DesignTokens.shadowSmall,
+      ),
+      child: Center(
+        child: Icon(icon, color: Colors.white, size: 20),
+      ),
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
+    final displayText = widget.controller.text.trim().isNotEmpty
+        ? widget.controller.text.trim()
+        : AppLocalizations.of(context)!.addDeliveryNotes;
     return GestureDetector(
       onTap: _editNote,
       child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(16),
+        margin: const EdgeInsets.only(bottom: DesignTokens.space12),
+        padding: const EdgeInsets.all(DesignTokens.space16),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
           color: Colors.white,
-          border: Border.all(color: Colors.grey.shade300),
+          border: Border.all(color: Colors.black.withOpacity(0.06)),
+          boxShadow: DesignTokens.shadowSmall,
         ),
         child: Row(
           children: [
-            const Icon(Icons.edit_note, color: Colors.orange),
-            const SizedBox(width: 12),
+            _iconBubble(Icons.edit_note),
+            const SizedBox(width: DesignTokens.space12),
             Expanded(
-              child: Text(note, style: const TextStyle(fontSize: 16)),
+              child: Text(
+                displayText,
+                style: AppTypography.bodyLarge,
+              ),
             ),
             const Icon(Icons.chevron_right, color: Colors.grey),
           ],
@@ -101,20 +131,19 @@ void initState() {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Add a note to this order", style: Theme.of(context).textTheme.titleMedium),
+          Text(AppLocalizations.of(context)!.addNoteTitle, style: AppTypography.heading6),
           const SizedBox(height: 16),
           TextField(
             controller: _controller,
             maxLines: 4,
-            decoration: const InputDecoration(
-              hintText: "e.g. Please ring the bell or leave at the door",
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              hintText: AppLocalizations.of(context)!.addNoteHint,
             ),
           ),
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: _submit,
-            child: const Text("Save Note"),
+            child: Text(AppLocalizations.of(context)!.saveNote),
           ),
           const SizedBox(height: 16),
         ],

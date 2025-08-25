@@ -38,9 +38,7 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (_) => CartController(),
-        ),
+        ChangeNotifierProvider(create: (_) => CartController()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
         // FollowController depends on the authenticated user. It will be created
         // once the user has been loaded in UserProvider.
@@ -79,13 +77,14 @@ void main() async {
           dispose: (_, value) => value?.dispose(),
         ),
         ChangeNotifierProvider(
-          create: (_) => CheckoutController(
-            checkoutService: CheckoutService(),
-          ),
+          create: (_) => CheckoutController(checkoutService: CheckoutService()),
         ),
         ChangeNotifierProvider(create: (_) => StoreFilterController()),
         Provider<LocaleController>(
-          create: (_) => LocaleController(LocalePersistenceService())..loadSavedLocale(),
+          create:
+              (_) =>
+                  LocaleController(LocalePersistenceService())
+                    ..loadSavedLocale(),
         ),
       ],
       child: const MyApp(),
@@ -100,13 +99,17 @@ class MyApp extends StatelessWidget {
   @override
   /// Builds the [MaterialApp] with global theme and the authentication gate.
   Widget build(BuildContext context) {
-    final localeController = Provider.of<LocaleController>(context, listen: false);
+    final localeController = Provider.of<LocaleController>(
+      context,
+      listen: false,
+    );
     return ValueListenableBuilder<Locale?>(
       valueListenable: localeController.locale,
       builder: (context, locale, _) {
         return MaterialApp(
-          onGenerateTitle: (context) =>
-              AppLocalizations.of(context)?.appTitle ?? 'Sudan Goods',
+          onGenerateTitle:
+              (context) =>
+                  AppLocalizations.of(context)?.appTitle ?? 'Sudan Goods',
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           locale: locale,
@@ -123,7 +126,8 @@ class MyApp extends StatelessWidget {
           },
           theme: AppTheme.lightTheme,
           debugShowCheckedModeBanner: false,
-          home: const AppStartGate(), // App start gate decides Language → Onboarding → Auth
+          home:
+              const AppStartGate(), // App start gate decides Language → Onboarding → Auth
         );
       },
     );

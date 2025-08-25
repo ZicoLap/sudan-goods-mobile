@@ -4,6 +4,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:sudan_goods/models/store/product_model.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
+import 'package:sudan_goods/l10n/app_localizations.dart';
 
 class FeaturedProductCard extends StatelessWidget {
   final Product product;
@@ -19,6 +20,7 @@ class FeaturedProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isOutOfStock = product.quantity == 0;
     final bool hasDiscount = product.discountPrice != null && product.discountPrice! > 0;
     final int? discountPercent = hasDiscount
@@ -57,11 +59,11 @@ class FeaturedProductCard extends StatelessWidget {
                     Text(
                       product.quantity > 0
                           ? '${product.weight}g • ${product.quantity} in stock'
-                          : 'Out of stock',
+                          : l10n.outOfStock,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: AppTypography.small.copyWith(
-                        color: isOutOfStock ? Colors.red : Colors.black87,
+                        color: isOutOfStock ? Colors.black54 : Colors.black87,
                       ),
                     ),
                     const SizedBox(height: 6),
@@ -110,24 +112,89 @@ class FeaturedProductCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
                 child: Stack(
                   children: [
-                    CachedNetworkImage(
-                      imageUrl: product.images.isNotEmpty ? product.images.first : '',
-                      width: 76,
-                      height: 76,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => Shimmer.fromColors(
-                        baseColor: Colors.grey.shade300,
-                        highlightColor: Colors.grey.shade100,
-                        child: Container(width: 76, height: 76, color: Colors.white),
-                      ),
-                      errorWidget: (_, __, ___) => Container(
+                    ColorFiltered(
+                      colorFilter: ColorFilter.matrix(isOutOfStock
+                          ? const <double>[
+                              0.2126, 0.7152, 0.0722, 0, 0,
+                              0.2126, 0.7152, 0.0722, 0, 0,
+                              0.2126, 0.7152, 0.0722, 0, 0,
+                              0, 0, 0, 1, 0,
+                            ]
+                          : const <double>[
+                              1, 0, 0, 0, 0,
+                              0, 1, 0, 0, 0,
+                              0, 0, 1, 0, 0,
+                              0, 0, 0, 1, 0,
+                            ]),
+                      child: CachedNetworkImage(
+                        imageUrl: product.images.isNotEmpty ? product.images.first : '',
                         width: 76,
                         height: 76,
-                        color: Colors.grey.shade100,
-                        alignment: Alignment.center,
-                        child: const Icon(Icons.image_outlined, size: 28, color: Colors.grey),
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => Shimmer.fromColors(
+                          baseColor: Colors.grey.shade300,
+                          highlightColor: Colors.grey.shade100,
+                          child: Container(width: 76, height: 76, color: Colors.white),
+                        ),
+                        errorWidget: (_, __, ___) => Container(
+                          width: 76,
+                          height: 76,
+                          color: Colors.grey.shade100,
+                          alignment: Alignment.center,
+                          child: const Icon(Icons.image_outlined, size: 28, color: Colors.grey),
+                        ),
                       ),
                     ),
+                    // Badge on image (top-left)
+                    if (hasDiscount && discountPercent != null)
+                      PositionedDirectional(
+                        top: 6,
+                        start: 6,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(999),
+                            gradient: LinearGradient(
+                              colors: [
+                                AppColors.primary.withOpacity(0.95),
+                                AppColors.primary.withOpacity(0.75),
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            boxShadow: const [
+                              BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2))
+                            ],
+                          ),
+                          child: Text(
+                            '-$discountPercent%',
+                            style: AppTypography.smallBold.copyWith(color: Colors.white),
+                          ),
+                        ),
+                      )
+                    else if (isOutOfStock)
+                      PositionedDirectional(
+                        top: 6,
+                        start: 6,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(999),
+                            gradient: LinearGradient(
+                              colors: [Colors.grey.shade700, Colors.grey.shade500],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            boxShadow: const [
+                              BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2))
+                            ],
+                          ),
+                          child: Text(
+                            l10n.outOfStock,
+                            style: AppTypography.smallBold.copyWith(color: Colors.white),
+                          ),
+                        ),
+                      ),
                     Positioned(
                       left: 0,
                       right: 0,
@@ -149,99 +216,47 @@ class FeaturedProductCard extends StatelessWidget {
             ],
           ),
 
-          // Discount/Stock badge (top-left)
-          if (hasDiscount && discountPercent != null)
+          // ➕ Add Button (top-right corner) — hidden when out of stock
+          if (!isOutOfStock)
             PositionedDirectional(
               top: 8,
-              start: 8,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(999),
-                  gradient: LinearGradient(
-                    colors: [
-                      AppColors.primary.withOpacity(0.95),
-                      AppColors.primary.withOpacity(0.75),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2))],
-                ),
-                child: Text(
-                  '-$discountPercent%',
-                  style: AppTypography.smallBold.copyWith(color: Colors.white),
-                ),
-              ),
-            )
-          else if (isOutOfStock)
-            PositionedDirectional(
-              top: 8,
-              start: 8,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(999),
-                  gradient: LinearGradient(
-                    colors: [Colors.grey.shade700, Colors.grey.shade500],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2))],
-                ),
-                child: Text(
-                  'OUT',
-                  style: AppTypography.smallBold.copyWith(color: Colors.white),
-                ),
-              ),
-            ),
-
-          // ➕ Add Button (top-right corner)
-          PositionedDirectional(
-            top: 8,
-            end: 8,
-            child: IgnorePointer(
-              ignoring: isOutOfStock,
-              child: Opacity(
-                opacity: isOutOfStock ? 0.5 : 1,
-                child: GestureDetector(
-                  onTap: isOutOfStock ? null : onAdd,
-                  child: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: LinearGradient(
-                        colors: [
-                          AppColors.primary.withOpacity(0.95),
-                          AppColors.primary.withOpacity(0.75),
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 6,
-                          offset: Offset(0, 3),
-                        ),
+              end: 8,
+              child: GestureDetector(
+                onTap: onAdd,
+                child: Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: LinearGradient(
+                      colors: [
+                        AppColors.primary.withOpacity(0.95),
+                        AppColors.primary.withOpacity(0.75),
                       ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
-                    child: cartQuantity > 0
-                        ? Container(
-                            width: 20,
-                            height: 20,
-                            alignment: Alignment.center,
-                            child: Text(
-                              '$cartQuantity',
-                              style: AppTypography.smallBold.copyWith(color: Colors.white),
-                            ),
-                          )
-                        : const Icon(Icons.add, color: Colors.white, size: 20),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 6,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
                   ),
+                  child: cartQuantity > 0
+                      ? Container(
+                          width: 20,
+                          height: 20,
+                          alignment: Alignment.center,
+                          child: Text(
+                            '$cartQuantity',
+                            style: AppTypography.smallBold.copyWith(color: Colors.white),
+                          ),
+                        )
+                      : const Icon(Icons.add, color: Colors.white, size: 20),
                 ),
               ),
             ),
-          ),
         ],
       ),
     );

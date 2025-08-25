@@ -92,7 +92,7 @@ class _ModernBottomNavigationBarState extends State<ModernBottomNavigationBar>
       ),
       child: SafeArea(
         child: Container(
-          height: 85,
+          constraints: const BoxConstraints(minHeight: 88),
           padding: const EdgeInsets.symmetric(
             horizontal: DesignTokens.space16,
             vertical: DesignTokens.space12,
@@ -162,6 +162,7 @@ class _ModernBottomNavigationBarState extends State<ModernBottomNavigationBar>
                       AnimatedDefaultTextStyle(
                         duration: const Duration(milliseconds: 200),
                         style: AppTypography.caption.copyWith(
+                          height: 1.2,
                           color:
                               isSelected
                                   ? AppColors.primary

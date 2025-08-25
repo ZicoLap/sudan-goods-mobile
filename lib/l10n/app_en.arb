@@ -136,12 +136,15 @@
   "viewAll": "View all",
   "failedToLoadStores": "Failed to load stores",
   "noStoresAvailable": "No stores available",
+  "collectionsTitle": "Collections",
+  "noCollectionsAvailable": "No collections available",
 
   "browseCategories": "Browse Categories",
   "featuredStores": "Featured Stores",
   "topPicksBadge": "⭐ Top picks",
   "noFeaturedStores": "No featured stores",
   "popularProducts": "Popular Products",
+  "outOfStock": "Out of stock",
   "homeGreeting": "Good day! 👋",
   "deliveringTo": "Delivering to {place}",
   "@deliveringTo": {
@@ -307,6 +310,11 @@
   "checkout": "Checkout",
   "viewCart": "View cart",
   "checkoutThisStore": "Checkout this store",
+  "placeOrder": "Place order",
+  "addDeliveryNotes": "Add delivery notes",
+  "addNoteTitle": "Add a note to this order",
+  "addNoteHint": "e.g. Please ring the bell or leave at the door",
+  "saveNote": "Save note",
 
   "langArabic": "Arabic",
   "langEnglish": "English",
@@ -332,5 +340,37 @@
   "resetOnboarding": "Reset onboarding",
   "resetOnboardingSubtitle": "Show the welcome walkthrough on next app start",
   "reset": "Reset",
-  "onboardingResetSuccess": "Onboarding reset. It will appear on next launch."
+  "onboardingResetSuccess": "Onboarding reset. It will appear on next launch.",
+  "orderDetailsTitle": "Order Details",
+  "itemsTitle": "Items",
+  "deliverySectionTitle": "Delivery",
+  "statusSectionTitle": "Status",
+  "orderStatusLabel": "Order status",
+  "paymentLabel": "Payment",
+  "createdAtLabel": "Created",
+  "updatedAtLabel": "Updated",
+  "summarySectionTitle": "Summary",
+  "placedOnWithDate": "Placed on {date}",
+  "@placedOnWithDate": {
+    "description": "Order placed timestamp label",
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "failedToLoadOrderWithError": "Failed to load order: {error}",
+  "@failedToLoadOrderWithError": {
+    "description": "Order details loading failure with error details",
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "orderNotFound": "Order not found",
+  "qtyAndPrice": "{qty} × {price}",
+  "@qtyAndPrice": {
+    "description": "Displays quantity and unit price for a line item",
+    "placeholders": {
+      "qty": { "type": "num" },
+      "price": { "type": "String" }
+    }
+  }
 }
