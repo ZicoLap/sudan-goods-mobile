@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:sudan_goods/models/shared_models/address.dart';
-import 'package:sudan_goods/user/user_provider.dart';
+import 'package:sudan_goods/authentication/user/user_provider.dart';
 
 class CheckoutAddressSection extends StatefulWidget {
   const CheckoutAddressSection({super.key});

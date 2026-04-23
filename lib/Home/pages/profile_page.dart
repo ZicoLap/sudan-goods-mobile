@@ -8,8 +8,8 @@ import 'package:shimmer/shimmer.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
 import 'package:sudan_goods/Home/pages/edit_profile_page.dart';
 import 'package:sudan_goods/Home/pages/settings_page.dart';
-import 'package:sudan_goods/models/user/user_model.dart';
-import 'package:sudan_goods/user/user_provider.dart';
+import 'package:sudan_goods/authentication/user/user_model.dart';
+import 'package:sudan_goods/authentication/user/user_provider.dart';
 import 'package:sudan_goods/follow/presentation/controllers/follow_controller.dart';
 import 'package:sudan_goods/follow/domain/entities/store_summary.dart';
 

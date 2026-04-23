@@ -272,6 +272,7 @@
   "male": "Male",
   "female": "Female",
   "birthdayLabel": "Birthday:",
+  "birthdayAgeError": "You must be at least 13 years old",
   "addressTitle": "Address",
   "addressLabelPlaceholder": "Label (e.g. Home)",
   "street": "Street",

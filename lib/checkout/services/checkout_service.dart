@@ -9,7 +9,7 @@ import 'package:sudan_goods/models/store/order_model.dart' as order_model;
 import 'package:sudan_goods/models/store/store_model.dart';
 import 'package:sudan_goods/order/order_service.dart';
 import 'package:sudan_goods/checkout/services/payment_gateway.dart';
-import 'package:sudan_goods/user/user_provider.dart';
+import 'package:sudan_goods/authentication/user/user_provider.dart';
 
 /// Lightweight domain error for checkout failures.
 class CheckoutException implements Exception {

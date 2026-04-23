@@ -273,6 +273,7 @@
   "male": "ذكر",
   "female": "أنثى",
   "birthdayLabel": "تاريخ الميلاد:",
+  "birthdayAgeError": "يجب أن يكون عمرك 13 عامًا على الأقل",
   "addressTitle": "العنوان",
   "addressLabelPlaceholder": "التسمية (مثال: المنزل)",
   "street": "الشارع",

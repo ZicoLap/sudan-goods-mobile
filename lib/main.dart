@@ -6,7 +6,7 @@ import 'package:sudan_goods/cart/cart_controller.dart';
 import 'package:sudan_goods/checkout/controller/checkout_controller.dart';
 import 'package:sudan_goods/checkout/services/checkout_service.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
-import 'package:sudan_goods/user/user_provider.dart';
+import 'package:sudan_goods/authentication/user/user_provider.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
 import 'package:sudan_goods/l10n/locale_controller.dart';
 import 'package:sudan_goods/l10n/locale_persistence_service.dart';
@@ -19,6 +19,9 @@ import 'package:sudan_goods/messaging/presentation/controllers/chat_controller.d
 import 'package:sudan_goods/messaging/presentation/wiring/chat_wiring.dart';
 import 'package:sudan_goods/messaging/presentation/controllers/support_controller.dart';
 import 'package:sudan_goods/messaging/presentation/wiring/support_wiring.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
+
+import 'package:cloud_functions/cloud_functions.dart';
 
 import 'firebase_options.dart';
 
@@ -35,6 +38,16 @@ void main() async {
   if (kDebugMode) {
     print("Firebase initialized successfully");
   }
+
+  
+  // Initialize Firebase App Check
+  await FirebaseAppCheck.instance.activate(
+    // You can use this for Android and iOS
+    androidProvider: AndroidProvider.debug,
+    // For iOS, you can use:
+    appleProvider: AppleProvider.debug,
+  );
+  
   runApp(
     MultiProvider(
       providers: [

@@ -8,9 +8,9 @@ import 'package:provider/provider.dart';
 import 'package:sudan_goods/l10n/locale_controller.dart';
 import 'package:sudan_goods/Home/pages/language_settings_page.dart';
 import 'package:sudan_goods/authentication/services/account_service.dart';
-import 'package:sudan_goods/authentication/views/change_email_page.dart';
+import 'package:sudan_goods/authentication/pages/change_email_page.dart';
 import 'package:sudan_goods/authentication/auth_gate_page.dart';
-import 'package:sudan_goods/user/user_provider.dart';
+import 'package:sudan_goods/authentication/user/user_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class SettingsPage extends StatefulWidget {

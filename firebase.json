@@ -1,1 +1,59 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"sudan-mall-a458a","appId":"1:132381343622:android:d78c4ffff5f10804a4b607","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"sudan-mall-a458a","configurations":{"android":"1:132381343622:android:d78c4ffff5f10804a4b607","ios":"1:132381343622:ios:b0ecf53770ac603aa4b607"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "sudan-mall-a458a",
+          "appId": "1:132381343622:android:d78c4ffff5f10804a4b607",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "sudan-mall-a458a",
+          "configurations": {
+            "android": "1:132381343622:android:d78c4ffff5f10804a4b607",
+            "ios": "1:132381343622:ios:b0ecf53770ac603aa4b607"
+          }
+        }
+      }
+    }
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "disallowLegacyRuntimeConfig": true,
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "predeploy": []
+    }
+  ],
+  "emulators": {
+    "apphosting": {
+      "port": 5002,
+      "rootDirectory": "./"
+    },
+    "auth": {
+      "port": 9099
+    },
+    "functions": {
+      "port": 5001
+    },
+    "firestore": {
+      "port": 8080
+    },
+    "database": {
+      "port": 9000
+    },
+    "ui": {
+      "enabled": false
+    },
+    "singleProjectMode": true
+  }
+}

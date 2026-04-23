@@ -541,6 +541,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get birthdayLabel => 'Birthday:';
 
   @override
+  String get birthdayAgeError => 'You must be at least 13 years old';
+
+  @override
   String get addressTitle => 'Address';
 
   @override

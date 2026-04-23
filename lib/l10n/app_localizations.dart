@@ -1085,6 +1085,12 @@ abstract class AppLocalizations {
   /// **'Birthday:'**
   String get birthdayLabel;
 
+  /// No description provided for @birthdayAgeError.
+  ///
+  /// In en, this message translates to:
+  /// **'You must be at least 13 years old'**
+  String get birthdayAgeError;
+
   /// No description provided for @addressTitle.
   ///
   /// In en, this message translates to:
