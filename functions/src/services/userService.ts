@@ -1,4 +1,5 @@
 import * as admin from 'firebase-admin';
+import * as logger from 'firebase-functions/logger';
 import { RegistrationError } from '../utils/errors';
 
 export interface UserDocument {
@@ -38,13 +39,15 @@ export async function createUserDocument(userData: UserDocument): Promise<void> 
 }
 
 /**
- * Delete user document (used for rollback)
+ * Delete user document (reserved for rollback if additional writes are added
+ * after Firestore succeeds — not currently called since Firestore is the last
+ * step and a failure there leaves nothing to clean up).
  */
 export async function deleteUserDocument(uid: string): Promise<void> {
   const db = admin.firestore();
   try {
     await db.collection('users').doc(uid).delete();
   } catch (error) {
-    console.error(`Failed to delete user document ${uid} during rollback:`, error);
+    logger.error('Failed to delete user document during rollback', { uid, error });
   }
 }

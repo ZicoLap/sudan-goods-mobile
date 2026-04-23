@@ -1,4 +1,5 @@
 import * as admin from 'firebase-admin';
+import * as logger from 'firebase-functions/logger';
 import { RegistrationError } from '../utils/errors';
 
 /**
@@ -38,7 +39,7 @@ export async function createAuthUser(
     if (error.code === 'auth/invalid-password') {
       throw new RegistrationError('VALIDATION_ERROR', 'Password is too weak', [error.message]);
     }
-    throw new RegistrationError('AUTH_ERROR', `Failed to create user: ${error.message}`);
+    throw new RegistrationError('AUTH_ERROR', 'Failed to create user account. Please try again.');
   }
 }
 
@@ -50,6 +51,6 @@ export async function deleteAuthUser(uid: string): Promise<void> {
     await admin.auth().deleteUser(uid);
   } catch (error) {
     // Log but don't throw - we're already in error handling
-    console.error(`Failed to delete auth user ${uid} during rollback:`, error);
+    logger.error('Failed to delete auth user during rollback', { uid, error });
   }
 }

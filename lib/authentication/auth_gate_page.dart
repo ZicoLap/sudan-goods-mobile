@@ -24,8 +24,16 @@ class AuthGate extends StatelessWidget {
 
         final uid = snapshot.data!.uid;
 
-        return FutureBuilder<DocumentSnapshot>(
-          future: FirebaseFirestore.instance.collection('users').doc(uid).get(),
+        // Use snapshots() instead of a one-shot get() so that AuthGate
+        // automatically rebuilds the moment the Cloud Function writes the
+        // Firestore doc — eliminating the race condition where authStateChanges
+        // fires before the doc exists.
+        return StreamBuilder<DocumentSnapshot>(
+          stream:
+              FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(uid)
+                  .snapshots(),
           builder: (context, userSnapshot) {
             if (!userSnapshot.hasData) {
               return const Scaffold(
@@ -36,8 +44,18 @@ class AuthGate extends StatelessWidget {
             final data = userSnapshot.data!.data() as Map<String, dynamic>?;
             final role = data?['role'];
 
+            // Doc not yet written (Cloud Function still in progress) — wait.
+            if (role == null) {
+              return const Scaffold(
+                body: Center(child: CircularProgressIndicator()),
+              );
+            }
+
             if (role == 'customer') {
-              final userProvider = Provider.of<UserProvider>(context, listen: false);
+              final userProvider = Provider.of<UserProvider>(
+                context,
+                listen: false,
+              );
               // If already loaded for this uid, go straight to MainShell.
               if (userProvider.isUserLoaded) {
                 try {
@@ -62,7 +80,7 @@ class AuthGate extends StatelessWidget {
               );
             }
 
-            // Default return statement to handle other cases
+            // Unrecognised role — show a clear message.
             return const Scaffold(
               body: Center(child: Text('Role not recognized')),
             );

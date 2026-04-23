@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sudan_goods/authentication/controller/register_controller.dart';
 import 'package:sudan_goods/authentication/data/register_form_data.dart';
@@ -66,7 +67,21 @@ class _RegisterPageState extends State<RegisterPage> {
 
     // Handle structured registration result
     if (result.isSuccess) {
-      // Success: show success message and navigate to login
+      // Send verification email: sign in briefly, send email, sign out immediately.
+      // The user must verify before logging in; AuthGate enforces this.
+      try {
+        final credential = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(
+              email: _formData.email.text.trim(),
+              password: _formData.password.text.trim(),
+            );
+        await credential.user?.sendEmailVerification();
+        await FirebaseAuth.instance.signOut();
+      } catch (_) {
+        // Non-fatal: user can request a new verification email on first login.
+      }
+
+      if (!mounted) return;
       AppSnackbar.success(
         context,
         result.message ?? 'Registration successful! Please verify your email.',
