@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sudan_goods/authentication/pages/email_verification_page.dart';
 import 'package:sudan_goods/authentication/pages/login_page.dart';
 import 'package:sudan_goods/authentication/pages/role_redirect_page.dart';
 import 'package:sudan_goods/Home/pages/main_shell.dart';
@@ -21,7 +22,7 @@ class AuthGate extends StatelessWidget {
   /// Returns null if claims not set yet (legacy users)
   Future<String?> _getRoleFromToken(User user) async {
     try {
-      final tokenResult = await user.getIdTokenResult();
+      final tokenResult = await user.getIdTokenResult(true);
       return tokenResult.claims?['role'] as String?;
     } catch (e) {
       return null;
@@ -42,6 +43,12 @@ class AuthGate extends StatelessWidget {
         if (!snapshot.hasData) return const LoginPage();
 
         final user = snapshot.data!;
+
+        // Block the session until the user verifies their email address.
+        if (!user.emailVerified) {
+          return const EmailVerificationPage();
+        }
+
         final uid = user.uid;
 
         // Check Custom Claims first (fast path - no Firestore read needed)

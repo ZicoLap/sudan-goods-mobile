@@ -1,0 +1,234 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Global helpers ────────────────────────────────────────────────────────
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.role == 'admin';
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    // ── Users ─────────────────────────────────────────────────────────────────
+    // Created exclusively by the Cloud Function (registerUser).
+    // Clients may only read their own doc and update safe profile fields.
+    // The 'role', 'uid', and 'createdAt' fields are immutable from clients.
+    match /users/{userId} {
+      allow get:    if isOwner(userId) || isAdmin();
+      allow list:   if isAdmin();
+      allow create: if false;  // Cloud Function is the sole creator
+      allow update: if (isOwner(userId) && onlyProfileFields()) || isAdmin();
+      allow delete: if false;  // Admin SDK only
+
+      function onlyProfileFields() {
+        return request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['firstName', 'lastName', 'phoneNumber', 'email']);
+      }
+
+      // ── Inbox (messaging conversation summaries) ────────────────────────────
+      // Written by the client when a conversation is started or a message sent.
+      match /inbox/{conversationId} {
+        allow read:   if isOwner(userId);
+        allow create: if isOwner(userId);
+        allow update: if isOwner(userId) && onlySafeInboxUpdateFields();
+        allow delete: if false;
+
+        function onlySafeInboxUpdateFields() {
+          return request.resource.data.diff(resource.data).affectedKeys()
+              .hasOnly([
+                'lastMessageText', 'lastMessageSenderId', 'lastMessageAt',
+                'updatedAt', 'unreadCount', 'storeId', 'storeName',
+                'storeLogoUrl', 'storeIsActive', 'storeIsApproved'
+              ]);
+        }
+      }
+
+      // ── Following (stores the user follows) ────────────────────────────────
+      match /following/{storeId} {
+        allow read:   if isOwner(userId);
+        allow create: if isOwner(userId) && validFollowCreate();
+        allow update: if false;  // Clients can only follow (create) or unfollow (delete)
+        allow delete: if isOwner(userId);
+
+        function validFollowCreate() {
+          let store = get(/databases/$(database)/documents/stores/$(storeId)).data;
+          return request.resource.data.storeId == storeId
+              && request.resource.data.keys().hasOnly([
+                   'storeId', 'storeName', 'storeLogoUrl',
+                   'storeIsActive', 'followedAt'
+                 ])
+              && store.isActive == true
+              && store.isApproved == true;
+        }
+      }
+    }
+
+    // ── Stores ────────────────────────────────────────────────────────────────
+    // Public catalog visible to all signed-in users.
+    // All writes (approval, activation, creation) go through Admin SDK / Cloud Functions.
+    match /stores/{storeId} {
+      allow read:  if isSignedIn();
+      allow write: if false;
+
+      // ── Followers mirror ──────────────────────────────────────────────────
+      // Client-side mirror write that keeps stores/{id}/followers up to date.
+      match /followers/{userId} {
+        allow read:   if isSignedIn();
+        allow create: if isOwner(userId) && validFollowerMirrorCreate();
+        allow update: if false;
+        allow delete: if isOwner(userId);
+
+        function validFollowerMirrorCreate() {
+          let store = get(/databases/$(database)/documents/stores/$(storeId)).data;
+          return request.resource.data.keys().hasOnly(['userId', 'followedAt'])
+              && request.resource.data.userId == userId
+              && store.isActive == true
+              && store.isApproved == true;
+        }
+      }
+    }
+
+    // ── Products ──────────────────────────────────────────────────────────────
+    // Read-only from client. Writes managed by Admin SDK / Cloud Functions.
+    match /products/{productId} {
+      allow read:  if isSignedIn();
+      allow write: if false;
+    }
+
+    // ── Product collections (store-specific groupings) ────────────────────────
+    // Read-only from client.
+    match /collections/{collectionId} {
+      allow read:  if isSignedIn();
+      allow write: if false;
+    }
+
+    // ── App-level browse categories ───────────────────────────────────────────
+    // Read-only from client. Admin-managed.
+    match /categories/{categoryId} {
+      allow read:  if isSignedIn();
+      allow write: if false;
+    }
+
+    // ── Orders ────────────────────────────────────────────────────────────────
+    // Customers read and can delete their own pending orders.
+    // Order creation is handled by the Checkout module (excluded from this ruleset).
+    // Status updates happen via Cloud Functions only.
+    match /orders/{orderId} {
+      allow read:   if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if false;  // Checkout module — handled separately
+      allow update: if false;  // Cloud Functions manage status transitions
+      allow delete: if isSignedIn()
+          && resource.data.userId == request.auth.uid
+          && resource.data.status == 'pending';
+    }
+
+    // ── Wanted requests ───────────────────────────────────────────────────────
+    // Any signed-in user may submit a request. No client reads (admin-only via Admin SDK).
+    match /wanted_requests/{requestId} {
+      allow create: if isSignedIn();
+      allow read:   if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    // ── Conversations (customer ↔ store messaging) ────────────────────────────
+    // ID pattern: u_{userId}__s_{storeId}
+    // The 'userId' field in the document is the authoritative ownership anchor.
+    match /conversations/{conversationId} {
+      allow read: if isSignedIn()
+          && resource.data.userId == request.auth.uid;
+
+      allow create: if isSignedIn()
+          && request.resource.data.userId == request.auth.uid
+          && request.resource.data.keys().hasOnly([
+               'userId', 'storeId', 'storeName', 'storeLogoUrl',
+               'storeIsActive', 'storeIsApproved',
+               'lastMessageAt', 'createdAt', 'updatedAt'
+             ]);
+
+      allow update: if isSignedIn()
+          && resource.data.userId == request.auth.uid
+          && request.resource.data.diff(resource.data).affectedKeys()
+              .hasOnly([
+                'lastMessageText', 'lastMessageSenderId', 'lastMessageAt',
+                'updatedAt', 'storeId', 'storeName', 'storeLogoUrl',
+                'storeIsActive', 'storeIsApproved'
+              ]);
+
+      allow delete: if false;
+
+      // ── Messages ──────────────────────────────────────────────────────────
+      // Only the conversation's participant (userId) may read or create messages.
+      // The senderId must match the authenticated user to prevent impersonation.
+      match /messages/{messageId} {
+        allow read: if isSignedIn()
+            && get(/databases/$(database)/documents/conversations/$(conversationId)).data.userId
+                == request.auth.uid;
+
+        allow create: if isSignedIn()
+            && get(/databases/$(database)/documents/conversations/$(conversationId)).data.userId
+                == request.auth.uid
+            && request.resource.data.keys().hasOnly([
+                 'senderId', 'text', 'imageUrl', 'sentAt', 'readBy'
+               ])
+            && request.resource.data.senderId == request.auth.uid;
+
+        allow update: if isSignedIn()
+            && get(/databases/$(database)/documents/conversations/$(conversationId)).data.userId
+                == request.auth.uid
+            && request.resource.data.diff(resource.data).affectedKeys()
+                .hasOnly(['readBy']);
+
+        allow delete: if false;
+      }
+    }
+
+    // ── Support messages ──────────────────────────────────────────────────────
+    // Thread ID pattern: u_{userId} (deterministic — only the owner can derive it).
+    // This makes the threadId itself a gate: no user can access another's thread.
+    match /supportmessages/{threadId} {
+      allow read: if isSignedIn()
+          && threadId == 'u_' + request.auth.uid;
+
+      allow create: if isSignedIn()
+          && threadId == 'u_' + request.auth.uid
+          && request.resource.data.userId == request.auth.uid;
+
+      allow update: if isSignedIn()
+          && threadId == 'u_' + request.auth.uid
+          && request.resource.data.diff(resource.data).affectedKeys()
+              .hasOnly([
+                'lastMessageText', 'lastMessageSenderId', 'lastMessageAt',
+                'updatedAt', 'readBy', 'userId'
+              ]);
+
+      allow delete: if false;
+
+      // ── Support message subcollection ────────────────────────────────────
+      match /messages/{messageId} {
+        allow read: if isSignedIn()
+            && threadId == 'u_' + request.auth.uid;
+
+        allow create: if isSignedIn()
+            && threadId == 'u_' + request.auth.uid
+            && request.resource.data.keys().hasOnly([
+                 'senderId', 'text', 'imageUrl', 'sentAt', 'readBy'
+               ])
+            && request.resource.data.senderId == request.auth.uid;
+
+        allow update: if isSignedIn()
+            && threadId == 'u_' + request.auth.uid
+            && request.resource.data.diff(resource.data).affectedKeys()
+                .hasOnly(['readBy']);
+
+        allow delete: if false;
+      }
+    }
+  }
+}
