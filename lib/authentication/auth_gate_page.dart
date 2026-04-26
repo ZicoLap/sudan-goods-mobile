@@ -75,6 +75,62 @@ class AuthGate extends StatelessWidget {
                       body: Center(child: CircularProgressIndicator()),
                     );
                   }
+
+                  // Handle error loading user profile
+                  if (snap.hasError) {
+                    return Scaffold(
+                      body: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(32.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.error_outline,
+                                size: 64,
+                                color: Colors.red,
+                              ),
+                              const SizedBox(height: 16),
+                              const Text(
+                                'Failed to load user profile',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                snap.error.toString(),
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 24),
+                              ElevatedButton.icon(
+                                onPressed: () {
+                                  // Trigger rebuild to retry
+                                  (context as Element).markNeedsBuild();
+                                },
+                                icon: const Icon(Icons.refresh),
+                                label: const Text('Retry'),
+                              ),
+                              const SizedBox(height: 12),
+                              TextButton(
+                                onPressed: () async {
+                                  await FirebaseAuth.instance.signOut();
+                                },
+                                child: const Text('Sign Out'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+
                   return const MainShell();
                 },
               );

@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:sudan_goods/authentication/controller/login_controller.dart';
 import 'package:sudan_goods/authentication/data/login_form_data.dart';
 import 'package:sudan_goods/authentication/pages/register_page.dart';
+import 'package:sudan_goods/authentication/services/login_service.dart';
 import 'package:sudan_goods/authentication/pages/widgets/password_reset_dialog.dart';
 import 'package:sudan_goods/core/utils/snackbar_utils.dart';
+import 'package:sudan_goods/Home/pages/main_shell.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
@@ -40,13 +42,26 @@ class _LoginFormState extends State<LoginForm> {
         );
         return;
       }
-      // Successful login: let AuthGate (listening to authStateChanges) rebuild
-      // to MainShell and fetch the user. No manual navigation here.
+      // Successful login: explicitly navigate to MainShell.
+      // AuthGate will also rebuild via authStateChanges, but explicit navigation
+      // ensures reliable transition even if stream events are delayed.
+      if (result == "success") {
+        if (!mounted) return;
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const MainShell()),
+          (route) => false, // Clear all previous routes
+        );
+        return;
+      }
     } catch (e) {
-      AppSnackbar.error(
-        context,
-        AppLocalizations.of(context)!.loginFailedWithError(e.toString()),
-      );
+      // Use user-friendly message from LoginException, fallback for other errors
+      final errorMessage =
+          e is LoginException
+              ? e.message
+              : AppLocalizations.of(
+                context,
+              )!.loginFailedWithError(e.toString());
+      AppSnackbar.error(context, errorMessage);
     } finally {
       if (!mounted) return;
       setState(() => _isLoading = false);
