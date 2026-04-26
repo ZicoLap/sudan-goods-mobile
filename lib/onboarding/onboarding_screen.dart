@@ -5,6 +5,8 @@ import 'package:sudan_goods/authentication/auth_gate_page.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
 
+/// Modernized onboarding screen with 4 pages (reduced from 8),
+/// simple fade/slide animations, gradient CTA button, and improved step indicator.
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
 
@@ -16,6 +18,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _controller = PageController();
   int _index = 0;
 
+  // Reduced to 4 pages by merging related content
+  static const int _pageCount = 4;
+
   @override
   void dispose() {
     _controller.dispose();
@@ -23,10 +28,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void _next() {
-    if (_index < 7) {
+    if (_index < _pageCount - 1) {
       _controller.nextPage(
-        duration: const Duration(milliseconds: 250),
-        curve: Curves.easeOut,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOutCubic,
       );
     } else {
       _finish();
@@ -44,146 +49,156 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final titles = [
-      l10n.onbTitle1,
-      l10n.onbTitle2,
-      l10n.onbTitle3,
-      l10n.onbTitle4,
-      l10n.onbTitle5,
-      l10n.onbTitle6,
-      l10n.onbTitle7,
-      l10n.onbTitle8,
-    ];
-    final bodies = [
-      l10n.onbBody1,
-      l10n.onbBody2,
-      l10n.onbBody3,
-      l10n.onbBody4,
-      l10n.onbBody5,
-      l10n.onbBody6,
-      l10n.onbBody7,
-      l10n.onbBody8,
-    ];
-    final icons = [
-      Icons.local_mall_rounded,
-      Icons.search_rounded,
-      Icons.storefront_rounded,
-      Icons.shopping_cart_rounded,
-      Icons.payments_rounded,
-      Icons.local_shipping_rounded,
-      Icons.support_agent_rounded,
-      Icons.verified_rounded,
-    ];
+    final pages = _buildPages(l10n);
 
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              AppColors.primary.withOpacity(0.05),
-              Colors.transparent,
+              AppColors.primary.withAlpha(13), // 5% opacity
+              Colors.white,
             ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
         ),
         child: SafeArea(
           child: Column(
             children: [
+              // Step counter at top
+              Padding(
+                padding: const EdgeInsets.only(
+                  top: DesignTokens.space16,
+                  bottom: DesignTokens.space8,
+                ),
+                child: _StepIndicator(current: _index + 1, total: _pageCount),
+              ),
               Expanded(
                 child: PageView.builder(
                   controller: _controller,
-                  itemCount: 8,
+                  itemCount: _pageCount,
                   physics: const BouncingScrollPhysics(),
                   onPageChanged: (i) => setState(() => _index = i),
                   itemBuilder: (context, i) {
-                    return Padding(
-                      padding: DesignTokens.paddingPageHorizontal.add(
-                        const EdgeInsets.only(top: DesignTokens.space32),
-                      ),
-                      child: Center(
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 560),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(DesignTokens.radiusXLarge),
-                              border: Border.all(color: Colors.black.withOpacity(0.06)),
-                              boxShadow: DesignTokens.shadowSmall,
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: DesignTokens.space20,
-                              vertical: DesignTokens.space24,
-                            ),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                _iconBubble(icons[i]),
-                                const SizedBox(height: DesignTokens.space20),
-                                Text(
-                                  titles[i],
-                                  style: AppTypography.heading4,
-                                  textAlign: TextAlign.center,
-                                ),
-                                const SizedBox(height: DesignTokens.space12),
-                                Text(
-                                  bodies[i],
-                                  style: AppTypography.bodyLarge.copyWith(color: AppColors.text),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
+                    return _AnimatedPage(
+                      key: ValueKey(i),
+                      page: pages[i],
+                      isActive: i == _index,
                     );
                   },
                 ),
               ),
+              // Bottom control bar
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
-                    border: Border.all(color: Colors.black.withOpacity(0.06)),
-                    boxShadow: DesignTokens.shadowSmall,
-                  ),
-                  padding: const EdgeInsets.all(DesignTokens.space12),
-                  child: Row(
-                    children: [
-                      TextButton(
-                        onPressed: _finish,
-                        child: Text(l10n.actionSkip),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Center(
-                          child: FittedBox(
-                            child: _Dots(count: 8, index: _index),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      FittedBox(
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: const Size(0, 44),
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          ),
-                          onPressed: _next,
-                          child: Text(
-                            _index == 7 ? l10n.actionGetStarted : l10n.actionNext,
-                          ),
-                        ),
-                      ),
-                    ],
+                padding: DesignTokens.paddingPageHorizontal.add(
+                  const EdgeInsets.only(
+                    bottom: DesignTokens.space24,
+                    top: DesignTokens.space16,
                   ),
                 ),
+                child: _BottomControls(
+                  currentIndex: _index,
+                  pageCount: _pageCount,
+                  onNext: _next,
+                  onSkip: _finish,
+                  nextLabel:
+                      _index == _pageCount - 1
+                          ? l10n.actionGetStarted
+                          : l10n.actionNext,
+                  skipLabel: l10n.actionSkip,
+                ),
               ),
-              const SizedBox(height: 8),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<_OnboardingPageData> _buildPages(AppLocalizations l10n) {
+    return [
+      // Page 1: Welcome + Community (merged title1+3, body1+3)
+      _OnboardingPageData(
+        icon: Icons.local_mall_rounded,
+        title: l10n.onbTitle1,
+        body: '${l10n.onbBody1}\n\n${l10n.onbBody3}',
+      ),
+      // Page 2: Shopping Experience (merged title2+4, body2+4)
+      _OnboardingPageData(
+        icon: Icons.search_rounded,
+        title: l10n.onbTitle2,
+        body: '${l10n.onbBody2}\n\n${l10n.onbBody4}',
+      ),
+      // Page 3: Features (merged title5+6, body5+6)
+      _OnboardingPageData(
+        icon: Icons.storefront_rounded,
+        title: l10n.onbTitle5,
+        body: '${l10n.onbBody5}\n\n${l10n.onbBody6}',
+      ),
+      // Page 4: Trust + Support (merged title7+8, body7+8)
+      _OnboardingPageData(
+        icon: Icons.verified_rounded,
+        title: l10n.onbTitle7,
+        body: '${l10n.onbBody7}\n\n${l10n.onbBody8}',
+      ),
+    ];
+  }
+}
+
+/// Data class for onboarding page content
+class _OnboardingPageData {
+  final IconData icon;
+  final String title;
+  final String body;
+
+  const _OnboardingPageData({
+    required this.icon,
+    required this.title,
+    required this.body,
+  });
+}
+
+/// Animated page with fade and slide effects
+class _AnimatedPage extends StatelessWidget {
+  final _OnboardingPageData page;
+  final bool isActive;
+
+  const _AnimatedPage({super.key, required this.page, required this.isActive});
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedOpacity(
+      duration: const Duration(milliseconds: 300),
+      opacity: isActive ? 1.0 : 0.0,
+      child: AnimatedSlide(
+        duration: const Duration(milliseconds: 400),
+        offset: isActive ? Offset.zero : const Offset(0, 0.05),
+        curve: Curves.easeOutCubic,
+        child: Padding(
+          padding: DesignTokens.paddingPageHorizontal,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _IconBubble(icon: page.icon),
+              const SizedBox(height: DesignTokens.space32),
+              Text(
+                page.title,
+                style: AppTypography.heading3.copyWith(
+                  color: Colors.black87,
+                  letterSpacing: -0.5,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: DesignTokens.space16),
+              Text(
+                page.body,
+                style: AppTypography.bodyLarge.copyWith(
+                  color: Colors.black54,
+                  height: 1.5,
+                ),
+                textAlign: TextAlign.center,
+              ),
             ],
           ),
         ),
@@ -192,61 +207,170 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 }
 
-class _Dots extends StatelessWidget {
-  final int count;
-  final int index;
-  const _Dots({required this.count, required this.index});
+/// Step indicator showing "Step X of Y" with progress bar
+class _StepIndicator extends StatelessWidget {
+  final int current;
+  final int total;
+
+  const _StepIndicator({required this.current, required this.total});
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
       mainAxisSize: MainAxisSize.min,
-      children: List.generate(count, (i) {
-        final active = i == index;
-        return AnimatedContainer(
-          duration: const Duration(milliseconds: 220),
-          margin: const EdgeInsets.symmetric(horizontal: 3),
-          height: 8,
-          width: active ? 18 : 8,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            border: active ? null : Border.all(color: Colors.black.withOpacity(0.10)),
-            color: active ? null : Colors.black.withOpacity(0.08),
-            gradient: active
-                ? LinearGradient(
-                    colors: [
-                      AppColors.primary.withOpacity(0.95),
-                      AppColors.primary.withOpacity(0.75),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  )
-                : null,
+      children: [
+        Text(
+          'Step $current of $total',
+          style: AppTypography.small.copyWith(
+            color: Colors.black45,
+            fontWeight: FontWeight.w500,
           ),
-        );
-      }),
+        ),
+        const SizedBox(height: DesignTokens.space8),
+        Container(
+          width: 120,
+          height: 4,
+          decoration: BoxDecoration(
+            color: Colors.black.withAlpha(20),
+            borderRadius: BorderRadius.circular(2),
+          ),
+          child: FractionallySizedBox(
+            alignment: Alignment.centerLeft,
+            widthFactor: current / total,
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [AppColors.primary, Color(0xFFFF8A3D)],
+                ),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
 
-Widget _iconBubble(IconData icon) {
-  return Container(
-    width: 72,
-    height: 72,
-    decoration: BoxDecoration(
-      shape: BoxShape.circle,
-      gradient: LinearGradient(
-        colors: [
-          AppColors.primary.withOpacity(0.95),
-          AppColors.primary.withOpacity(0.75),
-        ],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ),
-      boxShadow: const [
-        BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 4)),
+/// Bottom controls with gradient CTA button
+class _BottomControls extends StatelessWidget {
+  final int currentIndex;
+  final int pageCount;
+  final VoidCallback onNext;
+  final VoidCallback onSkip;
+  final String nextLabel;
+  final String skipLabel;
+
+  const _BottomControls({
+    required this.currentIndex,
+    required this.pageCount,
+    required this.onNext,
+    required this.onSkip,
+    required this.nextLabel,
+    required this.skipLabel,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        // Skip button (only on first pages, hidden on last)
+        AnimatedOpacity(
+          duration: const Duration(milliseconds: 200),
+          opacity: currentIndex < pageCount - 1 ? 1.0 : 0.0,
+          child: TextButton(
+            onPressed: currentIndex < pageCount - 1 ? onSkip : null,
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.black45,
+              padding: const EdgeInsets.symmetric(
+                horizontal: DesignTokens.space16,
+              ),
+            ),
+            child: Text(skipLabel),
+          ),
+        ),
+        const Spacer(),
+        // Dot indicators (compact)
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: List.generate(pageCount, (i) {
+            final active = i == currentIndex;
+            return AnimatedContainer(
+              duration: const Duration(milliseconds: 250),
+              margin: const EdgeInsets.symmetric(horizontal: 4),
+              height: 8,
+              width: active ? 20 : 8,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4),
+                color: active ? AppColors.primary : Colors.black.withAlpha(30),
+              ),
+            );
+          }),
+        ),
+        const Spacer(),
+        // Gradient CTA button
+        SizedBox(
+          height: 48,
+          child: ElevatedButton(
+            onPressed: onNext,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(
+                horizontal: DesignTokens.space24,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
+              ),
+              elevation: 0,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  nextLabel,
+                  style: AppTypography.bodyBold.copyWith(color: Colors.white),
+                ),
+                if (currentIndex < pageCount - 1) ...[
+                  const SizedBox(width: DesignTokens.space8),
+                  const Icon(Icons.arrow_forward, size: 18),
+                ],
+              ],
+            ),
+          ),
+        ),
       ],
-    ),
-    child: Icon(icon, color: Colors.white, size: 36),
-  );
+    );
+  }
+}
+
+/// Gradient icon bubble with shadow
+class _IconBubble extends StatelessWidget {
+  final IconData icon;
+
+  const _IconBubble({required this.icon});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 88,
+      height: 88,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: const LinearGradient(
+          colors: [AppColors.primary, Color(0xFFFF8A3D)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withAlpha(77), // 30% opacity
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Icon(icon, color: Colors.white, size: 40),
+    );
+  }
 }

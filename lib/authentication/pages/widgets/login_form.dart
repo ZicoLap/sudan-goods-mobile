@@ -144,47 +144,47 @@ class _LoginFormState extends State<LoginForm> {
           onPressed: _isLoading ? null : _login,
         ),
         const SizedBox(height: DesignTokens.space24),
-        // ── OR divider ────────────────────────────────────────────────
-        Row(
-          children: [
-            Expanded(
-              child: Divider(
-                color: Colors.black.withValues(alpha: 0.10),
-                thickness: 1,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: DesignTokens.space12,
-              ),
-              child: Text(
-                l10n.or,
-                style: AppTypography.small.copyWith(
-                  color: Colors.black38,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 1.2,
-                ),
-              ),
-            ),
-            Expanded(
-              child: Divider(
-                color: Colors.black.withValues(alpha: 0.10),
-                thickness: 1,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: DesignTokens.space20),
-        // ── Social buttons ────────────────────────────────────────────
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _socialCircleButton("assets/images/google_logo.png", () {}),
-            const SizedBox(width: DesignTokens.space20),
-            _socialCircleButton(null, () {}, icon: Icons.apple),
-          ],
-        ),
-        const SizedBox(height: DesignTokens.space24),
+        // ── OR divider (disabled: social login coming in next phase) ───
+        // Row(
+        //   children: [
+        //     Expanded(
+        //       child: Divider(
+        //         color: Colors.black.withValues(alpha: 0.10),
+        //         thickness: 1,
+        //       ),
+        //     ),
+        //     Padding(
+        //       padding: const EdgeInsets.symmetric(
+        //         horizontal: DesignTokens.space12,
+        //       ),
+        //       child: Text(
+        //         l10n.or,
+        //         style: AppTypography.small.copyWith(
+        //           color: Colors.black38,
+        //           fontWeight: FontWeight.w600,
+        //           letterSpacing: 1.2,
+        //         ),
+        //       ),
+        //     ),
+        //     Expanded(
+        //       child: Divider(
+        //         color: Colors.black.withValues(alpha: 0.10),
+        //         thickness: 1,
+        //       ),
+        //     ),
+        //   ],
+        // ),
+        // const SizedBox(height: DesignTokens.space20),
+        // ── Social buttons (TODO: Implement Google/Apple Sign-In) ─────
+        // Row(
+        //   mainAxisAlignment: MainAxisAlignment.center,
+        //   children: [
+        //     _socialCircleButton("assets/images/google_logo.png", () {}),
+        //     const SizedBox(width: DesignTokens.space20),
+        //     _socialCircleButton(null, () {}, icon: Icons.apple),
+        //   ],
+        // ),
+        // const SizedBox(height: DesignTokens.space24),
         // ── Register link ─────────────────────────────────────────────
         SizedBox(
           height: 52,
@@ -240,37 +240,38 @@ class _LoginFormState extends State<LoginForm> {
     );
   }
 
-  Widget _socialCircleButton(
-    String? assetPath,
-    VoidCallback onTap, {
-    IconData? icon,
-  }) {
-    return Tooltip(
-      message: assetPath != null ? 'Google' : 'Apple',
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
-        child: Container(
-          width: 56,
-          height: 56,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            shape: BoxShape.circle,
-            border: Border.all(
-              color: Colors.black.withValues(alpha: 0.08),
-              width: 1.5,
-            ),
-            boxShadow: DesignTokens.shadowSmall,
-          ),
-          alignment: Alignment.center,
-          child:
-              assetPath != null
-                  ? Image.asset(assetPath, width: 22, height: 22)
-                  : Icon(icon, size: 24, color: Colors.black87),
-        ),
-      ),
-    );
-  }
+  // TODO: Implement Google/Apple Sign-In
+  // Widget _socialCircleButton(
+  //   String? assetPath,
+  //   VoidCallback onTap, {
+  //   IconData? icon,
+  // }) {
+  //   return Tooltip(
+  //     message: assetPath != null ? 'Google' : 'Apple',
+  //     child: InkWell(
+  //       onTap: onTap,
+  //       borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
+  //       child: Container(
+  //         width: 56,
+  //         height: 56,
+  //         decoration: BoxDecoration(
+  //           color: Colors.white,
+  //           shape: BoxShape.circle,
+  //           border: Border.all(
+  //             color: Colors.black.withValues(alpha: 0.08),
+  //             width: 1.5,
+  //           ),
+  //           boxShadow: DesignTokens.shadowSmall,
+  //         ),
+  //         alignment: Alignment.center,
+  //         child:
+  //             assetPath != null
+  //                 ? Image.asset(assetPath, width: 22, height: 22)
+  //                 : Icon(icon, size: 24, color: Colors.black87),
+  //       ),
+  //     ),
+  //   );
+  // }
 }
 
 class _GradientButton extends StatelessWidget {

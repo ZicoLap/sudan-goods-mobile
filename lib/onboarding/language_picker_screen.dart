@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
@@ -7,40 +6,15 @@ import 'package:sudan_goods/onboarding/onboarding_screen.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
 
-class LanguagePickerScreen extends StatefulWidget {
+/// Modernized language picker with static bilingual display,
+/// improved visual hierarchy, and polished selection cards.
+class LanguagePickerScreen extends StatelessWidget {
   const LanguagePickerScreen({super.key});
 
   @override
-  State<LanguagePickerScreen> createState() => _LanguagePickerScreenState();
-}
-
-class _LanguagePickerScreenState extends State<LanguagePickerScreen> {
-  late final Timer _toggleTimer;
-  bool _showArabic = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _toggleTimer = Timer.periodic(const Duration(seconds: 5), (_) {
-      if (!mounted) return;
-      setState(() => _showArabic = !_showArabic);
-    });
-  }
-
-  @override
-  void dispose() {
-    _toggleTimer.cancel();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    // Using AppLocalizations within localized Builders below; no top-level reference needed here.
-    const String titleEn = 'Welcome to the biggest Sudanese online shopping hub';
-    const String titleAr = 'مرحبا بيك في اكبر مركز تسوق الكتروني سوداني';
-    final String headerTitle = _showArabic ? titleAr : titleEn;
     return Scaffold(
-    /*   appBar: AppBar(
+      /*   appBar: AppBar(
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
         elevation: 0,
@@ -68,185 +42,186 @@ class _LanguagePickerScreenState extends State<LanguagePickerScreen> {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              AppColors.primary.withOpacity(0.05),
-              Colors.transparent,
+              AppColors.primary.withAlpha(18), // 7% opacity
+              Colors.white,
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
         ),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.symmetric(vertical: DesignTokens.space20),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                child: Padding(
-                  padding: DesignTokens.paddingPageHorizontal,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 28,
-                            height: 28,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              gradient: LinearGradient(
-                                colors: [
-                                  AppColors.primary.withOpacity(0.95),
-                                  AppColors.primary.withOpacity(0.75),
-                                ],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
-                              boxShadow: const [
-                                BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3)),
-                              ],
-                            ),
-                            child: const Icon(Icons.language, size: 18, color: Colors.white),
-                          ),
-                          const SizedBox(height: DesignTokens.space8),
-                          SizedBox(
-                            height: 64,
-                            child: AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 350),
-                              switchInCurve: Curves.easeOut,
-                              switchOutCurve: Curves.easeIn,
-                              transitionBuilder: (child, animation) {
-                                final offset = Tween<Offset>(begin: const Offset(0, 0.20), end: Offset.zero).animate(animation);
-                                return FadeTransition(
-                                  opacity: animation,
-                                  child: SlideTransition(position: offset, child: child),
-                                );
-                              },
-                              child: Text(
-                                headerTitle,
-                                key: ValueKey(headerTitle),
-                                textAlign: TextAlign.center,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: AppTypography.sectionTitle.copyWith(height: 1.2),
-                              ),
-                            ),
-                          ),
-                        ],
+        child: SafeArea(
+          child: Padding(
+            padding: DesignTokens.paddingPageHorizontal,
+            child: Column(
+              children: [
+                const Spacer(flex: 2),
+                // App branding icon
+                Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: const LinearGradient(
+                      colors: [AppColors.primary, Color(0xFFFF8A3D)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primary.withAlpha(77),
+                        blurRadius: 24,
+                        offset: const Offset(0, 8),
                       ),
-                      const SizedBox(height: DesignTokens.space24),
-                      _languageCard(context, code: 'en'),
-                      const SizedBox(height: DesignTokens.space12),
-                      _languageCard(context, code: 'ar'),
                     ],
                   ),
+                  child: const Icon(
+                    Icons.shopping_bag_rounded,
+                    size: 40,
+                    color: Colors.white,
+                  ),
                 ),
-              ),
-            );
-          },
+                const SizedBox(height: DesignTokens.space24),
+                // Static bilingual welcome text
+                Text(
+                  'Sudan Goods',
+                  style: AppTypography.heading2.copyWith(
+                    color: Colors.black87,
+                    letterSpacing: -0.5,
+                  ),
+                ),
+                const SizedBox(height: DesignTokens.space8),
+                Text(
+                  'Welcome to the biggest Sudanese\nonline shopping hub',
+                  textAlign: TextAlign.center,
+                  style: AppTypography.bodyLarge.copyWith(
+                    color: Colors.black54,
+                    height: 1.5,
+                  ),
+                ),
+                const SizedBox(height: DesignTokens.space8),
+                Text(
+                  'مرحبا بيك في اكبر مركز تسوق الكتروني سوداني',
+                  textAlign: TextAlign.center,
+                  style: AppTypography.body.copyWith(
+                    color: Colors.black38,
+                    height: 1.4,
+                  ),
+                ),
+                const Spacer(flex: 3),
+                // Language selection cards
+                _LanguageCard(code: 'en'),
+                const SizedBox(height: DesignTokens.space16),
+                _LanguageCard(code: 'ar'),
+                const Spacer(flex: 2),
+              ],
+            ),
+          ),
         ),
       ),
     );
   }
+}
 
-  Widget _languageCard(BuildContext context, {required String code}) {
+/// Language selection card with modern styling
+class _LanguageCard extends StatelessWidget {
+  final String code;
+
+  const _LanguageCard({required this.code});
+
+  @override
+  Widget build(BuildContext context) {
     final controller = Provider.of<LocaleController>(context, listen: false);
+    final isArabic = code == 'ar';
 
-    return InkWell(
-      onTap: () async {
-        await controller.setLanguageCode(code);
-        if (context.mounted) {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) => const OnboardingScreen()),
-          );
-        }
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
-          border: Border.all(color: Colors.black.withOpacity(0.06)),
-          boxShadow: DesignTokens.shadowSmall,
-        ),
-        padding: const EdgeInsets.all(DesignTokens.space12),
-        child: Localizations.override(
-          context: context,
-          locale: Locale(code),
-          child: Builder(
-            builder: (ctx) {
-              final l10n = AppLocalizations.of(ctx);
-              final isRtl = code == 'ar';
-              return Directionality(
-                textDirection: isRtl ? TextDirection.rtl : TextDirection.ltr,
-                child: Row(
+    return Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(DesignTokens.radiusXLarge),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: () async {
+          await controller.setLanguageCode(code);
+          if (context.mounted) {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (_) => const OnboardingScreen()),
+            );
+          }
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(DesignTokens.radiusXLarge),
+            border: Border.all(color: Colors.black.withAlpha(15), width: 1.5),
+          ),
+          padding: const EdgeInsets.symmetric(
+            horizontal: DesignTokens.space20,
+            vertical: DesignTokens.space16,
+          ),
+          child: Localizations.override(
+            context: context,
+            locale: Locale(code),
+            child: Builder(
+              builder: (ctx) {
+                final l10n = AppLocalizations.of(ctx);
+                return Row(
                   children: [
+                    // Language flag/icon bubble
                     Container(
-                      width: 44,
-                      height: 44,
+                      width: 52,
+                      height: 52,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        gradient: LinearGradient(
-                          colors: [
-                            AppColors.primary.withOpacity(0.95),
-                            AppColors.primary.withOpacity(0.75),
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
+                        gradient: const LinearGradient(
+                          colors: [AppColors.primary, Color(0xFFFF8A3D)],
                         ),
-                        boxShadow: const [
-                          BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.primary.withAlpha(51),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
+                          ),
                         ],
                       ),
-                      child: const Icon(Icons.language, color: Colors.white, size: 22),
+                      child: Center(
+                        child: Text(
+                          isArabic ? 'ع' : 'EN',
+                          style: AppTypography.bodyBold.copyWith(
+                            color: Colors.white,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
                     ),
-                    const SizedBox(width: DesignTokens.space12),
+                    const SizedBox(width: DesignTokens.space16),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            code == 'ar'
-                                ? (l10n?.languageArabic ?? 'Arabic')
+                            isArabic
+                                ? (l10n?.languageArabic ?? 'العربية')
                                 : (l10n?.languageEnglish ?? 'English'),
-                            style: AppTypography.cardTitle,
+                            style: AppTypography.heading6.copyWith(
+                              color: Colors.black87,
+                            ),
                           ),
-                          const SizedBox(height: 6),
+                          const SizedBox(height: DesignTokens.space4),
                           Text(
-                            l10n?.onbTitle1 ?? 'Welcome to Sudan Goods',
-                            style: AppTypography.small.copyWith(color: Colors.black54),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            l10n?.onbBody1 ??
-                                'Bringing Sudanese products closer to you.',
-                            style: AppTypography.small.copyWith(color: Colors.black45),
+                            isArabic ? 'Arabic' : 'English',
+                            style: AppTypography.small.copyWith(
+                              color: Colors.black45,
+                            ),
                           ),
                         ],
                       ),
                     ),
-                    Container(
-                      width: 28,
-                      height: 28,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: LinearGradient(
-                          colors: [
-                            AppColors.primary.withOpacity(0.95),
-                            AppColors.primary.withOpacity(0.75),
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2))],
-                      ),
-                      child: Icon(isRtl ? Icons.chevron_left : Icons.chevron_right, color: Colors.white, size: 18),
+                    Icon(
+                      isArabic ? Icons.chevron_left : Icons.chevron_right,
+                      color: AppColors.primary,
+                      size: 24,
                     ),
                   ],
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
         ),
       ),
