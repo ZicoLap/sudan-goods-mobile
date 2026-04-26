@@ -99,12 +99,10 @@ class AuthGate extends StatelessWidget {
     switch (role) {
       case 'customer':
         return _buildCustomerShell(context, uid);
-      case 'vendor':
-        return const RoleRedirectPage(role: 'vendor');
+      case 'storeOwner':
+        return const RoleRedirectPage(role: 'storeOwner');
       case 'admin':
         return const RoleRedirectPage(role: 'admin');
-      case 'delivery':
-        return const RoleRedirectPage(role: 'delivery');
       default:
         // Unknown role - could be data corruption or new role type
         return const UnknownRolePage();
