@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 import 'package:shimmer/shimmer.dart';
@@ -461,16 +463,16 @@ class _SettingsPageState extends State<SettingsPage> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder:
-          (_) => AlertDialog(
+          (dialogContext) => AlertDialog(
             title: Text(l10n.confirmActionTitle(action)),
             content: Text(l10n.confirmActionMessage(action)),
             actions: [
               TextButton(
-                onPressed: () => Navigator.pop(context, false),
+                onPressed: () => Navigator.pop(dialogContext, false),
                 child: Text(l10n.cancel),
               ),
               ElevatedButton(
-                onPressed: () => Navigator.pop(context, true),
+                onPressed: () => Navigator.pop(dialogContext, true),
                 child: Text(action),
               ),
             ],
@@ -487,19 +489,21 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Future<void> _doLogout() async {
     final l10n = AppLocalizations.of(context)!;
+    // Capture navigator and other dependencies before async operations
+    final navigator = Navigator.of(context);
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+
     await _withProgress(() async {
       try {
         await AccountService.logout();
-        if (!mounted) return;
-        Provider.of<UserProvider>(context, listen: false).clear();
-        if (!mounted) return;
-        Navigator.of(context).pushAndRemoveUntil(
+        userProvider.clear();
+        navigator.pushAndRemoveUntil(
           MaterialPageRoute(builder: (_) => const AuthGate()),
           (route) => false,
         );
       } catch (e) {
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
+        scaffoldMessenger.showSnackBar(
           SnackBar(content: Text(l10n.errorWithMessage('Failed to log out'))),
         );
       }
@@ -508,28 +512,27 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Future<void> _doDeleteAccount() async {
     final l10n = AppLocalizations.of(context)!;
+    // Capture navigator and other dependencies before async operations
+    final navigator = Navigator.of(context);
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+
     await _withProgress(() async {
       try {
         await AccountService.deleteAccount();
-        if (!mounted) return;
-        Provider.of<UserProvider>(context, listen: false).clear();
-        if (!mounted) return;
-        Navigator.of(context).pushAndRemoveUntil(
+        userProvider.clear();
+        navigator.pushAndRemoveUntil(
           MaterialPageRoute(builder: (_) => const AuthGate()),
           (route) => false,
         );
       } on FirebaseAuthException catch (e) {
-        if (!mounted) return;
         final msg =
             e.code == 'requires-recent-login'
                 ? l10n.errorWithMessage('Please re-authenticate to continue')
                 : l10n.errorWithMessage('Failed to delete account');
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(msg)));
+        scaffoldMessenger.showSnackBar(SnackBar(content: Text(msg)));
       } catch (_) {
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
+        scaffoldMessenger.showSnackBar(
           SnackBar(
             content: Text(l10n.errorWithMessage('Failed to delete account')),
           ),
@@ -539,15 +542,29 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Future<void> _withProgress(Future<void> Function() task) async {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => const Center(child: CircularProgressIndicator()),
+    // Show dialog and capture its context for proper dismissal
+    final dialogContextCompleter = Completer<BuildContext>();
+    unawaited(
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (dialogCtx) {
+          if (!dialogContextCompleter.isCompleted) {
+            dialogContextCompleter.complete(dialogCtx);
+          }
+          return const Center(child: CircularProgressIndicator());
+        },
+      ),
     );
+
     try {
       await task();
     } finally {
-      if (mounted) Navigator.of(context, rootNavigator: true).pop();
+      // Dismiss using dialog's own context, independent of widget's mounted state
+      final dialogContext = await dialogContextCompleter.future;
+      if (dialogContext.mounted) {
+        Navigator.of(dialogContext).pop();
+      }
     }
   }
 

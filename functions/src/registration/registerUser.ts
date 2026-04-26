@@ -64,13 +64,35 @@ export const registerUser = functions.https.onCall(async (request) => {
       throw firestoreError;
     }
 
+    // 6. Set Custom Claims for role-based security
+    // This embeds the role in the Firebase Auth JWT token, allowing
+    // Firestore Security Rules to enforce role-based access control
+    try {
+      await admin.auth().setCustomUserClaims(userRecord.uid, {
+        role: 'customer',
+      });
+      logger.info('Custom claims set successfully', {
+        requestId,
+        uid: userRecord.uid,
+        role: 'customer',
+      });
+    } catch (claimsError) {
+      // Non-fatal: Firestore rules will fall back to checking role field
+      // But log for monitoring
+      logger.warn('Failed to set custom claims', {
+        requestId,
+        uid: userRecord.uid,
+        error: claimsError,
+      });
+    }
+
     logger.info('User registered successfully', {
       requestId,
       uid: userRecord.uid,
       email: validatedData.email,
     });
 
-    // 6. Return success response
+    // 7. Return success response
     const response: RegisterUserResponse = {
       success: true,
       uid: userRecord.uid,
