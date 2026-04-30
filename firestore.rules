@@ -49,6 +49,15 @@ service cloud.firestore {
         }
       }
 
+      // ── Carts (per-store shopping carts) ───────────────────────────────────
+      // Client syncs cart state here. Only the owning user may read/write.
+      match /carts/{storeId} {
+        allow read:   if isOwner(userId);
+        allow write:  if isOwner(userId)
+            && request.resource.data.keys().hasOnly(['items', 'updatedAt']);
+        allow delete: if isOwner(userId);
+      }
+
       // ── Following (stores the user follows) ────────────────────────────────
       match /following/{storeId} {
         allow read:   if isOwner(userId);
@@ -126,6 +135,13 @@ service cloud.firestore {
       allow delete: if isSignedIn()
           && resource.data.userId == request.auth.uid
           && resource.data.status == 'pending';
+    }
+
+    // ── Order requests (idempotency records) ──────────────────────────────────
+    // Written exclusively by the createOrder Cloud Function via Admin SDK.
+    match /orderRequests/{requestId} {
+      allow read:  if false;
+      allow write: if false;
     }
 
     // ── Wanted requests ───────────────────────────────────────────────────────
