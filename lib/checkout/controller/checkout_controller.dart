@@ -13,11 +13,12 @@ class CheckoutController with ChangeNotifier {
 
   CheckoutController({required this.checkoutService});
 
-  /// Places an order using [CheckoutService].
+  /// Places an order via the Cloud Function through [CheckoutService].
   ///
-  /// This method delegates building totals, fetching user/address, and order
-  /// persistence to the service. On success it clears the cart for the store
-  /// and navigates to the success screen while preserving the tab root.
+  /// Sends only minimal data (storeId, item IDs + quantities, payment method,
+  /// note). All totals, user info, and product prices are resolved server-side.
+  /// On success it clears the cart for the store and navigates to the success
+  /// screen while preserving the tab root.
   Future<void> placeOrderViaService(
     BuildContext context, {
     required Store store,
@@ -28,17 +29,15 @@ class CheckoutController with ChangeNotifier {
       isLoading = true;
       notifyListeners();
 
-      final order = await checkoutService.buildOrder(
+      await checkoutService.placeOrder(
         context,
-        store: store,
+        storeId: store.id,
         note: note,
-        selectedPaymentMethod: paymentMethod,
+        paymentMethod: paymentMethod,
       );
 
-      await checkoutService.createOrder(order);
-
       // Clear cart for this store
-      context.read<CartController>().clearCart(order.storeId);
+      context.read<CartController>().clearCart(store.id);
 
       showSuccessScreen(context);
     } on CheckoutException catch (e) {
@@ -50,8 +49,6 @@ class CheckoutController with ChangeNotifier {
       notifyListeners();
     }
   }
-
-  // All validation and totals computation is performed in CheckoutService.
 
   /// Shows a red snackbar with the provided [message].
   void showError(BuildContext context, String message) {

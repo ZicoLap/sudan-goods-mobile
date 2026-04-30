@@ -9,3 +9,4 @@ admin.initializeApp();
 
 // Export all functions
 export { registerUser } from './registration';
+export { createOrder } from './orders';
