@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:provider/provider.dart';
 import 'package:sudan_goods/cart/cart_controller.dart';
 import 'package:sudan_goods/checkout/services/checkout_service.dart';
+import 'package:sudan_goods/checkout/services/payment_service.dart';
 import 'package:sudan_goods/models/store/store_model.dart';
 import 'package:sudan_goods/order/order_success_page.dart';
 
@@ -44,6 +46,55 @@ class CheckoutController with ChangeNotifier {
       showError(context, e.message);
     } catch (_) {
       showError(context, 'Failed to place order. Please try again.');
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  /// Pays via Stripe PaymentSheet and navigates to the success screen.
+  ///
+  /// Calls [PaymentService] which:
+  ///   1. Creates a Stripe PaymentIntent server-side (no Firestore order yet).
+  ///   2. Presents the Stripe PaymentSheet to the user.
+  ///
+  /// The Firestore order is created by the backend webhook after
+  /// `payment_intent.succeeded` fires — guaranteeing no ghost orders.
+  Future<void> payAndPlaceOrder(
+    BuildContext context, {
+    required Store store,
+    required String note,
+  }) async {
+    try {
+      isLoading = true;
+      notifyListeners();
+
+      await PaymentService().pay(context);
+
+      // Payment confirmed by Stripe — clear cart client-side.
+      // Server-side cleanup happens in the webhook.
+      if (context.mounted) {
+        context.read<CartController>().clearCart(store.id);
+        showSuccessScreen(context);
+      }
+    } on CheckoutException catch (e) {
+      if (e.message == 'Payment cancelled.') {
+        // User dismissed the sheet — stay on checkout, no error toast
+        return;
+      }
+      if (context.mounted) showError(context, e.message);
+    } on StripeException catch (e) {
+      if (context.mounted) {
+        showError(
+          context,
+          e.error.localizedMessage ?? 'Payment failed. Please try again.',
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        showError(context, '${e.runtimeType}: $e');
+        print('${e.runtimeType}: $e');
+      }
     } finally {
       isLoading = false;
       notifyListeners();

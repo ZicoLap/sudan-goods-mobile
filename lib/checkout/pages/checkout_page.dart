@@ -7,11 +7,9 @@ import 'package:sudan_goods/l10n/app_localizations.dart';
 
 import 'package:sudan_goods/models/store/store_model.dart';
 
-import 'package:sudan_goods/checkout/pages/payment_method_page.dart';
 import 'sections/checkout_user_info_section.dart';
 import 'sections/checkout_address_section.dart';
 import 'sections/checkout_note_section.dart';
-import 'sections/checkout_payment_section.dart';
 import 'sections/checkout_store_section.dart';
 import 'sections/checkout_summary_section.dart';
 
@@ -40,7 +38,6 @@ class CheckoutPage extends StatefulWidget {
 /// State for [CheckoutPage] managing local UI state like payment method,
 /// note input, and loading indicator.
 class _CheckoutPageState extends State<CheckoutPage> {
-  String selectedPaymentMethod = "Card";
   final TextEditingController noteController = TextEditingController();
 
   @override
@@ -50,23 +47,13 @@ class _CheckoutPageState extends State<CheckoutPage> {
     super.dispose();
   }
 
-  /// Delegates place-order to [CheckoutController] for business logic.
-  Future<void> _placeOrder() async {
-    await context.read<CheckoutController>().placeOrderViaService(
+  /// Triggers Stripe PaymentSheet via [CheckoutController].
+  Future<void> _pay() async {
+    await context.read<CheckoutController>().payAndPlaceOrder(
       context,
       store: widget.store,
       note: noteController.text,
-      paymentMethod: selectedPaymentMethod,
     );
-  }
-
-  // Error toasts are handled by CheckoutController.
-
-  /// Updates the selected payment method and rebuilds the UI.
-  void _updatePaymentMethod(String method) {
-    setState(() {
-      selectedPaymentMethod = method;
-    });
   }
 
   @override
@@ -96,16 +83,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
               const CheckoutUserInfoSection(),
               const CheckoutAddressSection(),
               CheckoutNoteSection(controller: noteController),
-              CheckoutPaymentSection(
-                selectedMethod: selectedPaymentMethod,
-                onTap: () async {
-                  final result = await Navigator.push<String>(
-                    context,
-                    MaterialPageRoute(builder: (_) => const PaymentMethodPage()),
-                  );
-                  if (result != null) _updatePaymentMethod(result);
-                },
-              ),
               CheckoutStoreSection(storeId: widget.store.id),
               CheckoutSummarySection(
                 store: widget.store,
@@ -120,11 +97,13 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   child: SizedBox(
                     width: double.infinity,
                     child: GestureDetector(
-                      onTap: isLoading ? null : _placeOrder,
+                      onTap: isLoading ? null : _pay,
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
+                          borderRadius: BorderRadius.circular(
+                            DesignTokens.radiusRound,
+                          ),
                           gradient: LinearGradient(
                             colors: [
                               AppColors.primary.withOpacity(0.95),
@@ -134,23 +113,30 @@ class _CheckoutPageState extends State<CheckoutPage> {
                             end: Alignment.bottomRight,
                           ),
                           boxShadow: const [
-                            BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3)),
+                            BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 6,
+                              offset: Offset(0, 3),
+                            ),
                           ],
                         ),
                         alignment: Alignment.center,
-                        child: isLoading
-                            ? const SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                  strokeWidth: 2,
+                        child:
+                            isLoading
+                                ? const SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                                : Text(
+                                  'Pay',
+                                  style: AppTypography.bodyLarge.copyWith(
+                                    color: Colors.white,
+                                  ),
                                 ),
-                              )
-                            : Text(
-                                AppLocalizations.of(context)!.placeOrder,
-                                style: AppTypography.bodyLarge.copyWith(color: Colors.white),
-                              ),
                       ),
                     ),
                   ),

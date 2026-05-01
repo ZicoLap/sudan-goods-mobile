@@ -20,10 +20,16 @@ import 'package:sudan_goods/messaging/presentation/wiring/chat_wiring.dart';
 import 'package:sudan_goods/messaging/presentation/controllers/support_controller.dart';
 import 'package:sudan_goods/messaging/presentation/wiring/support_wiring.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 
 // import 'package:cloud_functions/cloud_functions.dart';
 
 import 'firebase_options.dart';
+
+/// Stripe publishable key — safe to include in client code.
+/// Replace with your real key from https://dashboard.stripe.com/apikeys
+const String _stripePublishableKey =
+    'pk_test_51TQTIJC8L35W2jp3YMbx20NJDIfrqzlNFUKARDRzXvZhgMvHXZc2vCWr5au3Zbd7lHHOYufaiO9bXOuMby1DMaAh00PUjXquah';
 
 /// Entry point of the Sudan Goods application.
 ///
@@ -31,6 +37,7 @@ import 'firebase_options.dart';
 /// platform-specific options, and bootstraps the widget tree with providers.
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  Stripe.publishableKey = _stripePublishableKey;
   // We intentionally provide a ChangeNotifier (FollowController) using ProxyProvider,
   // and we manage disposal manually. Disable Provider's debug check for this case.
   Provider.debugCheckInvalidValueType = null;
@@ -39,7 +46,6 @@ void main() async {
     print("Firebase initialized successfully");
   }
 
-  
   // Initialize Firebase App Check
   await FirebaseAppCheck.instance.activate(
     // You can use this for Android and iOS
@@ -47,7 +53,7 @@ void main() async {
     // For iOS, you can use:
     appleProvider: AppleProvider.debug,
   );
-  
+
   runApp(
     MultiProvider(
       providers: [

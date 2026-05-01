@@ -20,12 +20,12 @@ class OrderSuccessPage extends StatelessWidget {
               const Icon(Icons.check_circle, color: Colors.green, size: 100),
               const SizedBox(height: 24),
               const Text(
-                'Thank you for your order!',
+                'Payment successful!',
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
               const Text(
-                'Your order has been placed successfully. You will receive a confirmation shortly.',
+                'Your payment was confirmed. Your order is being processed and will appear in your Orders tab shortly.',
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 32),
