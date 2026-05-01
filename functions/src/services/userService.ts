@@ -1,6 +1,8 @@
+import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import * as logger from 'firebase-functions/logger';
 import { RegistrationError } from '../utils/errors';
+import { OrderUserProfile } from '../orders/types';
 
 export interface UserDocument {
   uid: string;
@@ -50,4 +52,42 @@ export async function deleteUserDocument(uid: string): Promise<void> {
   } catch (error) {
     logger.error('Failed to delete user document during rollback', { uid, error });
   }
+}
+
+/**
+ * Fetches the user profile fields required for order creation.
+ *
+ * Throws HttpsError('failed-precondition') when:
+ * - The user document does not exist.
+ * - The user has no saved delivery addresses.
+ */
+export async function fetchOrderUserProfile(uid: string): Promise<OrderUserProfile> {
+  const db = admin.firestore();
+  const snap = await db.collection('users').doc(uid).get();
+
+  if (!snap.exists) {
+    throw new functions.https.HttpsError(
+      'failed-precondition',
+      'User profile not found.'
+    );
+  }
+
+  const data = snap.data()!;
+  const addresses: UserDocument['addresses'] = data.addresses ?? [];
+
+  if (addresses.length === 0) {
+    throw new functions.https.HttpsError(
+      'failed-precondition',
+      'No delivery address found on your profile.'
+    );
+  }
+
+  const firstName: string = data.firstName ?? '';
+  const lastName: string = data.lastName ?? '';
+
+  return {
+    name: `${firstName} ${lastName}`.trim(),
+    phone: data.phoneNumber ?? '',
+    address: addresses[0] as Record<string, unknown>,
+  };
 }
