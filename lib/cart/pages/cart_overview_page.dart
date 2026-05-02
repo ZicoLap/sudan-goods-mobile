@@ -6,7 +6,6 @@ import 'package:sudan_goods/cart/widgets/store_cart_card.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
-import 'package:sudan_goods/checkout/pages/checkout_page.dart';
 
 class CartOverviewPage extends StatelessWidget {
   const CartOverviewPage({super.key});
@@ -20,7 +19,10 @@ class CartOverviewPage extends StatelessWidget {
     if (storeCarts.isEmpty) {
       return Scaffold(
         appBar: AppBar(
-          title: Text(l10n.cartTitle, style: const TextStyle(color: Colors.white)),
+          title: Text(
+            l10n.cartTitle,
+            style: const TextStyle(color: Colors.white),
+          ),
           backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
           elevation: 0,
@@ -29,10 +31,7 @@ class CartOverviewPage extends StatelessWidget {
         body: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [
-                AppColors.primary.withOpacity(0.06),
-                Colors.transparent,
-              ],
+              colors: [AppColors.primary.withOpacity(0.06), Colors.transparent],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
             ),
@@ -64,7 +63,10 @@ class CartOverviewPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           '🛒 ${l10n.cartsAllTitle}',
-          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
@@ -74,10 +76,7 @@ class CartOverviewPage extends StatelessWidget {
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              AppColors.primary.withOpacity(0.06),
-              Colors.transparent,
-            ],
+            colors: [AppColors.primary.withOpacity(0.06), Colors.transparent],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -85,10 +84,7 @@ class CartOverviewPage extends StatelessWidget {
         child: ListView.builder(
           physics: const BouncingScrollPhysics(),
           padding: DesignTokens.paddingPageHorizontal.add(
-            const EdgeInsets.only(
-              top: DesignTokens.space32,
-              bottom: 120,
-            ),
+            const EdgeInsets.only(top: DesignTokens.space32, bottom: 120),
           ),
           itemCount: storeCarts.length + 1,
           itemBuilder: (context, index) {
@@ -113,7 +109,6 @@ class CartOverviewPage extends StatelessWidget {
 
             final storeId = storeCarts.keys.elementAt(index - 1);
             final items = storeCarts[storeId]!;
-            final subtotal = cartController.getSubtotal(storeId);
             final itemCount = items.fold<int>(
               0,
               (sum, item) => sum + item.quantity,
@@ -150,34 +145,35 @@ class CartOverviewPage extends StatelessWidget {
                   confirmDismiss: (_) async {
                     return await showDialog<bool>(
                       context: context,
-                      builder: (_) => AlertDialog(
-                        title: Text(l10n.removeCart),
-                        content: Text(l10n.removeCartConfirmation),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(context, false),
-                            child: Text(l10n.cancel),
+                      builder:
+                          (_) => AlertDialog(
+                            title: Text(l10n.removeCart),
+                            content: Text(l10n.removeCartConfirmation),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, false),
+                                child: Text(l10n.cancel),
+                              ),
+                              ElevatedButton(
+                                onPressed: () => Navigator.pop(context, true),
+                                child: Text(l10n.remove),
+                              ),
+                            ],
                           ),
-                          ElevatedButton(
-                            onPressed: () => Navigator.pop(context, true),
-                            child: Text(l10n.remove),
-                          ),
-                        ],
-                      ),
                     );
                   },
                   onDismissed: (_) {
                     cartController.clearCart(storeId);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(l10n.cartRemoved)),
-                    );
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text(l10n.cartRemoved)));
                   },
                   child: StoreCartCard(
                     storeId: storeId,
                     storeName: store.name,
                     storeLogoUrl: store.logoUrl,
                     itemCount: itemCount,
-                    subtotal: subtotal,
+                    subtotal: 0.0,
                     onTap: () {
                       showModalBottomSheet(
                         context: context,
@@ -185,28 +181,13 @@ class CartOverviewPage extends StatelessWidget {
                         builder: (_) => CartBottomSheet(storeId: storeId),
                       );
                     },
-                    onCheckout: () async {
-                      try {
-                        final storeDetails = await cartController.getStoreDetails(storeId);
-                        final totalWeight = cartController.getTotalWeight(storeId);
-                        // Navigate to checkout for this store
-                        // ignore: use_build_context_synchronously
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => CheckoutPage(
-                              store: storeDetails,
-                              subtotal: subtotal,
-                              totalWeight: totalWeight,
-                            ),
-                          ),
-                        );
-                      } catch (e) {
-                        // ignore: use_build_context_synchronously
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(l10n.errorWithMessage(e.toString()))),
-                        );
-                      }
+                    onCheckout: () {
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        backgroundColor: Colors.transparent,
+                        builder: (_) => CartBottomSheet(storeId: storeId),
+                      );
                     },
                   ),
                 );
@@ -225,7 +206,11 @@ class CartOverviewPage extends StatelessWidget {
             onPressed: () {
               // No multi-store checkout flow yet
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(l10n.comingSoonWithFeature(l10n.checkoutAllCarts))),
+                SnackBar(
+                  content: Text(
+                    l10n.comingSoonWithFeature(l10n.checkoutAllCarts),
+                  ),
+                ),
               );
             },
             child: Text(l10n.checkoutAllCarts),

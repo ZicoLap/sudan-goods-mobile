@@ -16,7 +16,11 @@ class CartSummaryBar extends StatelessWidget {
       decoration: const BoxDecoration(
         color: Colors.white,
         boxShadow: [
-          BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, -2)),
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 4,
+            offset: Offset(0, -2),
+          ),
         ],
       ),
       child: Row(
@@ -26,11 +30,17 @@ class CartSummaryBar extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(l10n.total, style: const TextStyle(fontSize: 14, color: Colors.grey)),
+              Text(
+                l10n.total,
+                style: const TextStyle(fontSize: 14, color: Colors.grey),
+              ),
               const SizedBox(height: 4),
               Text(
-                '${cart.totalPrice.toStringAsFixed(2)} €',
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                '${cart.totalQuantity} items',
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
               ),
             ],
           ),

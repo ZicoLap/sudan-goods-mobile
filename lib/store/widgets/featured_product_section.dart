@@ -18,11 +18,12 @@ class FeaturedProductsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance
-          .collection('products')
-          .where('storeId', isEqualTo: storeId)
-          .where('isFeatured', isEqualTo: true)
-          .snapshots(),
+      stream:
+          FirebaseFirestore.instance
+              .collection('products')
+              .where('storeId', isEqualTo: storeId)
+              .where('isFeatured', isEqualTo: true)
+              .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Column(
@@ -46,13 +47,24 @@ class FeaturedProductsSection extends StatelessWidget {
                           end: Alignment.bottomRight,
                         ),
                         boxShadow: const [
-                          BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3)),
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 6,
+                            offset: Offset(0, 3),
+                          ),
                         ],
                       ),
-                      child: const Icon(Icons.star_rounded, size: 18, color: Colors.white),
+                      child: const Icon(
+                        Icons.star_rounded,
+                        size: 18,
+                        color: Colors.white,
+                      ),
                     ),
                     const SizedBox(width: DesignTokens.space8),
-                    const Text('Featured Products', style: AppTypography.sectionTitle),
+                    const Text(
+                      'Featured Products',
+                      style: AppTypography.sectionTitle,
+                    ),
                   ],
                 ),
               ),
@@ -61,10 +73,13 @@ class FeaturedProductsSection extends StatelessWidget {
                 height: 110,
                 child: ListView.separated(
                   physics: const BouncingScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(horizontal: DesignTokens.space20),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: DesignTokens.space20,
+                  ),
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (_, __) => const _ShimmerFeaturedItem(),
-                  separatorBuilder: (_, __) => const SizedBox(width: DesignTokens.space12),
+                  separatorBuilder:
+                      (_, __) => const SizedBox(width: DesignTokens.space12),
                   itemCount: 3,
                 ),
               ),
@@ -76,9 +91,10 @@ class FeaturedProductsSection extends StatelessWidget {
           return const SizedBox(); // 🔕 Don't show the section if empty
         }
 
-        final products = snapshot.data!.docs
-            .map((doc) => Product.fromDocument(doc))
-            .toList();
+        final products =
+            snapshot.data!.docs
+                .map((doc) => Product.fromDocument(doc))
+                .toList();
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,13 +117,24 @@ class FeaturedProductsSection extends StatelessWidget {
                         end: Alignment.bottomRight,
                       ),
                       boxShadow: const [
-                        BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3)),
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 6,
+                          offset: Offset(0, 3),
+                        ),
                       ],
                     ),
-                    child: const Icon(Icons.star_rounded, size: 18, color: Colors.white),
+                    child: const Icon(
+                      Icons.star_rounded,
+                      size: 18,
+                      color: Colors.white,
+                    ),
                   ),
                   const SizedBox(width: DesignTokens.space8),
-                  const Text('Featured Products', style: AppTypography.sectionTitle),
+                  const Text(
+                    'Featured Products',
+                    style: AppTypography.sectionTitle,
+                  ),
                 ],
               ),
             ),
@@ -117,34 +144,38 @@ class FeaturedProductsSection extends StatelessWidget {
               child: ListView.separated(
                 physics: const BouncingScrollPhysics(),
                 scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: DesignTokens.space20),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: DesignTokens.space20,
+                ),
                 itemCount: products.length,
-                separatorBuilder: (_, __) => const SizedBox(width: DesignTokens.space12),
+                separatorBuilder:
+                    (_, __) => const SizedBox(width: DesignTokens.space12),
                 itemBuilder: (context, index) {
                   final product = products[index];
 
                   return Selector<CartController, int>(
-                    selector: (_, c) => c.getProductQuantity(product.storeId, product.id),
+                    selector:
+                        (_, c) =>
+                            c.getProductQuantity(product.storeId, product.id),
                     builder: (context, qty, _) {
                       return InkWell(
                         onTap: () {
-                          showProductDetailsBottomSheet(context, products[index]);
+                          showProductDetailsBottomSheet(
+                            context,
+                            products[index],
+                          );
                         },
                         child: FeaturedProductCard(
                           product: product,
                           cartQuantity: qty,
                           onAdd: () {
                             context.read<CartController>().addItem(
-                                  CartItem(
-                                    productId: product.id,
-                                    storeId: product.storeId,
-                                    name: product.name,
-                                    price: product.discountPrice ?? product.price,
-                                    weight: product.weight,
-                                    imageUrl: product.images.isNotEmpty ? product.images.first : null,
-                                    quantity: 1,
-                                  ),
-                                );
+                              CartItem(
+                                productId: product.id,
+                                storeId: product.storeId,
+                                quantity: 1,
+                              ),
+                            );
                           },
                         ),
                       );
@@ -160,16 +191,15 @@ class FeaturedProductsSection extends StatelessWidget {
   }
 
   void showProductDetailsBottomSheet(BuildContext context, Product product) {
-  showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-    ),
-    builder: (context) => ProductDetailsBottomSheet(product: product),
-  );
-}
-
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) => ProductDetailsBottomSheet(product: product),
+    );
+  }
 }
 
 class _ShimmerFeaturedItem extends StatelessWidget {

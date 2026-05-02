@@ -81,7 +81,9 @@ class _SearchPageState extends State<SearchPage> {
               left: DesignTokens.space20,
               right: DesignTokens.space20,
               top: DesignTokens.space20,
-              bottom: MediaQuery.of(context).viewInsets.bottom + DesignTokens.space20,
+              bottom:
+                  MediaQuery.of(context).viewInsets.bottom +
+                  DesignTokens.space20,
             ),
             child: SingleChildScrollView(
               child: Column(
@@ -94,26 +96,40 @@ class _SearchPageState extends State<SearchPage> {
                       height: 5,
                       decoration: BoxDecoration(
                         color: Colors.grey.shade300,
-                        borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
+                        borderRadius: BorderRadius.circular(
+                          DesignTokens.radiusRound,
+                        ),
                       ),
                     ),
                   ),
                   const SizedBox(height: DesignTokens.space16),
-                  Text(l10n.wantedSheetTitle, style: AppTypography.heading6, textAlign: TextAlign.center),
+                  Text(
+                    l10n.wantedSheetTitle,
+                    style: AppTypography.heading6,
+                    textAlign: TextAlign.center,
+                  ),
                   const SizedBox(height: DesignTokens.space16),
                   TextField(
                     controller: _wantedNameCtrl,
                     textInputAction: TextInputAction.next,
                     decoration: InputDecoration(
                       hintText: l10n.wantedProductNameLabel,
-                      prefixIcon: Icon(Icons.shopping_bag_outlined, color: AppColors.primary),
+                      prefixIcon: Icon(
+                        Icons.shopping_bag_outlined,
+                        color: AppColors.primary,
+                      ),
                       filled: true,
                       fillColor: AppColors.inputField,
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
+                        borderRadius: BorderRadius.circular(
+                          DesignTokens.radiusRound,
+                        ),
                         borderSide: BorderSide.none,
                       ),
-                      contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 16,
+                        horizontal: 16,
+                      ),
                     ),
                   ),
                   const SizedBox(height: DesignTokens.space12),
@@ -122,14 +138,22 @@ class _SearchPageState extends State<SearchPage> {
                     maxLines: 4,
                     decoration: InputDecoration(
                       hintText: l10n.wantedNotesLabel,
-                      prefixIcon: Icon(Icons.notes_outlined, color: AppColors.primary),
+                      prefixIcon: Icon(
+                        Icons.notes_outlined,
+                        color: AppColors.primary,
+                      ),
                       filled: true,
                       fillColor: AppColors.inputField,
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
+                        borderRadius: BorderRadius.circular(
+                          DesignTokens.radiusRound,
+                        ),
                         borderSide: BorderSide.none,
                       ),
-                      contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 16,
+                        horizontal: 16,
+                      ),
                     ),
                   ),
                   const SizedBox(height: DesignTokens.space16),
@@ -138,10 +162,16 @@ class _SearchPageState extends State<SearchPage> {
                     child: ElevatedButton(
                       onPressed: () async {
                         final name = _wantedNameCtrl.text.trim();
-                        final notes = _wantedNotesCtrl.text.trim().isEmpty ? null : _wantedNotesCtrl.text.trim();
+                        final notes =
+                            _wantedNotesCtrl.text.trim().isEmpty
+                                ? null
+                                : _wantedNotesCtrl.text.trim();
                         if (name.isEmpty) return;
                         try {
-                          await _wantedService.submitWantedRequest(productName: name, notes: notes);
+                          await _wantedService.submitWantedRequest(
+                            productName: name,
+                            notes: notes,
+                          );
                           if (mounted) {
                             Navigator.of(context).pop();
                             ScaffoldMessenger.of(this.context).showSnackBar(
@@ -160,7 +190,9 @@ class _SearchPageState extends State<SearchPage> {
                         backgroundColor: AppColors.primary,
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
+                          borderRadius: BorderRadius.circular(
+                            DesignTokens.radiusRound,
+                          ),
                         ),
                         elevation: 0,
                       ),
@@ -170,7 +202,12 @@ class _SearchPageState extends State<SearchPage> {
                         children: [
                           const Icon(Icons.send, color: Colors.white, size: 20),
                           const SizedBox(width: 8),
-                          Text(l10n.submitRequest, style: AppTypography.bodyLarge.copyWith(color: Colors.white)),
+                          Text(
+                            l10n.submitRequest,
+                            style: AppTypography.bodyLarge.copyWith(
+                              color: Colors.white,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -192,7 +229,10 @@ class _SearchPageState extends State<SearchPage> {
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
         elevation: 0,
-        title: Text(l10n.searchTitle, style: const TextStyle(color: Colors.white)),
+        title: Text(
+          l10n.searchTitle,
+          style: const TextStyle(color: Colors.white),
+        ),
         centerTitle: true,
       ),
       body: Container(
@@ -210,11 +250,12 @@ class _SearchPageState extends State<SearchPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Modern pill-shaped search field with subtle shadow
-                Container
-                (
+                Container(
                   decoration: BoxDecoration(
                     color: AppColors.inputField,
-                    borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
+                    borderRadius: BorderRadius.circular(
+                      DesignTokens.radiusRound,
+                    ),
                     boxShadow: DesignTokens.shadowSmall,
                   ),
                   child: TextField(
@@ -224,23 +265,29 @@ class _SearchPageState extends State<SearchPage> {
                     decoration: InputDecoration(
                       hintText: l10n.searchHint,
                       prefixIcon: Icon(Icons.search, color: AppColors.primary),
-                      suffixIcon: _controller.text.isNotEmpty
-                          ? IconButton(
-                              icon: const Icon(Icons.clear),
-                              onPressed: () {
-                                setState(() {
-                                  _controller.clear();
-                                });
-                              },
-                            )
-                          : null,
+                      suffixIcon:
+                          _controller.text.isNotEmpty
+                              ? IconButton(
+                                icon: const Icon(Icons.clear),
+                                onPressed: () {
+                                  setState(() {
+                                    _controller.clear();
+                                  });
+                                },
+                              )
+                              : null,
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
+                        borderRadius: BorderRadius.circular(
+                          DesignTokens.radiusRound,
+                        ),
                         borderSide: BorderSide.none,
                       ),
                       filled: true,
                       fillColor: Colors.transparent,
-                      contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 14,
+                        horizontal: 8,
+                      ),
                     ),
                   ),
                 ),
@@ -251,25 +298,44 @@ class _SearchPageState extends State<SearchPage> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.search_rounded, size: 48, color: Colors.black26),
+                          const Icon(
+                            Icons.search_rounded,
+                            size: 48,
+                            color: Colors.black26,
+                          ),
                           const SizedBox(height: DesignTokens.space12),
-                          Text(l10n.searchEmptyPrompt, style: AppTypography.bodyLarge, textAlign: TextAlign.center),
+                          Text(
+                            l10n.searchEmptyPrompt,
+                            style: AppTypography.bodyLarge,
+                            textAlign: TextAlign.center,
+                          ),
                           const SizedBox(height: DesignTokens.space16),
                           ElevatedButton(
                             onPressed: _openWantedSheet,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColors.primary,
-                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 12,
+                              ),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
+                                borderRadius: BorderRadius.circular(
+                                  DesignTokens.radiusRound,
+                                ),
                               ),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Icon(Icons.lightbulb_outline, color: Colors.white),
+                                const Icon(
+                                  Icons.lightbulb_outline,
+                                  color: Colors.white,
+                                ),
                                 const SizedBox(width: 8),
-                                Text(l10n.wantedCTA, style: const TextStyle(color: Colors.white)),
+                                Text(
+                                  l10n.wantedCTA,
+                                  style: const TextStyle(color: Colors.white),
+                                ),
                               ],
                             ),
                           ),
@@ -307,11 +373,16 @@ class _SearchPageState extends State<SearchPage> {
                           child: FutureBuilder<List<StoreWithProducts>>(
                             future: _resultsFuture,
                             builder: (context, snapshot) {
-                              if (snapshot.connectionState == ConnectionState.waiting) {
-                                return const Center(child: CircularProgressIndicator());
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
                               }
                               if (snapshot.hasError) {
-                                return Center(child: Text('Error: ${snapshot.error}'));
+                                return Center(
+                                  child: Text('Error: ${snapshot.error}'),
+                                );
                               }
                               final results = snapshot.data ?? [];
                               if (results.isEmpty) {
@@ -321,14 +392,32 @@ class _SearchPageState extends State<SearchPage> {
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        Text(l10n.searchNoResultsTitle(_query), style: AppTypography.bodyBold, textAlign: TextAlign.center),
-                                        const SizedBox(height: DesignTokens.space8),
-                                        Text(l10n.searchNoResultsSubtitle, textAlign: TextAlign.center),
-                                        const SizedBox(height: DesignTokens.space16),
+                                        Text(
+                                          l10n.searchNoResultsTitle(_query),
+                                          style: AppTypography.bodyBold,
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        const SizedBox(
+                                          height: DesignTokens.space8,
+                                        ),
+                                        Text(
+                                          l10n.searchNoResultsSubtitle,
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        const SizedBox(
+                                          height: DesignTokens.space16,
+                                        ),
                                         ElevatedButton(
                                           onPressed: _openWantedSheet,
-                                          style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
-                                          child: Text(l10n.wantedCTA, style: const TextStyle(color: Colors.white)),
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: AppColors.primary,
+                                          ),
+                                          child: Text(
+                                            l10n.wantedCTA,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -338,10 +427,16 @@ class _SearchPageState extends State<SearchPage> {
 
                               return ListView.separated(
                                 itemCount: results.length,
-                                separatorBuilder: (_, __) => const SizedBox(height: DesignTokens.space16),
+                                separatorBuilder:
+                                    (_, __) => const SizedBox(
+                                      height: DesignTokens.space16,
+                                    ),
                                 itemBuilder: (context, index) {
                                   final group = results[index];
-                                  return _StoreSection(key: ValueKey(group.store.id), group: group);
+                                  return _StoreSection(
+                                    key: ValueKey(group.store.id),
+                                    group: group,
+                                  );
                                 },
                               );
                             },
@@ -374,7 +469,10 @@ class _StoreSection extends StatelessWidget {
         const SizedBox(height: DesignTokens.space12),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: DesignTokens.space12),
-          child: Text(AppLocalizations.of(context)!.matchingProducts, style: AppTypography.bodyBold),
+          child: Text(
+            AppLocalizations.of(context)!.matchingProducts,
+            style: AppTypography.bodyBold,
+          ),
         ),
         const SizedBox(height: DesignTokens.space8),
 
@@ -393,7 +491,8 @@ class _StoreSection extends StatelessWidget {
           itemBuilder: (context, index) {
             final product = group.products[index];
             return Selector<CartController, int>(
-              selector: (_, c) => c.getProductQuantity(product.storeId, product.id),
+              selector:
+                  (_, c) => c.getProductQuantity(product.storeId, product.id),
               builder: (context, qty, _) {
                 return ProductGridCard(
                   key: ValueKey(product.id),
@@ -403,24 +502,21 @@ class _StoreSection extends StatelessWidget {
                       context: context,
                       isScrollControlled: true,
                       shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(24),
+                        ),
                       ),
-                      builder: (context) => ProductDetailsBottomSheet(product: product),
+                      builder:
+                          (context) =>
+                              ProductDetailsBottomSheet(product: product),
                     );
                   },
                   onAdd: () {
-                    final price = (product.discountPrice != null && product.discountPrice! > 0)
-                        ? product.discountPrice!
-                        : product.price;
                     cart.addItem(
                       CartItem(
                         productId: product.id,
                         storeId: product.storeId,
-                        name: product.name,
-                        price: price,
-                        weight: product.weight,
                         quantity: 1,
-                        imageUrl: product.images.isNotEmpty ? product.images.first : null,
                       ),
                     );
                   },

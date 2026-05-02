@@ -20,7 +20,6 @@ class CollectionProductsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<CartController>(context, listen: false);
-    
 
     return Scaffold(
       appBar: AppBar(
@@ -28,9 +27,7 @@ class CollectionProductsPage extends StatelessWidget {
         foregroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios_new_rounded,
-          ),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
@@ -70,7 +67,12 @@ class CollectionProductsPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(DesignTokens.space20, DesignTokens.space16, DesignTokens.space20, DesignTokens.space16),
+                    padding: const EdgeInsets.fromLTRB(
+                      DesignTokens.space20,
+                      DesignTokens.space16,
+                      DesignTokens.space20,
+                      DesignTokens.space16,
+                    ),
                     child: Row(
                       children: [
                         Container(
@@ -87,10 +89,18 @@ class CollectionProductsPage extends StatelessWidget {
                               end: Alignment.bottomRight,
                             ),
                             boxShadow: const [
-                              BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3)),
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 6,
+                                offset: Offset(0, 3),
+                              ),
                             ],
                           ),
-                          child: const Icon(Icons.grid_view_rounded, size: 18, color: Colors.white),
+                          child: const Icon(
+                            Icons.grid_view_rounded,
+                            size: 18,
+                            color: Colors.white,
+                          ),
                         ),
                         const SizedBox(width: DesignTokens.space8),
                         Text(
@@ -105,12 +115,13 @@ class CollectionProductsPage extends StatelessWidget {
                       padding: DesignTokens.paddingPageHorizontal,
                       physics: const BouncingScrollPhysics(),
                       itemCount: 6,
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: DesignTokens.space12,
-                        crossAxisSpacing: DesignTokens.space12,
-                        childAspectRatio: 0.62,
-                      ),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: DesignTokens.space12,
+                            crossAxisSpacing: DesignTokens.space12,
+                            childAspectRatio: 0.62,
+                          ),
                       itemBuilder: (_, __) => const ShimmerProductGridCard(),
                     ),
                   ),
@@ -120,7 +131,9 @@ class CollectionProductsPage extends StatelessWidget {
 
             if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
               return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: DesignTokens.space20),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: DesignTokens.space20,
+                ),
                 child: Column(
                   children: [
                     const SizedBox(height: DesignTokens.space24),
@@ -138,17 +151,30 @@ class CollectionProductsPage extends StatelessWidget {
                           end: Alignment.bottomRight,
                         ),
                         boxShadow: const [
-                          BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0, 4)),
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 10,
+                            offset: Offset(0, 4),
+                          ),
                         ],
                       ),
-                      child: const Icon(Icons.inventory_2_rounded, size: 32, color: Colors.white),
+                      child: const Icon(
+                        Icons.inventory_2_rounded,
+                        size: 32,
+                        color: Colors.white,
+                      ),
                     ),
                     const SizedBox(height: DesignTokens.space12),
-                    Text('No products in this collection', style: AppTypography.bodyBold),
+                    Text(
+                      'No products in this collection',
+                      style: AppTypography.bodyBold,
+                    ),
                     const SizedBox(height: DesignTokens.space8),
                     Text(
                       'Please check back later or browse other collections.',
-                      style: AppTypography.small.copyWith(color: Colors.black54),
+                      style: AppTypography.small.copyWith(
+                        color: Colors.black54,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -165,7 +191,12 @@ class CollectionProductsPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(DesignTokens.space20, DesignTokens.space16, DesignTokens.space20, DesignTokens.space8),
+                  padding: const EdgeInsets.fromLTRB(
+                    DesignTokens.space20,
+                    DesignTokens.space16,
+                    DesignTokens.space20,
+                    DesignTokens.space8,
+                  ),
                   child: Row(
                     children: [
                       Container(
@@ -182,33 +213,59 @@ class CollectionProductsPage extends StatelessWidget {
                             end: Alignment.bottomRight,
                           ),
                           boxShadow: const [
-                            BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3)),
+                            BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 6,
+                              offset: Offset(0, 3),
+                            ),
                           ],
                         ),
-                        child: const Icon(Icons.grid_view_rounded, size: 18, color: Colors.white),
+                        child: const Icon(
+                          Icons.grid_view_rounded,
+                          size: 18,
+                          color: Colors.white,
+                        ),
                       ),
                       const SizedBox(width: DesignTokens.space8),
-                      Expanded(child: Text(collection.name, style: AppTypography.sectionTitle)),
+                      Expanded(
+                        child: Text(
+                          collection.name,
+                          style: AppTypography.sectionTitle,
+                        ),
+                      ),
                       const SizedBox(width: DesignTokens.space8),
-                      Text('${products.length} items', style: AppTypography.small.copyWith(color: Colors.black54)),
+                      Text(
+                        '${products.length} items',
+                        style: AppTypography.small.copyWith(
+                          color: Colors.black54,
+                        ),
+                      ),
                     ],
                   ),
                 ),
                 Expanded(
                   child: GridView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: DesignTokens.space20, vertical: DesignTokens.space12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: DesignTokens.space20,
+                      vertical: DesignTokens.space12,
+                    ),
                     physics: const BouncingScrollPhysics(),
                     itemCount: products.length,
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: DesignTokens.space12,
-                      crossAxisSpacing: DesignTokens.space12,
-                      childAspectRatio: 0.62,
-                    ),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: DesignTokens.space12,
+                          crossAxisSpacing: DesignTokens.space12,
+                          childAspectRatio: 0.62,
+                        ),
                     itemBuilder: (context, index) {
                       final product = products[index];
                       return Selector<CartController, int>(
-                        selector: (_, c) => c.getProductQuantity(product.storeId, product.id),
+                        selector:
+                            (_, c) => c.getProductQuantity(
+                              product.storeId,
+                              product.id,
+                            ),
                         builder: (context, qty, _) {
                           return ProductGridCard(
                             key: ValueKey(product.id),
@@ -221,10 +278,6 @@ class CollectionProductsPage extends StatelessWidget {
                                 CartItem(
                                   productId: product.id,
                                   storeId: product.storeId,
-                                  name: product.name,
-                                  price: product.discountPrice ?? product.price,
-                                  weight: product.weight,
-                                  imageUrl: product.images.isNotEmpty ? product.images.first : null,
                                   quantity: 1,
                                 ),
                               );
@@ -242,8 +295,8 @@ class CollectionProductsPage extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: SafeArea(
-       // minimum: const EdgeInsets.only(bottom: 32),
-        child:  FloatingCartBar(storeId: collection.storeId,),
+        // minimum: const EdgeInsets.only(bottom: 32),
+        child: FloatingCartBar(storeId: collection.storeId),
       ),
     );
   }

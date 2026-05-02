@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sudan_goods/cart/cart_controller.dart';
 import 'package:sudan_goods/checkout/controller/checkout_controller.dart';
+import 'package:sudan_goods/models/store/live_cart_item.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
@@ -16,20 +18,13 @@ import 'sections/checkout_summary_section.dart';
 /// Checkout screen that reviews the order, captures payment method and note,
 /// and places an order for a specific [Store].
 ///
-/// Requires the [store], current [subtotal], and [totalWeight] which are used
-/// to calculate delivery fee and total at the time of placing the order.
+/// Subtotal and total weight are computed live from [CartController.watchCartWithProducts]
+/// so the summary always reflects the current product prices.
 class CheckoutPage extends StatefulWidget {
   final Store store;
-  final double subtotal;
-  final double totalWeight;
 
   /// Creates a [CheckoutPage] bound to a particular [store].
-  const CheckoutPage({
-    super.key,
-    required this.store,
-    required this.subtotal,
-    required this.totalWeight,
-  });
+  const CheckoutPage({super.key, required this.store});
 
   @override
   State<CheckoutPage> createState() => _CheckoutPageState();
@@ -84,10 +79,26 @@ class _CheckoutPageState extends State<CheckoutPage> {
               const CheckoutAddressSection(),
               CheckoutNoteSection(controller: noteController),
               CheckoutStoreSection(storeId: widget.store.id),
-              CheckoutSummarySection(
-                store: widget.store,
-                subtotal: widget.subtotal,
-                totalWeight: widget.totalWeight,
+              StreamBuilder<List<LiveCartItem>>(
+                stream: context.read<CartController>().watchCartWithProducts(
+                  widget.store.id,
+                ),
+                builder: (context, snapshot) {
+                  final items = snapshot.data ?? [];
+                  final subtotal = items.fold(
+                    0.0,
+                    (sum, i) => sum + i.lineTotal,
+                  );
+                  final totalWeight = items.fold(
+                    0.0,
+                    (sum, i) => sum + i.lineTotalWeight,
+                  );
+                  return CheckoutSummarySection(
+                    store: widget.store,
+                    subtotal: subtotal,
+                    totalWeight: totalWeight,
+                  );
+                },
               ),
               const SizedBox(height: DesignTokens.space16),
               Opacity(

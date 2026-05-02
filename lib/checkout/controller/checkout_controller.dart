@@ -69,7 +69,7 @@ class CheckoutController with ChangeNotifier {
       isLoading = true;
       notifyListeners();
 
-      await PaymentService().pay(context);
+      await PaymentService().pay(context, storeId: store.id, orderNote: note);
 
       // Payment confirmed by Stripe — clear cart client-side.
       // Server-side cleanup happens in the webhook.
@@ -90,10 +90,9 @@ class CheckoutController with ChangeNotifier {
           e.error.localizedMessage ?? 'Payment failed. Please try again.',
         );
       }
-    } catch (e) {
+    } catch (_) {
       if (context.mounted) {
-        showError(context, '${e.runtimeType}: $e');
-        print('${e.runtimeType}: $e');
+        showError(context, 'Payment failed. Please try again.');
       }
     } finally {
       isLoading = false;
