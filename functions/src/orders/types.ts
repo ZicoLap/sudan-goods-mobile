@@ -7,6 +7,8 @@ export interface CreateOrderRequest {
   paymentMethod: string;
   orderNote?: string;
   idempotencyKey?: string;
+  /** Fix #9: 0-based index into the user's saved addresses array. Defaults to 0. */
+  addressIndex?: number;
 }
 
 /**
@@ -27,6 +29,8 @@ export interface ValidatedOrderInput {
   paymentMethod: string;
   orderNote: string | null;
   idempotencyKey: string | null;
+  /** Fix #9: Validated 0-based address index. Always a non-negative integer. */
+  addressIndex: number;
 }
 
 /**

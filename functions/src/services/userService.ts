@@ -57,11 +57,18 @@ export async function deleteUserDocument(uid: string): Promise<void> {
 /**
  * Fetches the user profile fields required for order creation.
  *
+ * Fix #9: Accepts an optional addressIndex so the caller can select a specific
+ * saved address. Defaults to index 0 if not provided.
+ *
  * Throws HttpsError('failed-precondition') when:
  * - The user document does not exist.
  * - The user has no saved delivery addresses.
+ * - The requested addressIndex is out of bounds.
  */
-export async function fetchOrderUserProfile(uid: string): Promise<OrderUserProfile> {
+export async function fetchOrderUserProfile(
+  uid: string,
+  addressIndex = 0
+): Promise<OrderUserProfile> {
   const db = admin.firestore();
   const snap = await db.collection('users').doc(uid).get();
 
@@ -82,12 +89,20 @@ export async function fetchOrderUserProfile(uid: string): Promise<OrderUserProfi
     );
   }
 
+  // Fix #9: Validate addressIndex bounds.
+  if (addressIndex < 0 || addressIndex >= addresses.length) {
+    throw new functions.https.HttpsError(
+      'invalid-argument',
+      `Address index ${addressIndex} is out of range (you have ${addresses.length} address(es)).`
+    );
+  }
+
   const firstName: string = data.firstName ?? '';
   const lastName: string = data.lastName ?? '';
 
   return {
     name: `${firstName} ${lastName}`.trim(),
     phone: data.phoneNumber ?? '',
-    address: addresses[0] as Record<string, unknown>,
+    address: addresses[addressIndex] as Record<string, unknown>,
   };
 }

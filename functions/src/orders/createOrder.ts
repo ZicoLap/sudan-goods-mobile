@@ -1,5 +1,6 @@
 import * as functions from 'firebase-functions';
 import * as logger from 'firebase-functions/logger';
+import { randomUUID } from 'crypto';
 import { CreateOrderResponse } from './types';
 import { validateOrderInput } from './validation';
 import { checkIdempotency, runOrderTransaction, cleanupCart } from './orderRepository';
@@ -27,7 +28,8 @@ export const createOrder = functions.https.onCall(async (request) => {
     );
   }
   const uid = auth.uid;
-  const requestId = `order_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
+  // Fix #8: Use crypto.randomUUID() to avoid log-ID collisions under concurrency.
+  const requestId = `order_${randomUUID()}`;
   logger.info('createOrder attempt', { requestId, uid });
 
   try {
@@ -44,7 +46,8 @@ export const createOrder = functions.https.onCall(async (request) => {
     }
 
     // ── 4: Fetch user profile ────────────────────────────────────────────────
-    const userProfile = await fetchOrderUserProfile(uid);
+    // Fix #9: Pass the client-selected address index.
+    const userProfile = await fetchOrderUserProfile(uid, input.addressIndex);
 
     // ── 5: Run atomic transaction (store + products + stock + order write) ───
     const orderId = await runOrderTransaction({ uid, input, userProfile });

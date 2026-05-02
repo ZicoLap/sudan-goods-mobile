@@ -9,6 +9,6 @@ admin.initializeApp();
 
 // Export all functions
 export { registerUser } from './registration';
-export { createOrder } from './orders';
+export { createOrder, cancelOrder } from './orders';
 export { createPaymentIntent } from './payments/createPaymentIntent';
 export { stripeWebhook } from './payments/stripeWebhook';

@@ -26,6 +26,26 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
     super.initState();
     final cart = Provider.of<CartController>(context, listen: false);
     _storeFuture = cart.getStoreDetails(widget.storeId);
+    // I4: Show a snackbar whenever a Firestore sync error is set.
+    cart.addListener(_onCartChanged);
+  }
+
+  @override
+  void dispose() {
+    Provider.of<CartController>(
+      context,
+      listen: false,
+    ).removeListener(_onCartChanged);
+    super.dispose();
+  }
+
+  void _onCartChanged() {
+    final error = Provider.of<CartController>(context, listen: false).syncError;
+    if (error != null && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(error), backgroundColor: Colors.orangeAccent),
+      );
+    }
   }
 
   @override

@@ -1,4 +1,5 @@
 export { createOrder } from './createOrder';
+export { cancelOrder } from './cancelOrder';
 export type {
   CreateOrderRequest,
   CreateOrderResponse,

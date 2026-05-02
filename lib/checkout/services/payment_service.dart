@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:provider/provider.dart';
 import 'package:sudan_goods/cart/cart_controller.dart';
-import 'package:uuid/uuid.dart';
 
 import 'checkout_service.dart';
 
@@ -17,10 +16,13 @@ import 'checkout_service.dart';
 /// The Firestore order is created by [stripeWebhook] after
 /// payment_intent.succeeded — guaranteeing no ghost orders.
 class PaymentService {
+  /// [idempotencyKey] must be generated once per checkout session by the caller
+  /// (e.g. [CheckoutController]) so that retries reuse the same PaymentIntent.
   Future<void> pay(
     BuildContext context, {
     required String storeId,
     required String? orderNote,
+    required String idempotencyKey,
   }) async {
     final cart = Provider.of<CartController>(context, listen: false);
     final cartItems = cart.getItemsByStore(storeId);
@@ -30,8 +32,6 @@ class PaymentService {
         cartItems
             .map((e) => {'productId': e.productId, 'quantity': e.quantity})
             .toList();
-
-    final idempotencyKey = const Uuid().v4();
 
     // ── 1: Create PaymentIntent on the server ─────────────────────────────
     final String clientSecret;
@@ -47,7 +47,10 @@ class PaymentService {
       });
       clientSecret = result.data['clientSecret'] as String;
     } on FirebaseFunctionsException catch (e) {
-      if (e.code == 'already-exists') return; // already paid — treat as success
+      if (e.code == 'already-exists') {
+        // I5: Order already confirmed for this key — rethrow so caller can handle.
+        rethrow;
+      }
       throw CheckoutException(e.message ?? 'Failed to create payment.');
     }
 

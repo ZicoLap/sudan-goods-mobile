@@ -12,6 +12,10 @@ import 'package:sudan_goods/models/store/store_model.dart';
 class CartController extends ChangeNotifier {
   final Map<String, List<CartItem>> _storeCarts = {};
 
+  /// I4: Set when a Firestore sync fails. Cleared on the next successful sync.
+  /// Listeners may display a snackbar or banner when this is non-null.
+  String? syncError;
+
   /// Exposes the in-memory carts keyed by [storeId].
   Map<String, List<CartItem>> get storeCarts => _storeCarts;
 
@@ -220,6 +224,9 @@ class CartController extends ChangeNotifier {
   }
 
   /// 🔁 Firestore sync (per store)
+  ///
+  /// I4: Catches network/Firestore errors and sets [syncError] so the UI
+  /// can surface a snackbar. Clears [syncError] on success.
   Future<void> syncCartToFirestore(String storeId) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
@@ -230,18 +237,25 @@ class CartController extends ChangeNotifier {
         .collection('carts')
         .doc(storeId);
 
-    final items = _storeCarts[storeId];
-    if (items == null || items.isEmpty) {
-      await cartRef.delete();
-      return;
+    try {
+      final items = _storeCarts[storeId];
+      if (items == null || items.isEmpty) {
+        await cartRef.delete();
+      } else {
+        final itemsMap = {
+          'items': items.map((e) => e.toJson()).toList(),
+          'updatedAt': FieldValue.serverTimestamp(),
+        };
+        await cartRef.set(itemsMap);
+      }
+      if (syncError != null) {
+        syncError = null;
+        notifyListeners();
+      }
+    } catch (e) {
+      syncError = 'Cart could not be saved. Check your connection.';
+      notifyListeners();
     }
-
-    final itemsMap = {
-      'items': items.map((e) => e.toJson()).toList(),
-      'updatedAt': FieldValue.serverTimestamp(),
-    };
-
-    await cartRef.set(itemsMap);
   }
 
   /// 🔁 Load all carts from Firestore

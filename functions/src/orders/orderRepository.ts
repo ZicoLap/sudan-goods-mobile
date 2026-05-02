@@ -1,8 +1,20 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import * as logger from 'firebase-functions/logger';
+import { createHash } from 'crypto';
 import { ValidatedOrderInput, OrderItem, OrderTotals, OrderUserProfile } from './types';
 import { resolveUnitPrice, buildOrderTotals, StoreDeliveryConfig } from './pricing';
+
+/**
+ * Fix #2: Deterministic document ID for idempotency records.
+ *
+ * Using a fixed doc ID (instead of auto-ID) allows tx.get() inside a
+ * Firestore transaction, making the idempotency check truly atomic.
+ * The key is hashed to stay within Firestore's 1500-byte doc ID limit.
+ */
+export function idempotencyDocId(uid: string, key: string): string {
+  return createHash('sha256').update(`${uid}::${key}`).digest('hex');
+}
 
 const db = admin.firestore();
 
@@ -18,6 +30,9 @@ export interface RunOrderTransactionParams {
 /**
  * Fast-path idempotency check (outside transaction).
  *
+ * Fix #2: Uses deterministic doc ID so the same key can also be read
+ * atomically inside a Firestore transaction (see runOrderTransaction).
+ *
  * Returns the existing orderId if a matching record is found,
  * or null if this is a new request.
  */
@@ -25,17 +40,11 @@ export async function checkIdempotency(
   idempotencyKey: string,
   uid: string
 ): Promise<string | null> {
-  const existing = await db
-    .collection('orderRequests')
-    .where('idempotencyKey', '==', idempotencyKey)
-    .where('userId', '==', uid)
-    .limit(1)
-    .get();
-
-  if (!existing.empty) {
-    return existing.docs[0].data().orderId as string;
+  const docId = idempotencyDocId(uid, idempotencyKey);
+  const snap = await db.collection('orderRequests').doc(docId).get();
+  if (snap.exists) {
+    return snap.data()!.orderId as string;
   }
-
   return null;
 }
 
@@ -60,6 +69,21 @@ export async function runOrderTransaction(
   const { uid, input, userProfile } = params;
 
   return db.runTransaction(async (tx) => {
+    // ── 0: Authoritative in-transaction idempotency guard (Fix #2) ─────────
+    // Reads the deterministic doc by ID — safe inside a transaction.
+    // If it already exists, a concurrent request already committed an order.
+    if (input.idempotencyKey) {
+      const idempDocId = idempotencyDocId(uid, input.idempotencyKey);
+      const idempSnap = await tx.get(db.collection('orderRequests').doc(idempDocId));
+      if (idempSnap.exists) {
+        const existingOrderId = idempSnap.data()!.orderId as string;
+        throw new functions.https.HttpsError(
+          'already-exists',
+          `Order already placed (orderId: ${existingOrderId}).`
+        );
+      }
+    }
+
     // ── 1: Fetch store & validate ──────────────────────────────────────────
     const storeRef = db.collection('stores').doc(input.storeId);
     const storeSnap = await tx.get(storeRef);
@@ -184,10 +208,11 @@ export async function runOrderTransaction(
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 
-    // ── 8: Persist idempotency record inside transaction (P8) ─────────────
+    // ── 8: Persist idempotency record inside transaction (Fix #2 P8) ───────
+    // Uses the same deterministic doc ID checked in step 0.
     if (input.idempotencyKey) {
-      const idempotencyRef = db.collection('orderRequests').doc();
-      tx.set(idempotencyRef, {
+      const idempDocId = idempotencyDocId(uid, input.idempotencyKey);
+      tx.set(db.collection('orderRequests').doc(idempDocId), {
         idempotencyKey: input.idempotencyKey,
         userId: uid,
         orderId: orderRef.id,

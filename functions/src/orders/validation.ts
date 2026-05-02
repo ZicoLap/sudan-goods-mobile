@@ -31,6 +31,11 @@ export function validateOrderInput(data: unknown): ValidatedOrderInput {
       'storeId (string) is required.'
     );
   }
+  // Fix #14: Trim and clamp to prevent oversized inputs from reaching Firestore.
+  const storeId = raw.storeId.trim().substring(0, 128);
+  if (!storeId) {
+    throw new functions.https.HttpsError('invalid-argument', 'storeId must not be blank.');
+  }
 
   if (!raw.paymentMethod || typeof raw.paymentMethod !== 'string') {
     throw new functions.https.HttpsError(
@@ -95,6 +100,19 @@ export function validateOrderInput(data: unknown): ValidatedOrderInput {
     );
   }
 
+  // Fix #6: Reject duplicate productIds — they cause double stock decrements
+  // and inflated subtotals in the Firestore transaction.
+  const seenProductIds = new Set<string>();
+  for (const item of raw.items) {
+    if (seenProductIds.has(item.productId)) {
+      throw new functions.https.HttpsError(
+        'invalid-argument',
+        `Duplicate productId "${item.productId}" in items. Each product must appear only once.`
+      );
+    }
+    seenProductIds.add(item.productId);
+  }
+
   // ── Optional fields — sanitise ─────────────────────────────────────────────
   const orderNote =
     raw.orderNote && typeof raw.orderNote === 'string'
@@ -106,11 +124,28 @@ export function validateOrderInput(data: unknown): ValidatedOrderInput {
       ? raw.idempotencyKey.substring(0, 128)
       : null;
 
+  // Fix #9: Validate addressIndex — must be a non-negative integer if provided.
+  let addressIndex = 0;
+  if (raw.addressIndex !== undefined && raw.addressIndex !== null) {
+    if (
+      typeof raw.addressIndex !== 'number' ||
+      !Number.isInteger(raw.addressIndex) ||
+      raw.addressIndex < 0
+    ) {
+      throw new functions.https.HttpsError(
+        'invalid-argument',
+        'addressIndex must be a non-negative integer.'
+      );
+    }
+    addressIndex = raw.addressIndex;
+  }
+
   return {
-    storeId: raw.storeId,
+    storeId,
     items: raw.items as { productId: string; quantity: number }[],
     paymentMethod,
     orderNote,
     idempotencyKey,
+    addressIndex,
   };
 }

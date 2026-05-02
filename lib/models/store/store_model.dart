@@ -129,8 +129,6 @@ class Store {
   factory Store.fromDocument(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
 
-    // Debug print
-    print('Store document data: $data');
     return Store.fromJson(data).copyWith(id: doc.id);
   }
 

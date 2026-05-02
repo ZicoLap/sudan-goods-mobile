@@ -125,23 +125,33 @@ service cloud.firestore {
     }
 
     // ── Orders ────────────────────────────────────────────────────────────────
-    // Customers read and can delete their own pending orders.
-    // Order creation is handled by the Checkout module (excluded from this ruleset).
-    // Status updates happen via Cloud Functions only.
+    // Customers may only read their own orders.
+    // Creation, status updates, and cancellation go through Cloud Functions only.
+    // C3: Removed client delete — use the cancelOrder Cloud Function instead
+    //     (it restocks items and transitions status to 'cancelled' atomically).
     match /orders/{orderId} {
       allow read:   if isSignedIn() && resource.data.userId == request.auth.uid;
-      allow create: if false;  // Checkout module — handled separately
-      allow update: if false;  // Cloud Functions manage status transitions
-      allow delete: if isSignedIn()
-          && resource.data.userId == request.auth.uid
-          && resource.data.status == 'pending';
+      allow create: if false;  // Cloud Functions only
+      allow update: if false;  // Cloud Functions only
+      allow delete: if false;  // Cloud Functions only — use cancelOrder callable
     }
 
     // ── Order requests (idempotency records) ──────────────────────────────────
-    // Written exclusively by the createOrder Cloud Function via Admin SDK.
+    // Written exclusively by the createOrder / stripeWebhook Cloud Functions.
+    // C1: Clients may read a single doc to poll for order confirmation after
+    //     payment. The doc ID is sha256(uid::idempotencyKey) — a client can
+    //     only derive IDs for its own uid, so cross-user reads are impossible.
     match /orderRequests/{requestId} {
-      allow read:  if false;
+      allow read:  if isSignedIn() && resource.data.userId == request.auth.uid;
       allow write: if false;
+    }
+
+    // ── Payment failures ──────────────────────────────────────────────────────
+    // Written by the stripeWebhook Cloud Function on payment_intent.payment_failed.
+    // C4: Clients may read their own failure records to surface error messages.
+    match /paymentFailures/{paymentIntentId} {
+      allow read:  if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow write: if false;  // Admin SDK only
     }
 
     // ── Wanted requests ───────────────────────────────────────────────────────

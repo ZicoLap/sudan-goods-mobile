@@ -9,12 +9,17 @@ import { OrderItem } from '../orders/types';
 
 const db = admin.firestore();
 
+// Fix #13: Module-level lazy singleton — avoids re-instantiating on every invocation.
+let _stripe: Stripe.Stripe | null = null;
 function getStripe(): Stripe.Stripe {
-  const key = process.env.STRIPE_SECRET_KEY;
-  if (!key) {
-    throw new functions.https.HttpsError('internal', 'Stripe is not configured.');
+  if (!_stripe) {
+    const key = process.env.STRIPE_SECRET_KEY;
+    if (!key) {
+      throw new functions.https.HttpsError('internal', 'Stripe is not configured.');
+    }
+    _stripe = new Stripe(key, { apiVersion: '2026-04-22.dahlia' });
   }
-  return new Stripe(key, { apiVersion: '2026-04-22.dahlia' });
+  return _stripe;
 }
 
 /**
@@ -58,6 +63,10 @@ export const createPaymentIntent = functions.https.onCall(async (request) => {
     if (!storeData.isActive) throw new functions.https.HttpsError('failed-precondition', 'This store is currently inactive.');
     if (!storeData.isApproved) throw new functions.https.HttpsError('failed-precondition', 'This store is not yet approved.');
     if (!storeData.isOpen) throw new functions.https.HttpsError('failed-precondition', 'This store is currently closed.');
+    // Fix #10: Reject if store has not opted in to card payments.
+    if (storeData.acceptsCardPayment === false) {
+      throw new functions.https.HttpsError('failed-precondition', 'This store does not accept card payments.');
+    }
 
     // ── 4: Validate products & compute authoritative total ────────────────
     const productRefs = input.items.map((item) => db.collection('products').doc(item.productId));
@@ -97,6 +106,17 @@ export const createPaymentIntent = functions.https.onCall(async (request) => {
     }
 
     // ── 5: Create Stripe PaymentIntent with metadata for webhook ──────────
+    // Fix #5: Validate items JSON length before calling Stripe.
+    // Stripe enforces a 500-character limit per metadata value; exceeding it causes
+    // an API error or silent truncation, breaking the webhook item parse.
+    const itemsJson = JSON.stringify(input.items);
+    if (itemsJson.length > 500) {
+      throw new functions.https.HttpsError(
+        'invalid-argument',
+        'Order contains too many items to process via card payment. Please reduce the number of items.'
+      );
+    }
+
     const amountInCents = Math.round(totals.total * 100);
     const stripe = getStripe();
     const paymentIntent = await stripe.paymentIntents.create({
@@ -106,12 +126,14 @@ export const createPaymentIntent = functions.https.onCall(async (request) => {
       metadata: {
         userId: uid,
         storeId: input.storeId,
-        items: JSON.stringify(input.items),
+        items: itemsJson,
         orderNote: input.orderNote ?? '',
         idempotencyKey: input.idempotencyKey ?? '',
         subtotal: totals.subtotal.toFixed(2),
         deliveryFee: totals.deliveryFee.toFixed(2),
         total: totals.total.toFixed(2),
+        // Fix #9: Preserve client-selected address index for webhook use.
+        addressIndex: String(input.addressIndex),
       },
     });
 
