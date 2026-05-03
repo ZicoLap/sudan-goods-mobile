@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sudan_goods/authentication/services/account_service.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
+import 'package:sudan_goods/theme/app_theme.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 import 'package:sudan_goods/authentication/user/user_provider.dart';
 
@@ -40,24 +41,33 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
       if (_verifyBefore) {
         await AccountService.changeEmail(newEmail, verifyBefore: true);
         if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.verifyEmailPrompt)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(l10n.verifyEmailPrompt)));
       } else {
-        await AccountService.changeEmail(newEmail, verifyBefore: false, syncFirestore: true);
+        await AccountService.changeEmail(
+          newEmail,
+          verifyBefore: false,
+          syncFirestore: true,
+        );
         if (!mounted) return;
         // Update local provider state if available
         try {
-          final userProvider = Provider.of<UserProvider>(context, listen: false);
+          final userProvider = Provider.of<UserProvider>(
+            context,
+            listen: false,
+          );
           if (userProvider.isUserLoaded) {
-            userProvider.updateUser(userProvider.currentUser.copyWith(email: newEmail));
+            userProvider.updateUser(
+              userProvider.currentUser.copyWith(email: newEmail),
+            );
           }
         } catch (_) {
           // no-op if provider not available
         }
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.saveChanges)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(l10n.saveChanges)));
         Navigator.of(context).pop();
       }
     } on FirebaseAuthException catch (e) {
@@ -66,11 +76,20 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
           if (_verifyBefore) {
             await AccountService.changeEmail(newEmail, verifyBefore: true);
           } else {
-            await AccountService.changeEmail(newEmail, verifyBefore: false, syncFirestore: true);
+            await AccountService.changeEmail(
+              newEmail,
+              verifyBefore: false,
+              syncFirestore: true,
+            );
             try {
-              final userProvider = Provider.of<UserProvider>(context, listen: false);
+              final userProvider = Provider.of<UserProvider>(
+                context,
+                listen: false,
+              );
               if (userProvider.isUserLoaded) {
-                userProvider.updateUser(userProvider.currentUser.copyWith(email: newEmail));
+                userProvider.updateUser(
+                  userProvider.currentUser.copyWith(email: newEmail),
+                );
               }
             } catch (_) {}
           }
@@ -144,14 +163,14 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
       if (!mounted) return;
       if (_verifyBefore) {
         // For verify-before-update, keep the page open so user can tap "sync now" after verifying
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.verifyEmailPrompt)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(l10n.verifyEmailPrompt)));
       } else {
         // For immediate update, we can close the page
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.saveChanges)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(l10n.saveChanges)));
         Navigator.of(context).pop();
       }
     } on FirebaseAuthException catch (e) {
@@ -173,17 +192,22 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
       final authEmail = FirebaseAuth.instance.currentUser?.email;
       if (authEmail != null) {
         try {
-          final userProvider = Provider.of<UserProvider>(context, listen: false);
+          final userProvider = Provider.of<UserProvider>(
+            context,
+            listen: false,
+          );
           if (userProvider.isUserLoaded) {
-            userProvider.updateUser(userProvider.currentUser.copyWith(email: authEmail));
+            userProvider.updateUser(
+              userProvider.currentUser.copyWith(email: authEmail),
+            );
           }
         } catch (_) {}
       }
 
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.saveChanges)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.saveChanges)));
       Navigator.of(context).pop();
     } catch (e) {
       if (!mounted) return;
@@ -198,66 +222,225 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final currentEmail = FirebaseAuth.instance.currentUser?.email ?? '';
 
     return Scaffold(
+      backgroundColor: const Color(0xFFF5F7FA),
       appBar: AppBar(
-        title: Text(l10n.changeEmail),
+        backgroundColor: AppColors.primary,
+        foregroundColor: Colors.white,
+        elevation: 0,
+        title: Text(
+          l10n.changeEmail,
+          style: const TextStyle(color: Colors.white),
+        ),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(DesignTokens.space16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextField(
-              controller: _emailController,
-              keyboardType: TextInputType.emailAddress,
-              decoration: InputDecoration(
-                labelText: l10n.email,
-                hintText: 'name@example.com',
+      body: ListView(
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.all(16),
+        children: [
+          const SizedBox(height: 8),
+
+          // ── Current email info banner ──────────────────────────────────────
+          if (currentEmail.isNotEmpty)
+            Container(
+              margin: const EdgeInsets.only(bottom: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withOpacity(0.07),
+                borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
+                border: Border.all(color: AppColors.primary.withOpacity(0.2)),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.email_rounded, size: 18, color: AppColors.primary),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Current email',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.primary.withOpacity(0.7),
+                            letterSpacing: 0.3,
+                          ),
+                        ),
+                        Text(
+                          currentEmail,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: DesignTokens.space16),
-            SwitchListTile.adaptive(
-              value: _verifyBefore,
-              onChanged: (v) => setState(() => _verifyBefore = v),
-              title: Text(l10n.changeEmailVerifyBeforeLabel),
-              subtitle: Text(l10n.changeEmailVerifyBeforeSubtitle),
+
+          // ── New email field ────────────────────────────────────────────────
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 12,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
-            const SizedBox(height: DesignTokens.space16),
-            SizedBox(
-              height: 48,
-              child: ElevatedButton.icon(
-                onPressed: _isSubmitting ? null : _submit,
-                icon: _isSubmitting
-                    ? const SizedBox(
-                        width: 18,
-                        height: 18,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                      )
-                    : const Icon(Icons.email_outlined),
-                label: Text(_verifyBefore ? l10n.send : l10n.saveChanges),
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextFormField(
+                  controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecoration(
+                    labelText: l10n.email,
+                    hintText: 'name@example.com',
+                    prefixIcon: const Icon(Icons.alternate_email_rounded),
+                    filled: true,
+                    fillColor: const Color(0xFFF5F7FA),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(
+                        DesignTokens.radiusMedium,
+                      ),
+                      borderSide: BorderSide(
+                        color: Colors.black.withOpacity(0.1),
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(
+                        DesignTokens.radiusMedium,
+                      ),
+                      borderSide: BorderSide(
+                        color: Colors.black.withOpacity(0.1),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 4),
+
+                // ── Verify toggle ──────────────────────────────────────────
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              l10n.changeEmailVerifyBeforeLabel,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black87,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              l10n.changeEmailVerifyBeforeSubtitle,
+                              style: const TextStyle(
+                                fontSize: 11.5,
+                                color: Colors.black45,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Switch.adaptive(
+                        value: _verifyBefore,
+                        onChanged: (v) => setState(() => _verifyBefore = v),
+                        activeColor: AppColors.primary,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            if (_verifyBefore) ...[
-              const SizedBox(height: DesignTokens.space12),
-              SizedBox(
-                height: 48,
-                child: OutlinedButton.icon(
-                  onPressed: _isSyncing ? null : _syncAfterVerification,
-                  icon: _isSyncing
-                      ? const SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Icon(Icons.verified_outlined),
-                  label: Text(l10n.changeEmailSyncNow),
+          ),
+
+          const SizedBox(height: 20),
+
+          // ── Primary action button ──────────────────────────────────────────
+          SizedBox(
+            width: double.infinity,
+            height: 50,
+            child: ElevatedButton.icon(
+              onPressed: _isSubmitting ? null : _submit,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: Colors.white,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
                 ),
               ),
-            ],
+              icon:
+                  _isSubmitting
+                      ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                      : const Icon(Icons.send_rounded, size: 18),
+              label: Text(
+                _verifyBefore ? l10n.send : l10n.saveChanges,
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+            ),
+          ),
+
+          // ── Sync button (only shown in verify mode) ────────────────────────
+          if (_verifyBefore) ...[
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: OutlinedButton.icon(
+                onPressed: _isSyncing ? null : _syncAfterVerification,
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.primary,
+                  side: BorderSide(color: AppColors.primary.withOpacity(0.5)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                      DesignTokens.radiusLarge,
+                    ),
+                  ),
+                ),
+                icon:
+                    _isSyncing
+                        ? SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: AppColors.primary,
+                          ),
+                        )
+                        : const Icon(Icons.verified_rounded, size: 18),
+                label: Text(
+                  l10n.changeEmailSyncNow,
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ),
+            ),
           ],
-        ),
+          const SizedBox(height: 24),
+        ],
       ),
     );
   }

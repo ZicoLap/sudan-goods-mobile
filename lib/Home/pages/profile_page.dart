@@ -13,6 +13,8 @@ import 'package:sudan_goods/Home/pages/language_settings_page.dart';
 import 'package:sudan_goods/Home/pages/manage_addresses_page.dart';
 import 'package:sudan_goods/authentication/services/account_service.dart';
 import 'package:sudan_goods/authentication/pages/change_email_page.dart';
+import 'package:sudan_goods/authentication/pages/change_password_page.dart';
+import 'package:sudan_goods/authentication/pages/edit_profile_page.dart';
 import 'package:sudan_goods/authentication/auth_gate_page.dart';
 import 'package:sudan_goods/authentication/user/user_model.dart';
 import 'package:sudan_goods/authentication/user/user_provider.dart';
@@ -78,7 +80,7 @@ class _ProfilePageState extends State<ProfilePage> {
       slivers: [
         // ── Hero header ──────────────────────────────────────────────────────
         SliverAppBar(
-          expandedHeight: 220,
+          expandedHeight: 200,
           pinned: true,
           backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
@@ -138,6 +140,18 @@ class _ProfilePageState extends State<ProfilePage> {
               const SizedBox(height: 8),
               _card([
                 _navTile(
+                  icon: Icons.person_outline_rounded,
+                  title: l10n.name,
+                  subtitle: user.fullName,
+                  onTap:
+                      () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const EditProfilePage(),
+                        ),
+                      ),
+                ),
+                _divider(),
+                _navTile(
                   icon: Icons.location_on_rounded,
                   title: l10n.manageAddresses,
                   onTap:
@@ -155,6 +169,17 @@ class _ProfilePageState extends State<ProfilePage> {
                       () => Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (_) => const ChangeEmailPage(),
+                        ),
+                      ),
+                ),
+                _divider(),
+                _navTile(
+                  icon: Icons.lock_outline_rounded,
+                  title: l10n.changePassword,
+                  onTap:
+                      () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const ChangePasswordPage(),
                         ),
                       ),
                 ),
@@ -191,64 +216,135 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget _buildHeroHeader(AppUser user) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [AppColors.primary, AppColors.primary.withOpacity(0.82)],
+          colors: [AppColors.primary, Color(0xFFD05000)],
         ),
       ),
-      child: SafeArea(
-        bottom: false,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(height: 44),
-            Container(
-              width: 80,
-              height: 80,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          // ── Decorative circles ────────────────────────────────────────
+          Positioned(
+            top: -40,
+            right: -40,
+            child: Container(
+              width: 160,
+              height: 160,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withOpacity(0.2),
-                border: Border.all(
-                  color: Colors.white.withOpacity(0.5),
-                  width: 2,
-                ),
+                color: Colors.white.withOpacity(0.07),
               ),
-              child: Center(
-                child: Text(
-                  _initials(user.fullName),
-                  style: const TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                    letterSpacing: 1,
+            ),
+          ),
+          Positioned(
+            bottom: -30,
+            left: 20,
+            child: Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withOpacity(0.05),
+              ),
+            ),
+          ),
+          // ── Content ───────────────────────────────────────────────────
+          SafeArea(
+            bottom: false,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(24, 48, 24, 24),
+              child: Row(
+                children: [
+                  // Avatar
+                  Container(
+                    width: 72,
+                    height: 72,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white.withOpacity(0.18),
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.55),
+                        width: 2.5,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.15),
+                          blurRadius: 16,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Center(
+                      child: Text(
+                        _initials(user.fullName),
+                        style: const TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.w800,
+                          color: Colors.white,
+                          letterSpacing: 1,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                  const SizedBox(width: 16),
+                  // Name + email
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          user.fullName,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 22,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: -0.4,
+                            height: 1.1,
+                          ),
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          user.email,
+                          style: TextStyle(
+                            color: Colors.white.withOpacity(0.72),
+                            fontSize: 12.5,
+                            letterSpacing: 0.1,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        if (user.phoneNumber.isNotEmpty) ...[
+                          const SizedBox(height: 3),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.phone_rounded,
+                                size: 11,
+                                color: Colors.white.withOpacity(0.6),
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                user.phoneNumber,
+                                style: TextStyle(
+                                  color: Colors.white.withOpacity(0.6),
+                                  fontSize: 11.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 10),
-            Text(
-              user.fullName,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 17,
-                fontWeight: FontWeight.w600,
-                letterSpacing: -0.2,
-              ),
-            ),
-            const SizedBox(height: 3),
-            Text(
-              user.email,
-              style: TextStyle(
-                color: Colors.white.withOpacity(0.78),
-                fontSize: 12.5,
-                letterSpacing: 0.1,
-              ),
-            ),
-            const SizedBox(height: 16),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
