@@ -882,4 +882,46 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get aboutUsTag => 'معلومات';
+
+  @override
+  String get addAddress => 'إضافة عنوان';
+
+  @override
+  String get saveAddress => 'حفظ العنوان';
+
+  @override
+  String get deleteAddress => 'حذف العنوان';
+
+  @override
+  String get deleteAddressConfirmation => 'هل أنت متأكد من حذف هذا العنوان؟';
+
+  @override
+  String get defaultAddress => 'افتراضي';
+
+  @override
+  String get noAddressesYet => 'لا توجد عناوين محفوظة';
+
+  @override
+  String get addAddressPrompt => 'أضف عنواناً لاستخدامه في التوصيل.';
+
+  @override
+  String get addressLabel => 'التسمية';
+
+  @override
+  String get addressLabelHint => 'مثال: المنزل، العمل';
+
+  @override
+  String get streetHint => 'مثال: شارع النيل 123';
+
+  @override
+  String get cityHint => 'مثال: الخرطوم';
+
+  @override
+  String get failedToDeleteAddress => 'فشل حذف العنوان. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get failedToSaveAddress => 'فشل حفظ العنوان. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get fieldRequired => 'هذا الحقل مطلوب';
 }

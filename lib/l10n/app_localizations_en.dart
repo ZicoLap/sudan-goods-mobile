@@ -882,4 +882,46 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aboutUsTag => 'Info';
+
+  @override
+  String get addAddress => 'Add Address';
+
+  @override
+  String get saveAddress => 'Save Address';
+
+  @override
+  String get deleteAddress => 'Delete Address';
+
+  @override
+  String get deleteAddressConfirmation => 'Are you sure you want to delete this address?';
+
+  @override
+  String get defaultAddress => 'Default';
+
+  @override
+  String get noAddressesYet => 'No saved addresses';
+
+  @override
+  String get addAddressPrompt => 'Add an address to use for delivery.';
+
+  @override
+  String get addressLabel => 'Label';
+
+  @override
+  String get addressLabelHint => 'e.g. Home, Work';
+
+  @override
+  String get streetHint => 'e.g. 123 Main St';
+
+  @override
+  String get cityHint => 'e.g. Khartoum';
+
+  @override
+  String get failedToDeleteAddress => 'Failed to delete address. Please try again.';
+
+  @override
+  String get failedToSaveAddress => 'Failed to save address. Please try again.';
+
+  @override
+  String get fieldRequired => 'This field is required';
 }

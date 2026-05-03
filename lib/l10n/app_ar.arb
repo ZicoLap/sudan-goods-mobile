@@ -413,5 +413,20 @@
   "aboutUsFacebook": "فيسبوك",
   "aboutUsSocial": "تابعنا",
   "contactUsTag": "مجاني",
-  "aboutUsTag": "معلومات"
+  "aboutUsTag": "معلومات",
+
+  "addAddress": "إضافة عنوان",
+  "saveAddress": "حفظ العنوان",
+  "deleteAddress": "حذف العنوان",
+  "deleteAddressConfirmation": "هل أنت متأكد من حذف هذا العنوان؟",
+  "defaultAddress": "افتراضي",
+  "noAddressesYet": "لا توجد عناوين محفوظة",
+  "addAddressPrompt": "أضف عنواناً لاستخدامه في التوصيل.",
+  "addressLabel": "التسمية",
+  "addressLabelHint": "مثال: المنزل، العمل",
+  "streetHint": "مثال: شارع النيل 123",
+  "cityHint": "مثال: الخرطوم",
+  "failedToDeleteAddress": "فشل حذف العنوان. يرجى المحاولة مرة أخرى.",
+  "failedToSaveAddress": "فشل حفظ العنوان. يرجى المحاولة مرة أخرى.",
+  "fieldRequired": "هذا الحقل مطلوب"
 }

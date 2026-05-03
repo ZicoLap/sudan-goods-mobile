@@ -1750,6 +1750,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Info'**
   String get aboutUsTag;
+
+  /// No description provided for @addAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Address'**
+  String get addAddress;
+
+  /// No description provided for @saveAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Address'**
+  String get saveAddress;
+
+  /// No description provided for @deleteAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Address'**
+  String get deleteAddress;
+
+  /// No description provided for @deleteAddressConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this address?'**
+  String get deleteAddressConfirmation;
+
+  /// No description provided for @defaultAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get defaultAddress;
+
+  /// No description provided for @noAddressesYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No saved addresses'**
+  String get noAddressesYet;
+
+  /// No description provided for @addAddressPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Add an address to use for delivery.'**
+  String get addAddressPrompt;
+
+  /// No description provided for @addressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Label'**
+  String get addressLabel;
+
+  /// No description provided for @addressLabelHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Home, Work'**
+  String get addressLabelHint;
+
+  /// No description provided for @streetHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. 123 Main St'**
+  String get streetHint;
+
+  /// No description provided for @cityHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Khartoum'**
+  String get cityHint;
+
+  /// No description provided for @failedToDeleteAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete address. Please try again.'**
+  String get failedToDeleteAddress;
+
+  /// No description provided for @failedToSaveAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save address. Please try again.'**
+  String get failedToSaveAddress;
+
+  /// No description provided for @fieldRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'This field is required'**
+  String get fieldRequired;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

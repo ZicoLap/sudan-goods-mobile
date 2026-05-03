@@ -20,27 +20,26 @@ class CartBottomSheet extends StatefulWidget {
 
 class _CartBottomSheetState extends State<CartBottomSheet> {
   late final Future<Store> _storeFuture;
+  CartController? _cartController;
 
   @override
-  void initState() {
-    super.initState();
-    final cart = Provider.of<CartController>(context, listen: false);
-    _storeFuture = cart.getStoreDetails(widget.storeId);
-    // I4: Show a snackbar whenever a Firestore sync error is set.
-    cart.addListener(_onCartChanged);
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_cartController == null) {
+      _cartController = context.read<CartController>();
+      _storeFuture = _cartController!.getStoreDetails(widget.storeId);
+      _cartController!.addListener(_onCartChanged);
+    }
   }
 
   @override
   void dispose() {
-    Provider.of<CartController>(
-      context,
-      listen: false,
-    ).removeListener(_onCartChanged);
+    _cartController?.removeListener(_onCartChanged);
     super.dispose();
   }
 
   void _onCartChanged() {
-    final error = Provider.of<CartController>(context, listen: false).syncError;
+    final error = _cartController?.syncError;
     if (error != null && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(error), backgroundColor: Colors.orangeAccent),

@@ -3,12 +3,13 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sudan_goods/authentication/user/user_model.dart';
+import 'package:sudan_goods/models/shared_models/address.dart';
 
- /// Provider that manages the authenticated user's profile state.
- ///
- /// Exposes helpers to fetch, refresh, update, and clear the current user
- /// backed by Firestore. Widgets can listen to this provider for changes.
- class UserProvider with ChangeNotifier {
+/// Provider that manages the authenticated user's profile state.
+///
+/// Exposes helpers to fetch, refresh, update, and clear the current user
+/// backed by Firestore. Widgets can listen to this provider for changes.
+class UserProvider with ChangeNotifier {
   AppUser? _currentUser;
   final _firestore = FirebaseFirestore.instance;
 
@@ -58,6 +59,33 @@ import 'package:sudan_goods/authentication/user/user_model.dart';
   /// persistence if needed.
   void updateUser(AppUser updatedUser) {
     _currentUser = updatedUser;
+    notifyListeners();
+  }
+
+  /// Adds a new address to the user's address list in Firestore.
+  Future<void> addAddress(Address address) async {
+    if (_currentUser == null) {
+      throw Exception('User not loaded. Call fetchUser(uid) first.');
+    }
+    final updated = List<Address>.from(_currentUser!.addresses)..add(address);
+    await _firestore.collection('users').doc(_currentUser!.uid).update({
+      'addresses': updated.map((a) => a.toJson()).toList(),
+    });
+    _currentUser = _currentUser!.copyWith(addresses: updated);
+    notifyListeners();
+  }
+
+  /// Removes the address at [index] from the user's address list in Firestore.
+  Future<void> removeAddress(int index) async {
+    if (_currentUser == null) {
+      throw Exception('User not loaded. Call fetchUser(uid) first.');
+    }
+    final updated = List<Address>.from(_currentUser!.addresses)
+      ..removeAt(index);
+    await _firestore.collection('users').doc(_currentUser!.uid).update({
+      'addresses': updated.map((a) => a.toJson()).toList(),
+    });
+    _currentUser = _currentUser!.copyWith(addresses: updated);
     notifyListeners();
   }
 

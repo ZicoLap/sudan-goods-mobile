@@ -412,5 +412,20 @@
   "aboutUsFacebook": "Facebook",
   "aboutUsSocial": "Follow Us",
   "contactUsTag": "Free",
-  "aboutUsTag": "Info"
+  "aboutUsTag": "Info",
+
+  "addAddress": "Add Address",
+  "saveAddress": "Save Address",
+  "deleteAddress": "Delete Address",
+  "deleteAddressConfirmation": "Are you sure you want to delete this address?",
+  "defaultAddress": "Default",
+  "noAddressesYet": "No saved addresses",
+  "addAddressPrompt": "Add an address to use for delivery.",
+  "addressLabel": "Label",
+  "addressLabelHint": "e.g. Home, Work",
+  "streetHint": "e.g. 123 Main St",
+  "cityHint": "e.g. Khartoum",
+  "failedToDeleteAddress": "Failed to delete address. Please try again.",
+  "failedToSaveAddress": "Failed to save address. Please try again.",
+  "fieldRequired": "This field is required"
 }
