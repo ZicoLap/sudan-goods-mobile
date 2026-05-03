@@ -254,6 +254,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noStoresAvailable => 'No stores available';
 
   @override
+  String get storeDetailsTitle => 'Store Details';
+
+  @override
+  String get storeNotFound => 'Store not found';
+
+  @override
+  String get storeNotFoundSubtitle => 'The store you\'re looking for doesn\'t exist or has been removed.';
+
+  @override
   String get collectionsTitle => 'Collections';
 
   @override

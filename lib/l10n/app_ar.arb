@@ -137,6 +137,9 @@
   "viewAll": "عرض الكل",
   "failedToLoadStores": "فشل تحميل المتاجر",
   "noStoresAvailable": "لا توجد متاجر متاحة",
+  "storeDetailsTitle": "تفاصيل المتجر",
+  "storeNotFound": "المتجر غير موجود",
+  "storeNotFoundSubtitle": "المتجر الذي تبحث عنه غير موجود أو تمت إزالته.",
   "collectionsTitle": "المجموعات",
   "noCollectionsAvailable": "لا توجد مجموعات متاحة",
 

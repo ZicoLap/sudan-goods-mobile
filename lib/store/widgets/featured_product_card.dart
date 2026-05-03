@@ -22,10 +22,12 @@ class FeaturedProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final isOutOfStock = product.quantity == 0;
-    final bool hasDiscount = product.discountPrice != null && product.discountPrice! > 0;
-    final int? discountPercent = hasDiscount
-        ? (100 - ((product.discountPrice! / product.price) * 100)).round()
-        : null;
+    final bool hasDiscount =
+        product.discountPrice != null && product.discountPrice! > 0;
+    final int? discountPercent =
+        hasDiscount
+            ? (100 - ((product.discountPrice! / product.price) * 100)).round()
+            : null;
 
     return Container(
       width: 260,
@@ -71,7 +73,10 @@ class FeaturedProductCard extends StatelessWidget {
                       Row(
                         children: [
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(999),
                               gradient: LinearGradient(
@@ -85,7 +90,9 @@ class FeaturedProductCard extends StatelessWidget {
                             ),
                             child: Text(
                               '€${product.discountPrice!.toStringAsFixed(2)}',
-                              style: AppTypography.bodyBold.copyWith(color: Colors.white),
+                              style: AppTypography.bodyBold.copyWith(
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                           const SizedBox(width: DesignTokens.space8),
@@ -113,36 +120,83 @@ class FeaturedProductCard extends StatelessWidget {
                 child: Stack(
                   children: [
                     ColorFiltered(
-                      colorFilter: ColorFilter.matrix(isOutOfStock
-                          ? const <double>[
-                              0.2126, 0.7152, 0.0722, 0, 0,
-                              0.2126, 0.7152, 0.0722, 0, 0,
-                              0.2126, 0.7152, 0.0722, 0, 0,
-                              0, 0, 0, 1, 0,
+                      colorFilter: ColorFilter.matrix(
+                        isOutOfStock
+                            ? const <double>[
+                              0.2126,
+                              0.7152,
+                              0.0722,
+                              0,
+                              0,
+                              0.2126,
+                              0.7152,
+                              0.0722,
+                              0,
+                              0,
+                              0.2126,
+                              0.7152,
+                              0.0722,
+                              0,
+                              0,
+                              0,
+                              0,
+                              0,
+                              1,
+                              0,
                             ]
-                          : const <double>[
-                              1, 0, 0, 0, 0,
-                              0, 1, 0, 0, 0,
-                              0, 0, 1, 0, 0,
-                              0, 0, 0, 1, 0,
-                            ]),
+                            : const <double>[
+                              1,
+                              0,
+                              0,
+                              0,
+                              0,
+                              0,
+                              1,
+                              0,
+                              0,
+                              0,
+                              0,
+                              0,
+                              1,
+                              0,
+                              0,
+                              0,
+                              0,
+                              0,
+                              1,
+                              0,
+                            ],
+                      ),
                       child: CachedNetworkImage(
-                        imageUrl: product.images.isNotEmpty ? product.images.first : '',
+                        imageUrl:
+                            product.images.isNotEmpty
+                                ? product.images.first
+                                : '',
                         width: 76,
                         height: 76,
                         fit: BoxFit.cover,
-                        placeholder: (context, url) => Shimmer.fromColors(
-                          baseColor: Colors.grey.shade300,
-                          highlightColor: Colors.grey.shade100,
-                          child: Container(width: 76, height: 76, color: Colors.white),
-                        ),
-                        errorWidget: (_, __, ___) => Container(
-                          width: 76,
-                          height: 76,
-                          color: Colors.grey.shade100,
-                          alignment: Alignment.center,
-                          child: const Icon(Icons.image_outlined, size: 28, color: Colors.grey),
-                        ),
+                        placeholder:
+                            (context, url) => Shimmer.fromColors(
+                              baseColor: Colors.grey.shade300,
+                              highlightColor: Colors.grey.shade100,
+                              child: Container(
+                                width: 76,
+                                height: 76,
+                                color: Colors.white,
+                              ),
+                            ),
+                        errorWidget:
+                            (_, __, ___) => Container(
+                              width: 76,
+                              height: 76,
+                              color: Colors.grey.shade100,
+                              alignment: Alignment.center,
+                              child: const Icon(
+                                Icons.image_outlined,
+                                size: 28,
+                                color: Colors.grey,
+                              ),
+                            ),
                       ),
                     ),
                     // Badge on image (top-left)
@@ -151,7 +205,10 @@ class FeaturedProductCard extends StatelessWidget {
                         top: 6,
                         start: 6,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 6,
+                          ),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(999),
                             gradient: LinearGradient(
@@ -163,12 +220,18 @@ class FeaturedProductCard extends StatelessWidget {
                               end: Alignment.bottomRight,
                             ),
                             boxShadow: const [
-                              BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2))
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 4,
+                                offset: Offset(0, 2),
+                              ),
                             ],
                           ),
                           child: Text(
                             '-$discountPercent%',
-                            style: AppTypography.smallBold.copyWith(color: Colors.white),
+                            style: AppTypography.smallBold.copyWith(
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       )
@@ -177,21 +240,33 @@ class FeaturedProductCard extends StatelessWidget {
                         top: 6,
                         start: 6,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 6,
+                          ),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(999),
                             gradient: LinearGradient(
-                              colors: [Colors.grey.shade700, Colors.grey.shade500],
+                              colors: [
+                                Colors.grey.shade700,
+                                Colors.grey.shade500,
+                              ],
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                             ),
                             boxShadow: const [
-                              BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2))
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 4,
+                                offset: Offset(0, 2),
+                              ),
                             ],
                           ),
                           child: Text(
                             l10n.outOfStock,
-                            style: AppTypography.smallBold.copyWith(color: Colors.white),
+                            style: AppTypography.smallBold.copyWith(
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ),
@@ -205,7 +280,10 @@ class FeaturedProductCard extends StatelessWidget {
                           gradient: LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
-                            colors: [Colors.transparent, Colors.black.withOpacity(0.06)],
+                            colors: [
+                              Colors.transparent,
+                              Colors.black.withOpacity(0.06),
+                            ],
                           ),
                         ),
                       ),
@@ -243,17 +321,24 @@ class FeaturedProductCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  child: cartQuantity > 0
-                      ? Container(
-                          width: 20,
-                          height: 20,
-                          alignment: Alignment.center,
-                          child: Text(
-                            '$cartQuantity',
-                            style: AppTypography.smallBold.copyWith(color: Colors.white),
+                  child:
+                      cartQuantity > 0
+                          ? Container(
+                            width: 20,
+                            height: 20,
+                            alignment: Alignment.center,
+                            child: Text(
+                              '$cartQuantity',
+                              style: AppTypography.smallBold.copyWith(
+                                color: Colors.white,
+                              ),
+                            ),
+                          )
+                          : const Icon(
+                            Icons.add,
+                            color: Colors.white,
+                            size: 20,
                           ),
-                        )
-                      : const Icon(Icons.add, color: Colors.white, size: 20),
                 ),
               ),
             ),

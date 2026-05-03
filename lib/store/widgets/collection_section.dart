@@ -16,10 +16,11 @@ class CollectionsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance
-          .collection('collections')
-          .where('storeId', isEqualTo: storeId)
-          .snapshots(),
+      stream:
+          FirebaseFirestore.instance
+              .collection('collections')
+              .where('storeId', isEqualTo: storeId)
+              .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Column(
@@ -27,13 +28,18 @@ class CollectionsSection extends StatelessWidget {
             children: [
               Padding(
                 padding: DesignTokens.paddingPageHorizontal,
-                child: Text(AppLocalizations.of(context)!.collectionsTitle, style: AppTypography.sectionTitle),
+                child: Text(
+                  AppLocalizations.of(context)!.collectionsTitle,
+                  style: AppTypography.sectionTitle,
+                ),
               ),
               const SizedBox(height: DesignTokens.space8),
               GridView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
-                padding: const EdgeInsets.symmetric(horizontal: DesignTokens.space20),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: DesignTokens.space20,
+                ),
                 itemCount: 6,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
@@ -55,7 +61,10 @@ class CollectionsSection extends StatelessWidget {
               children: [
                 Padding(
                   padding: DesignTokens.paddingPageHorizontal,
-                  child: Text(AppLocalizations.of(context)!.collectionsTitle, style: AppTypography.sectionTitle),
+                  child: Text(
+                    AppLocalizations.of(context)!.collectionsTitle,
+                    style: AppTypography.sectionTitle,
+                  ),
                 ),
                 const SizedBox(height: DesignTokens.space12),
                 const Padding(
@@ -67,22 +76,28 @@ class CollectionsSection extends StatelessWidget {
           );
         }
 
-        final collections = snapshot.data!.docs
-            .map((doc) => Collection.fromDocument(doc))
-            .toList();
+        final collections =
+            snapshot.data!.docs
+                .map((doc) => Collection.fromDocument(doc))
+                .toList();
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
               padding: DesignTokens.paddingPageHorizontal,
-              child: Text(AppLocalizations.of(context)!.collectionsTitle, style: AppTypography.sectionTitle),
+              child: Text(
+                AppLocalizations.of(context)!.collectionsTitle,
+                style: AppTypography.sectionTitle,
+              ),
             ),
             const SizedBox(height: DesignTokens.space8),
             GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              padding: const EdgeInsets.symmetric(horizontal: DesignTokens.space20),
+              padding: const EdgeInsets.symmetric(
+                horizontal: DesignTokens.space20,
+              ),
               itemCount: collections.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
@@ -96,11 +111,14 @@ class CollectionsSection extends StatelessWidget {
                 return CollectionCard(
                   collection: collection,
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => CollectionProductsPage(
-                        collection: collection,
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) =>
+                                CollectionProductsPage(collection: collection),
                       ),
-                    ));
+                    );
                     print('Tapped on ${collection.name}');
                   },
                 );
@@ -152,14 +170,20 @@ class _EmptyCollectionsCard extends StatelessWidget {
               boxShadow: DesignTokens.shadowSmall,
             ),
             child: const Center(
-              child: Icon(Icons.category_outlined, color: Colors.white, size: 26),
+              child: Icon(
+                Icons.category_outlined,
+                color: Colors.white,
+                size: 26,
+              ),
             ),
           ),
           const SizedBox(height: DesignTokens.space12),
           // Message centered under the icon
           Text(
             AppLocalizations.of(context)!.noCollectionsAvailable,
-            style: AppTypography.bodyLarge.copyWith(fontWeight: FontWeight.w600),
+            style: AppTypography.bodyLarge.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
             textAlign: TextAlign.center,
           ),
         ],

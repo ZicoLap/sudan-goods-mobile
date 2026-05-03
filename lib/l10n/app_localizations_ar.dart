@@ -254,6 +254,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get noStoresAvailable => 'لا توجد متاجر متاحة';
 
   @override
+  String get storeDetailsTitle => 'تفاصيل المتجر';
+
+  @override
+  String get storeNotFound => 'المتجر غير موجود';
+
+  @override
+  String get storeNotFoundSubtitle => 'المتجر الذي تبحث عنه غير موجود أو تمت إزالته.';
+
+  @override
   String get collectionsTitle => 'المجموعات';
 
   @override

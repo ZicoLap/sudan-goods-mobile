@@ -539,6 +539,24 @@ abstract class AppLocalizations {
   /// **'No stores available'**
   String get noStoresAvailable;
 
+  /// No description provided for @storeDetailsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Store Details'**
+  String get storeDetailsTitle;
+
+  /// No description provided for @storeNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Store not found'**
+  String get storeNotFound;
+
+  /// No description provided for @storeNotFoundSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The store you\'re looking for doesn\'t exist or has been removed.'**
+  String get storeNotFoundSubtitle;
+
   /// No description provided for @collectionsTitle.
   ///
   /// In en, this message translates to:
