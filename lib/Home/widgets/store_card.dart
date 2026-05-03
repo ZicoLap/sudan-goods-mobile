@@ -80,10 +80,10 @@ class StoreCard extends StatelessWidget {
                           ),
                         ),
                       ),
-                      // Open / Closed badge — top-left
-                      Positioned(
+                      // Open / Closed badge — top-start
+                      PositionedDirectional(
                         top: 8,
-                        left: 8,
+                        start: 8,
                         child: Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 7,
@@ -106,11 +106,11 @@ class StoreCard extends StatelessWidget {
                           ),
                         ),
                       ),
-                      // Rating chip — top-right
+                      // Rating chip — top-end
                       if (store.rating > 0)
-                        Positioned(
+                        PositionedDirectional(
                           top: 8,
-                          right: 8,
+                          end: 8,
                           child: Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 6,
@@ -142,10 +142,10 @@ class StoreCard extends StatelessWidget {
                           ),
                         ),
                       // Store name overlaid on scrim
-                      Positioned(
+                      PositionedDirectional(
                         bottom: 7,
-                        left: 8,
-                        right: 8,
+                        start: 8,
+                        end: 8,
                         child: Text(
                           store.name,
                           maxLines: 1,
