@@ -374,5 +374,44 @@
       "qty": { "type": "num" },
       "price": { "type": "String" }
     }
-  }
+  },
+
+  "navInfo": "معلومات",
+  "infoTabTitle": "مساعدة ومعلومات",
+  "infoTabSubtitle": "تواصل معنا أو تعرّف علينا أكثر",
+  "contactUs": "تواصل معنا",
+  "contactUsSubtitle": "أرسل لنا رسالة، نرد خلال 24 ساعة",
+  "aboutUs": "من نحن",
+  "aboutUsSubtitle": "تعرّف على بضائع السودان",
+  "contactFormTitle": "يسعدنا سماعك",
+  "contactFormSubtitle": "املأ النموذج أدناه وسنتواصل معك قريباً.",
+  "contactFormEmailLabel": "بريدك الإلكتروني",
+  "contactFormSubjectLabel": "الموضوع",
+  "contactFormMessageLabel": "رسالتك",
+  "contactFormMessageHint": "اشرح سؤالك أو ملاحظاتك...",
+  "contactFormCharCount": "{count}/500",
+  "@contactFormCharCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "contactFormSendButton": "إرسال الرسالة",
+  "contactFormSuccessTitle": "تم الإرسال!",
+  "contactFormSuccessSubtitle": "شكراً لتواصلك. سنرد عليك خلال 24 ساعة.",
+  "contactFormSendAnother": "إرسال رسالة أخرى",
+  "contactFormError": "فشل إرسال الرسالة. يرجى المحاولة مجدداً.",
+  "contactFormValidationEmpty": "يرجى كتابة رسالة",
+  "contactFormValidationTooShort": "يجب أن تكون الرسالة 10 أحرف على الأقل",
+  "subjectGeneral": "عام",
+  "subjectOrderIssue": "مشكلة في الطلب",
+  "subjectFeedback": "ملاحظات",
+  "aboutUsLoadError": "فشل تحميل محتوى من نحن. يرجى المحاولة مجدداً.",
+  "aboutUsEmpty": "المحتوى قريباً",
+  "aboutUsPhone": "الهاتف",
+  "aboutUsEmail": "البريد الإلكتروني",
+  "aboutUsWebsite": "الموقع الإلكتروني",
+  "aboutUsInstagram": "إنستغرام",
+  "aboutUsTwitter": "إكس (تويتر)",
+  "aboutUsFacebook": "فيسبوك",
+  "aboutUsSocial": "تابعنا",
+  "contactUsTag": "مجاني",
+  "aboutUsTag": "معلومات"
 }

@@ -775,4 +775,111 @@ class AppLocalizationsEn extends AppLocalizations {
   String qtyAndPrice(num qty, String price) {
     return '$qty × $price';
   }
+
+  @override
+  String get navInfo => 'Info';
+
+  @override
+  String get infoTabTitle => 'Help & Info';
+
+  @override
+  String get infoTabSubtitle => 'Get in touch or learn more about us';
+
+  @override
+  String get contactUs => 'Contact Us';
+
+  @override
+  String get contactUsSubtitle => 'Send us a message, we reply within 24 hours';
+
+  @override
+  String get aboutUs => 'About Us';
+
+  @override
+  String get aboutUsSubtitle => 'Learn more about Sudan Goods';
+
+  @override
+  String get contactFormTitle => 'We\'d love to hear from you';
+
+  @override
+  String get contactFormSubtitle => 'Fill in the form below and we\'ll get back to you shortly.';
+
+  @override
+  String get contactFormEmailLabel => 'Your email';
+
+  @override
+  String get contactFormSubjectLabel => 'Subject';
+
+  @override
+  String get contactFormMessageLabel => 'Your message';
+
+  @override
+  String get contactFormMessageHint => 'Describe your question or feedback...';
+
+  @override
+  String contactFormCharCount(int count) {
+    return '$count/500';
+  }
+
+  @override
+  String get contactFormSendButton => 'Send Message';
+
+  @override
+  String get contactFormSuccessTitle => 'Message sent!';
+
+  @override
+  String get contactFormSuccessSubtitle => 'Thank you for reaching out. We\'ll get back to you within 24 hours.';
+
+  @override
+  String get contactFormSendAnother => 'Send another message';
+
+  @override
+  String get contactFormError => 'Failed to send message. Please try again.';
+
+  @override
+  String get contactFormValidationEmpty => 'Please enter a message';
+
+  @override
+  String get contactFormValidationTooShort => 'Message must be at least 10 characters';
+
+  @override
+  String get subjectGeneral => 'General';
+
+  @override
+  String get subjectOrderIssue => 'Order Issue';
+
+  @override
+  String get subjectFeedback => 'Feedback';
+
+  @override
+  String get aboutUsLoadError => 'Failed to load About Us content. Please try again.';
+
+  @override
+  String get aboutUsEmpty => 'Content coming soon';
+
+  @override
+  String get aboutUsPhone => 'Phone';
+
+  @override
+  String get aboutUsEmail => 'Email';
+
+  @override
+  String get aboutUsWebsite => 'Website';
+
+  @override
+  String get aboutUsInstagram => 'Instagram';
+
+  @override
+  String get aboutUsTwitter => 'X (Twitter)';
+
+  @override
+  String get aboutUsFacebook => 'Facebook';
+
+  @override
+  String get aboutUsSocial => 'Follow Us';
+
+  @override
+  String get contactUsTag => 'Free';
+
+  @override
+  String get aboutUsTag => 'Info';
 }

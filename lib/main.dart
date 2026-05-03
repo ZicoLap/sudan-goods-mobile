@@ -15,10 +15,8 @@ import 'package:sudan_goods/Home/controller/store_filter_controller.dart';
 import 'package:sudan_goods/follow/presentation/controllers/follow_controller.dart';
 import 'package:sudan_goods/follow/presentation/wiring/follow_wiring_example.dart';
 
-import 'package:sudan_goods/messaging/presentation/controllers/chat_controller.dart';
-import 'package:sudan_goods/messaging/presentation/wiring/chat_wiring.dart';
-import 'package:sudan_goods/messaging/presentation/controllers/support_controller.dart';
-import 'package:sudan_goods/messaging/presentation/wiring/support_wiring.dart';
+import 'package:sudan_goods/contact/controllers/contact_controller.dart';
+import 'package:sudan_goods/about/controllers/about_us_controller.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 
@@ -73,32 +71,12 @@ void main() async {
           },
           dispose: (_, value) => value?.dispose(),
         ),
-        ProxyProvider<UserProvider, ChatController?>(
-          update: (_, userProvider, previous) {
-            if (!userProvider.isUserLoaded) {
-              return previous; // user not loaded yet
-            }
-            if (previous != null) return previous;
-            final uid = userProvider.currentUser.uid;
-            return makeChatControllerForUid(uid);
-          },
-          dispose: (_, value) => value?.dispose(),
-        ),
-        ProxyProvider<UserProvider, SupportController?>(
-          update: (_, userProvider, previous) {
-            if (!userProvider.isUserLoaded) {
-              return previous; // user not loaded yet
-            }
-            if (previous != null) return previous;
-            final uid = userProvider.currentUser.uid;
-            return makeSupportControllerForUid(uid);
-          },
-          dispose: (_, value) => value?.dispose(),
-        ),
         ChangeNotifierProvider(
           create: (_) => CheckoutController(checkoutService: CheckoutService()),
         ),
         ChangeNotifierProvider(create: (_) => StoreFilterController()),
+        ChangeNotifierProvider(create: (_) => ContactController()),
+        ChangeNotifierProvider(create: (_) => AboutUsController()),
         Provider<LocaleController>(
           create:
               (_) =>

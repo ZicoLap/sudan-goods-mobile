@@ -163,6 +163,27 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    // ── Contact messages ──────────────────────────────────────────────────────
+    // Authenticated users may create a single contact message with their own uid.
+    // Reads and mutations are admin-only.
+    match /contact_messages/{docId} {
+      allow create: if isSignedIn()
+          && request.resource.data.uid == request.auth.uid
+          && request.resource.data.keys().hasOnly([
+               'uid', 'email', 'subject', 'message', 'status', 'createdAt'
+             ]);
+      allow read:   if isAdmin();
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    // ── App content (About Us etc.) ────────────────────────────────────────────
+    // Read-only for all signed-in users. Writes via Admin SDK only.
+    match /app_content/{docId} {
+      allow read:  if isSignedIn();
+      allow write: if false;
+    }
+
     // ── Conversations (customer ↔ store messaging) ────────────────────────────
     // ID pattern: u_{userId}__s_{storeId}
     // The 'userId' field in the document is the authoritative ownership anchor.

@@ -64,8 +64,13 @@ class DesignTokens {
   ];
 
   // Content Spacing
-  static const EdgeInsets paddingPageHorizontal = EdgeInsets.symmetric(horizontal: space20);
-  static const EdgeInsets paddingSection = EdgeInsets.symmetric(horizontal: space20, vertical: space16);
+  static const EdgeInsets paddingPageHorizontal = EdgeInsets.symmetric(
+    horizontal: space20,
+  );
+  static const EdgeInsets paddingSection = EdgeInsets.symmetric(
+    horizontal: space20,
+    vertical: space16,
+  );
   static const EdgeInsets paddingCard = EdgeInsets.all(space16);
   static const EdgeInsets paddingCardSmall = EdgeInsets.all(space12);
 

@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:sudan_goods/cart/cart_controller.dart';
 import 'package:sudan_goods/Home/pages/home_page_new.dart';
 import 'package:sudan_goods/Home/pages/orders_page.dart';
-import 'package:sudan_goods/Home/pages/messages_page.dart';
+import 'package:sudan_goods/Home/pages/info_tab_page.dart';
 import 'package:sudan_goods/Home/pages/profile_page.dart';
 import 'package:sudan_goods/Home/pages/search_page.dart';
 import 'package:sudan_goods/Home/widgets/modern_bottom_navigation_bar.dart';
@@ -16,13 +16,13 @@ class MainShell extends StatefulWidget {
 }
 
 class _MainShellState extends State<MainShell> {
-  int _currentIndex = 0;
+  int _currentIndex = 2; // Home is center tab
 
   final _navigatorKeys = <GlobalKey<NavigatorState>>[
-    GlobalKey<NavigatorState>(), // Home
-    GlobalKey<NavigatorState>(), // Orders
     GlobalKey<NavigatorState>(), // Search
-    GlobalKey<NavigatorState>(), // Messages
+    GlobalKey<NavigatorState>(), // Orders
+    GlobalKey<NavigatorState>(), // Home
+    GlobalKey<NavigatorState>(), // Info
     GlobalKey<NavigatorState>(), // Profile
   ];
 
@@ -34,14 +34,6 @@ class _MainShellState extends State<MainShell> {
       final cart = Provider.of<CartController>(context, listen: false);
       cart.loadCartsFromFirestore();
     });
-  }
-
-  Future<bool> _onWillPop() async {
-    final nav = _navigatorKeys[_currentIndex].currentState!;
-    if (await nav.maybePop()) {
-      return false; // handled by inner navigator
-    }
-    return true; // allow app to exit (or previous route)
   }
 
   Widget _buildOffstageNavigator(int index, Widget child) {
@@ -56,15 +48,23 @@ class _MainShellState extends State<MainShell> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: _onWillPop,
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) async {
+        if (didPop) return;
+        final nav = _navigatorKeys[_currentIndex].currentState!;
+        if (!await nav.maybePop()) {
+          // Nothing left to pop — allow the system to handle (e.g. exit app)
+          if (context.mounted) Navigator.of(context).pop();
+        }
+      },
       child: Scaffold(
         body: Stack(
           children: [
-            _buildOffstageNavigator(0, const HomePage()),
+            _buildOffstageNavigator(0, const SearchPage()),
             _buildOffstageNavigator(1, const OrdersPage()),
-            _buildOffstageNavigator(2, const SearchPage()),
-            _buildOffstageNavigator(3, const MessagesPage()),
+            _buildOffstageNavigator(2, const HomePage()),
+            _buildOffstageNavigator(3, const InfoTabPage()),
             _buildOffstageNavigator(4, const ProfilePage()),
           ],
         ),
@@ -73,9 +73,9 @@ class _MainShellState extends State<MainShell> {
           onTap: (index) {
             if (index == _currentIndex) {
               // Reselect: pop to first route of current tab
-              _navigatorKeys[index]
-                  .currentState
-                  ?.popUntil((route) => route.isFirst);
+              _navigatorKeys[index].currentState?.popUntil(
+                (route) => route.isFirst,
+              );
             } else {
               setState(() => _currentIndex = index);
             }

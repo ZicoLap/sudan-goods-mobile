@@ -373,5 +373,44 @@
       "qty": { "type": "num" },
       "price": { "type": "String" }
     }
-  }
+  },
+
+  "navInfo": "Info",
+  "infoTabTitle": "Help & Info",
+  "infoTabSubtitle": "Get in touch or learn more about us",
+  "contactUs": "Contact Us",
+  "contactUsSubtitle": "Send us a message, we reply within 24 hours",
+  "aboutUs": "About Us",
+  "aboutUsSubtitle": "Learn more about Sudan Goods",
+  "contactFormTitle": "We'd love to hear from you",
+  "contactFormSubtitle": "Fill in the form below and we'll get back to you shortly.",
+  "contactFormEmailLabel": "Your email",
+  "contactFormSubjectLabel": "Subject",
+  "contactFormMessageLabel": "Your message",
+  "contactFormMessageHint": "Describe your question or feedback...",
+  "contactFormCharCount": "{count}/500",
+  "@contactFormCharCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "contactFormSendButton": "Send Message",
+  "contactFormSuccessTitle": "Message sent!",
+  "contactFormSuccessSubtitle": "Thank you for reaching out. We'll get back to you within 24 hours.",
+  "contactFormSendAnother": "Send another message",
+  "contactFormError": "Failed to send message. Please try again.",
+  "contactFormValidationEmpty": "Please enter a message",
+  "contactFormValidationTooShort": "Message must be at least 10 characters",
+  "subjectGeneral": "General",
+  "subjectOrderIssue": "Order Issue",
+  "subjectFeedback": "Feedback",
+  "aboutUsLoadError": "Failed to load About Us content. Please try again.",
+  "aboutUsEmpty": "Content coming soon",
+  "aboutUsPhone": "Phone",
+  "aboutUsEmail": "Email",
+  "aboutUsWebsite": "Website",
+  "aboutUsInstagram": "Instagram",
+  "aboutUsTwitter": "X (Twitter)",
+  "aboutUsFacebook": "Facebook",
+  "aboutUsSocial": "Follow Us",
+  "contactUsTag": "Free",
+  "aboutUsTag": "Info"
 }

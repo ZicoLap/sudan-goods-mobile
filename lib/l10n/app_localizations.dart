@@ -1540,6 +1540,216 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{qty} × {price}'**
   String qtyAndPrice(num qty, String price);
+
+  /// No description provided for @navInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Info'**
+  String get navInfo;
+
+  /// No description provided for @infoTabTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Help & Info'**
+  String get infoTabTitle;
+
+  /// No description provided for @infoTabSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Get in touch or learn more about us'**
+  String get infoTabSubtitle;
+
+  /// No description provided for @contactUs.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Us'**
+  String get contactUs;
+
+  /// No description provided for @contactUsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Send us a message, we reply within 24 hours'**
+  String get contactUsSubtitle;
+
+  /// No description provided for @aboutUs.
+  ///
+  /// In en, this message translates to:
+  /// **'About Us'**
+  String get aboutUs;
+
+  /// No description provided for @aboutUsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Learn more about Sudan Goods'**
+  String get aboutUsSubtitle;
+
+  /// No description provided for @contactFormTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'d love to hear from you'**
+  String get contactFormTitle;
+
+  /// No description provided for @contactFormSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill in the form below and we\'ll get back to you shortly.'**
+  String get contactFormSubtitle;
+
+  /// No description provided for @contactFormEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Your email'**
+  String get contactFormEmailLabel;
+
+  /// No description provided for @contactFormSubjectLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Subject'**
+  String get contactFormSubjectLabel;
+
+  /// No description provided for @contactFormMessageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Your message'**
+  String get contactFormMessageLabel;
+
+  /// No description provided for @contactFormMessageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Describe your question or feedback...'**
+  String get contactFormMessageHint;
+
+  /// No description provided for @contactFormCharCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}/500'**
+  String contactFormCharCount(int count);
+
+  /// No description provided for @contactFormSendButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Message'**
+  String get contactFormSendButton;
+
+  /// No description provided for @contactFormSuccessTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Message sent!'**
+  String get contactFormSuccessTitle;
+
+  /// No description provided for @contactFormSuccessSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you for reaching out. We\'ll get back to you within 24 hours.'**
+  String get contactFormSuccessSubtitle;
+
+  /// No description provided for @contactFormSendAnother.
+  ///
+  /// In en, this message translates to:
+  /// **'Send another message'**
+  String get contactFormSendAnother;
+
+  /// No description provided for @contactFormError.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to send message. Please try again.'**
+  String get contactFormError;
+
+  /// No description provided for @contactFormValidationEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a message'**
+  String get contactFormValidationEmpty;
+
+  /// No description provided for @contactFormValidationTooShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Message must be at least 10 characters'**
+  String get contactFormValidationTooShort;
+
+  /// No description provided for @subjectGeneral.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get subjectGeneral;
+
+  /// No description provided for @subjectOrderIssue.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Issue'**
+  String get subjectOrderIssue;
+
+  /// No description provided for @subjectFeedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Feedback'**
+  String get subjectFeedback;
+
+  /// No description provided for @aboutUsLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load About Us content. Please try again.'**
+  String get aboutUsLoadError;
+
+  /// No description provided for @aboutUsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Content coming soon'**
+  String get aboutUsEmpty;
+
+  /// No description provided for @aboutUsPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get aboutUsPhone;
+
+  /// No description provided for @aboutUsEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get aboutUsEmail;
+
+  /// No description provided for @aboutUsWebsite.
+  ///
+  /// In en, this message translates to:
+  /// **'Website'**
+  String get aboutUsWebsite;
+
+  /// No description provided for @aboutUsInstagram.
+  ///
+  /// In en, this message translates to:
+  /// **'Instagram'**
+  String get aboutUsInstagram;
+
+  /// No description provided for @aboutUsTwitter.
+  ///
+  /// In en, this message translates to:
+  /// **'X (Twitter)'**
+  String get aboutUsTwitter;
+
+  /// No description provided for @aboutUsFacebook.
+  ///
+  /// In en, this message translates to:
+  /// **'Facebook'**
+  String get aboutUsFacebook;
+
+  /// No description provided for @aboutUsSocial.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow Us'**
+  String get aboutUsSocial;
+
+  /// No description provided for @contactUsTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Free'**
+  String get contactUsTag;
+
+  /// No description provided for @aboutUsTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Info'**
+  String get aboutUsTag;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

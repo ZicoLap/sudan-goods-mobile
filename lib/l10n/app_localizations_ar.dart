@@ -775,4 +775,111 @@ class AppLocalizationsAr extends AppLocalizations {
   String qtyAndPrice(num qty, String price) {
     return '$qty × $price';
   }
+
+  @override
+  String get navInfo => 'معلومات';
+
+  @override
+  String get infoTabTitle => 'مساعدة ومعلومات';
+
+  @override
+  String get infoTabSubtitle => 'تواصل معنا أو تعرّف علينا أكثر';
+
+  @override
+  String get contactUs => 'تواصل معنا';
+
+  @override
+  String get contactUsSubtitle => 'أرسل لنا رسالة، نرد خلال 24 ساعة';
+
+  @override
+  String get aboutUs => 'من نحن';
+
+  @override
+  String get aboutUsSubtitle => 'تعرّف على بضائع السودان';
+
+  @override
+  String get contactFormTitle => 'يسعدنا سماعك';
+
+  @override
+  String get contactFormSubtitle => 'املأ النموذج أدناه وسنتواصل معك قريباً.';
+
+  @override
+  String get contactFormEmailLabel => 'بريدك الإلكتروني';
+
+  @override
+  String get contactFormSubjectLabel => 'الموضوع';
+
+  @override
+  String get contactFormMessageLabel => 'رسالتك';
+
+  @override
+  String get contactFormMessageHint => 'اشرح سؤالك أو ملاحظاتك...';
+
+  @override
+  String contactFormCharCount(int count) {
+    return '$count/500';
+  }
+
+  @override
+  String get contactFormSendButton => 'إرسال الرسالة';
+
+  @override
+  String get contactFormSuccessTitle => 'تم الإرسال!';
+
+  @override
+  String get contactFormSuccessSubtitle => 'شكراً لتواصلك. سنرد عليك خلال 24 ساعة.';
+
+  @override
+  String get contactFormSendAnother => 'إرسال رسالة أخرى';
+
+  @override
+  String get contactFormError => 'فشل إرسال الرسالة. يرجى المحاولة مجدداً.';
+
+  @override
+  String get contactFormValidationEmpty => 'يرجى كتابة رسالة';
+
+  @override
+  String get contactFormValidationTooShort => 'يجب أن تكون الرسالة 10 أحرف على الأقل';
+
+  @override
+  String get subjectGeneral => 'عام';
+
+  @override
+  String get subjectOrderIssue => 'مشكلة في الطلب';
+
+  @override
+  String get subjectFeedback => 'ملاحظات';
+
+  @override
+  String get aboutUsLoadError => 'فشل تحميل محتوى من نحن. يرجى المحاولة مجدداً.';
+
+  @override
+  String get aboutUsEmpty => 'المحتوى قريباً';
+
+  @override
+  String get aboutUsPhone => 'الهاتف';
+
+  @override
+  String get aboutUsEmail => 'البريد الإلكتروني';
+
+  @override
+  String get aboutUsWebsite => 'الموقع الإلكتروني';
+
+  @override
+  String get aboutUsInstagram => 'إنستغرام';
+
+  @override
+  String get aboutUsTwitter => 'إكس (تويتر)';
+
+  @override
+  String get aboutUsFacebook => 'فيسبوك';
+
+  @override
+  String get aboutUsSocial => 'تابعنا';
+
+  @override
+  String get contactUsTag => 'مجاني';
+
+  @override
+  String get aboutUsTag => 'معلومات';
 }
