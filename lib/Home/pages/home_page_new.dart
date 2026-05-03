@@ -232,6 +232,34 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
+// ── Hero banner wave clipper ───────────────────────────────────────────────────
+
+class _WaveClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+    path.lineTo(0, size.height - 24);
+    path.quadraticBezierTo(
+      size.width * 0.25,
+      size.height,
+      size.width * 0.5,
+      size.height - 12,
+    );
+    path.quadraticBezierTo(
+      size.width * 0.75,
+      size.height - 24,
+      size.width,
+      size.height - 8,
+    );
+    path.lineTo(size.width, 0);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(_WaveClipper old) => false;
+}
+
 // ── Home hero banner ───────────────────────────────────────────────────────────
 
 class _HomeHeroBanner extends StatelessWidget {
@@ -262,188 +290,314 @@ class _HomeHeroBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final firstName = userName.trim().split(' ').first;
-    return ClipRect(
+    return ClipPath(
+      clipper: _WaveClipper(),
       child: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [AppColors.primary, Color(0xFFD05000)],
+            colors: [Color(0xFFFF8C38), AppColors.primary, Color(0xFFBF4000)],
+            stops: [0.0, 0.45, 1.0],
           ),
         ),
         child: Stack(
           clipBehavior: Clip.hardEdge,
           children: [
-            // Decorative circles
+            // ── Decorative circles ──────────────────────────────────────
             Positioned(
-              top: -40,
-              right: -40,
+              top: -50,
+              right: -50,
               child: Container(
-                width: 160,
-                height: 160,
+                width: 200,
+                height: 200,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.white.withOpacity(0.07),
+                  color: Colors.white.withOpacity(0.06),
                 ),
               ),
             ),
             Positioned(
-              bottom: -30,
-              left: 10,
+              top: 30,
+              right: 60,
               child: Container(
-                width: 100,
-                height: 100,
+                width: 80,
+                height: 80,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.white.withOpacity(0.05),
                 ),
               ),
             ),
-            // Content
+            Positioned(
+              bottom: 20,
+              left: -30,
+              child: Container(
+                width: 130,
+                height: 130,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white.withOpacity(0.05),
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: 60,
+              right: 20,
+              child: Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white.withOpacity(0.07),
+                ),
+              ),
+            ),
+            // ── Content ─────────────────────────────────────────────────
             SafeArea(
               bottom: false,
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
+                padding: const EdgeInsets.fromLTRB(20, 14, 20, 44),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Greeting row
+                    // ── Top row: greeting + icons ────────────────────────
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
+                        // Avatar
+                        Container(
+                          width: 46,
+                          height: 46,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white.withOpacity(0.2),
+                            border: Border.all(
+                              color: Colors.white.withOpacity(0.55),
+                              width: 2,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.15),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: Center(
+                            child:
+                                userName.isNotEmpty
+                                    ? Text(
+                                      _initials(userName),
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w900,
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                    : const Icon(
+                                      Icons.person_rounded,
+                                      size: 22,
+                                      color: Colors.white,
+                                    ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        // Greeting text
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                '${_greeting()}${firstName.isNotEmpty ? ', $firstName' : ''} 👋',
+                                _greeting(),
+                                style: TextStyle(
+                                  color: Colors.white.withOpacity(0.72),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                  letterSpacing: 0.2,
+                                ),
+                              ),
+                              Text(
+                                firstName.isNotEmpty
+                                    ? '$firstName 👋'
+                                    : 'Welcome 👋',
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 20,
-                                  fontWeight: FontWeight.w800,
-                                  letterSpacing: -0.3,
-                                  height: 1.2,
+                                  fontWeight: FontWeight.w900,
+                                  letterSpacing: -0.5,
+                                  height: 1.15,
                                 ),
-                              ),
-                              const SizedBox(height: 5),
-                              Row(
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.all(4),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white.withOpacity(0.15),
-                                      borderRadius: BorderRadius.circular(6),
-                                    ),
-                                    child: const Icon(
-                                      Icons.location_on_rounded,
-                                      size: 13,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 6),
-                                  Text(
-                                    l10n.deliveringTo('Gießen'),
-                                    style: TextStyle(
-                                      color: Colors.white.withOpacity(0.82),
-                                      fontSize: 12.5,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 3),
-                                  Icon(
-                                    Icons.keyboard_arrow_down_rounded,
-                                    size: 16,
-                                    color: Colors.white.withOpacity(0.7),
-                                  ),
-                                ],
                               ),
                             ],
                           ),
                         ),
-                        if (userName.isNotEmpty)
-                          Container(
-                            width: 44,
-                            height: 44,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.white.withOpacity(0.18),
-                              border: Border.all(
-                                color: Colors.white.withOpacity(0.5),
-                                width: 2,
-                              ),
-                            ),
-                            child: Center(
-                              child: Text(
-                                _initials(userName),
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w800,
-                                  color: Colors.white,
-                                ),
-                              ),
+                        // Notification bell
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.15),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: Colors.white.withOpacity(0.25),
                             ),
                           ),
+                          child: Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              const Center(
+                                child: Icon(
+                                  Icons.notifications_outlined,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                              ),
+                              Positioned(
+                                top: 8,
+                                right: 8,
+                                child: Container(
+                                  width: 7,
+                                  height: 7,
+                                  decoration: const BoxDecoration(
+                                    color: Color(0xFFFF4444),
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
-                    const SizedBox(height: 14),
-                    // Search bar
+                    const SizedBox(height: 8),
+                    // ── Location row ──────────────────────────────────────
+                    GestureDetector(
+                      onTap: () {},
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 5,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.12),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.2),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.location_on_rounded,
+                              size: 13,
+                              color: Colors.white,
+                            ),
+                            const SizedBox(width: 5),
+                            Text(
+                              l10n.deliveringTo('Gießen'),
+                              style: TextStyle(
+                                color: Colors.white.withOpacity(0.9),
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(width: 3),
+                            Icon(
+                              Icons.keyboard_arrow_down_rounded,
+                              size: 15,
+                              color: Colors.white.withOpacity(0.7),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    // ── Search bar ────────────────────────────────────────
                     GestureDetector(
                       onTap: onSearchTap,
                       behavior: HitTestBehavior.opaque,
                       child: Container(
-                        height: 46,
+                        height: 50,
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(14),
+                          borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.12),
-                              blurRadius: 12,
-                              offset: const Offset(0, 4),
+                              color: Colors.black.withOpacity(0.18),
+                              blurRadius: 20,
+                              offset: const Offset(0, 6),
                             ),
                           ],
                         ),
                         child: Row(
                           children: [
-                            const SizedBox(width: 14),
-                            Icon(
-                              Icons.search_rounded,
-                              color: AppColors.primary,
-                              size: 20,
+                            const SizedBox(width: 16),
+                            Container(
+                              width: 32,
+                              height: 32,
+                              decoration: BoxDecoration(
+                                color: AppColors.primary.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(9),
+                              ),
+                              child: const Icon(
+                                Icons.search_rounded,
+                                color: AppColors.primary,
+                                size: 18,
+                              ),
                             ),
                             const SizedBox(width: 10),
-                            Text(
-                              l10n.searchHint,
-                              style: TextStyle(
-                                color: Colors.black38,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                            const Spacer(),
-                            Container(
-                              margin: const EdgeInsets.all(6),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 4,
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppColors.primary.withOpacity(0.08),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
+                            Expanded(
                               child: Text(
-                                l10n.searchTitle,
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w700,
-                                  color: AppColors.primary,
+                                l10n.searchHint,
+                                style: const TextStyle(
+                                  color: Colors.black38,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
                                 ),
                               ),
                             ),
+                            Container(
+                              width: 1,
+                              height: 22,
+                              color: Colors.black.withOpacity(0.08),
+                            ),
+                            const SizedBox(width: 12),
+                            Icon(
+                              Icons.mic_none_rounded,
+                              color: AppColors.primary.withOpacity(0.7),
+                              size: 20,
+                            ),
+                            const SizedBox(width: 14),
                           ],
                         ),
                       ),
+                    ),
+                    const SizedBox(height: 16),
+                    // ── Quick stats row ───────────────────────────────────
+                    Row(
+                      children: [
+                        _statBadge(
+                          icon: Icons.store_rounded,
+                          label: '200+ Stores',
+                          color: Colors.white.withOpacity(0.18),
+                        ),
+                        const SizedBox(width: 8),
+                        _statBadge(
+                          icon: Icons.local_offer_rounded,
+                          label: 'New Deals',
+                          color: Colors.white.withOpacity(0.18),
+                        ),
+                        const SizedBox(width: 8),
+                        _statBadge(
+                          icon: Icons.rocket_launch_rounded,
+                          label: 'Fast Delivery',
+                          color: Colors.white.withOpacity(0.18),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -451,6 +605,36 @@ class _HomeHeroBanner extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _statBadge({
+    required IconData icon,
+    required String label,
+    required Color color,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.white.withOpacity(0.2)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 12, color: Colors.white),
+          const SizedBox(width: 5),
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+            ),
+          ),
+        ],
       ),
     );
   }
