@@ -1,9 +1,8 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:sudan_goods/Home/widgets/shimmer_components.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:sudan_goods/theme/app_theme.dart';
 
 class HeroCarousel extends StatefulWidget {
   const HeroCarousel({super.key});
@@ -15,7 +14,7 @@ class HeroCarousel extends StatefulWidget {
 class _HeroCarouselState extends State<HeroCarousel> {
   int _currentIndex = 0;
   bool _isLoading = true;
-  
+
   final List<String> _carouselItems = [
     'https://firebasestorage.googleapis.com/v0/b/sudan-mall-a458a.firebasestorage.app/o/hero_mobile_app%2Fhero1.png?alt=media&token=0c6ee3f0-a38e-4bae-b9d0-f4580e6d5038',
     'https://firebasestorage.googleapis.com/v0/b/sudan-mall-a458a.firebasestorage.app/o/hero_mobile_app%2Fhero2.png?alt=media&token=5e4b6520-38a4-4359-a513-00dd1d82a719',
@@ -37,10 +36,10 @@ class _HeroCarouselState extends State<HeroCarousel> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     final isTablet = MediaQuery.of(context).size.width >= 600;
+    final height = isTablet ? 360.0 : 200.0;
 
     if (_isLoading) {
       return ShimmerComponents.heroCarouselShimmer();
@@ -48,77 +47,127 @@ class _HeroCarouselState extends State<HeroCarousel> {
 
     return Column(
       children: [
-        CarouselSlider.builder(
-          itemCount: _carouselItems.length,
-          itemBuilder: (context, index, realIndex) {
-            final imageUrl = _carouselItems[index];
-            return Container(
-              margin: const EdgeInsets.symmetric(horizontal: 8),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 1,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              clipBehavior: Clip.hardEdge,
-              child: CachedNetworkImage(
-                imageUrl: imageUrl,
-                fit: BoxFit.cover,
-                width: double.infinity,
-                placeholder: (context, url) => ShimmerComponents.shimmerWrapper(
-                  child: Container(
-                    width: double.infinity,
-                    height: double.infinity,
-                    color: Colors.white,
-                  ),
+        // ── Slides ────────────────────────────────────────────────────
+        ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: Stack(
+            children: [
+              CarouselSlider.builder(
+                itemCount: _carouselItems.length,
+                itemBuilder: (context, index, realIndex) {
+                  final imageUrl = _carouselItems[index];
+                  return Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      CachedNetworkImage(
+                        imageUrl: imageUrl,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        placeholder:
+                            (context, url) => ShimmerComponents.shimmerWrapper(
+                              child: Container(
+                                color: Colors.white,
+                                width: double.infinity,
+                                height: double.infinity,
+                              ),
+                            ),
+                        errorWidget:
+                            (context, url, error) => Container(
+                              color: Colors.grey[200],
+                              child: const Icon(
+                                Icons.image_not_supported,
+                                size: 48,
+                                color: Colors.grey,
+                              ),
+                            ),
+                      ),
+                      // Bottom gradient overlay
+                      Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        height: 70,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.bottomCenter,
+                              end: Alignment.topCenter,
+                              colors: [
+                                Colors.black.withOpacity(0.45),
+                                Colors.transparent,
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+                options: CarouselOptions(
+                  height: height,
+                  animateToClosest: true,
+                  scrollDirection: Axis.horizontal,
+                  autoPlay: true,
+                  autoPlayInterval: const Duration(seconds: 4),
+                  autoPlayAnimationDuration: const Duration(milliseconds: 700),
+                  autoPlayCurve: Curves.easeInOutCubic,
+                  enlargeCenterPage: false,
+                  viewportFraction: 1,
+                  onPageChanged: (index, reason) {
+                    setState(() => _currentIndex = index);
+                  },
                 ),
-                errorWidget: (context, url, error) => Container(
-                  width: double.infinity,
-                  color: Colors.grey[300],
-                  child: const Icon(
-                    Icons.image_not_supported,
-                    size: 50,
-                    color: Colors.grey,
-                  ),
+              ),
+              // Pill indicators overlaid bottom-center
+              Positioned(
+                bottom: 12,
+                left: 0,
+                right: 0,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children:
+                      _carouselItems.asMap().entries.map((entry) {
+                        final active = _currentIndex == entry.key;
+                        return AnimatedContainer(
+                          duration: const Duration(milliseconds: 280),
+                          curve: Curves.easeInOut,
+                          width: active ? 20 : 6,
+                          height: 6,
+                          margin: const EdgeInsets.symmetric(horizontal: 3),
+                          decoration: BoxDecoration(
+                            color:
+                                active
+                                    ? Colors.white
+                                    : Colors.white.withOpacity(0.45),
+                            borderRadius: BorderRadius.circular(3),
+                          ),
+                        );
+                      }).toList(),
                 ),
               ),
-            );
-          },
-          options: CarouselOptions(
-           height: isTablet ? 400 : 250,
-
-            animateToClosest: true,
-           scrollDirection: Axis.horizontal,
-            autoPlay: true,
-            enlargeCenterPage: true,
-            viewportFraction: 1,
-            onPageChanged: (index, reason) {
-              setState(() {
-                _currentIndex = index;
-              });
-            },
+            ],
           ),
         ),
-        const SizedBox(height: 8),
+        // ── Progress line ─────────────────────────────────────────────
+        const SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: _carouselItems.asMap().entries.map((entry) {
-            return Container(
-              width: 8,
-              height: 8,
-              margin: const EdgeInsets.symmetric(horizontal: 4),
+          children: List.generate(_carouselItems.length, (i) {
+            final active = i == _currentIndex;
+            return AnimatedContainer(
+              duration: const Duration(milliseconds: 280),
+              width: active ? 28 : 6,
+              height: 3,
+              margin: const EdgeInsets.symmetric(horizontal: 2),
               decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: _currentIndex == entry.key
-                    ? Colors.orange
-                    : Colors.grey.shade300,
+                color:
+                    active
+                        ? AppColors.primary
+                        : AppColors.primary.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(2),
               ),
             );
-          }).toList(),
+          }),
         ),
       ],
     );
