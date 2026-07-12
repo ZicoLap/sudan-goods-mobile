@@ -1,229 +1,260 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
 import 'package:sudan_goods/l10n/locale_controller.dart';
+import 'package:sudan_goods/onboarding/onboarding_assets.dart';
 import 'package:sudan_goods/onboarding/onboarding_screen.dart';
-import 'package:sudan_goods/theme/design_tokens.dart';
+import 'package:sudan_goods/onboarding/onboarding_style.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
+import 'package:sudan_goods/theme/design_tokens.dart';
 
-/// Modernized language picker with static bilingual display,
-/// improved visual hierarchy, and polished selection cards.
-class LanguagePickerScreen extends StatelessWidget {
+/// First-run language selection with illustration hero.
+class LanguagePickerScreen extends StatefulWidget {
   const LanguagePickerScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      /*   appBar: AppBar(
-        backgroundColor: AppColors.primary,
-        foregroundColor: Colors.white,
-        elevation: 0,
-        title: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 300),
-          switchInCurve: Curves.easeOut,
-          switchOutCurve: Curves.easeIn,
-          transitionBuilder: (child, animation) {
-            final offset = Tween<Offset>(begin: const Offset(0, 0.30), end: Offset.zero).animate(animation);
-            return FadeTransition(
-              opacity: animation,
-              child: SlideTransition(position: offset, child: child),
-            );
+  State<LanguagePickerScreen> createState() => _LanguagePickerScreenState();
+}
+
+class _LanguagePickerScreenState extends State<LanguagePickerScreen> {
+  String? _loadingCode;
+
+  Future<void> _selectLanguage(String code) async {
+    if (_loadingCode != null) return;
+
+    setState(() => _loadingCode = code);
+    HapticFeedback.lightImpact();
+
+    try {
+      final controller = Provider.of<LocaleController>(context, listen: false);
+      await controller.setLanguageCode(code);
+      if (!mounted) return;
+      await Navigator.of(context).pushReplacement(
+        PageRouteBuilder(
+          pageBuilder: (_, __, ___) => const OnboardingScreen(),
+          transitionsBuilder: (_, animation, __, child) {
+            return FadeTransition(opacity: animation, child: child);
           },
-          child: Text(
-            headerTitle,
-            key: ValueKey(headerTitle),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
+          transitionDuration: const Duration(milliseconds: 280),
         ),
-        centerTitle: true,
-      ), */
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              AppColors.primary.withAlpha(18), // 7% opacity
-              Colors.white,
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: SafeArea(
-          child: Padding(
-            padding: DesignTokens.paddingPageHorizontal,
-            child: Column(
-              children: [
-                const Spacer(flex: 2),
-                // App branding icon
-                Container(
-                  width: 80,
-                  height: 80,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: const LinearGradient(
-                      colors: [AppColors.primary, Color(0xFFFF8A3D)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.primary.withAlpha(77),
-                        blurRadius: 24,
-                        offset: const Offset(0, 8),
-                      ),
-                    ],
-                  ),
-                  child: const Icon(
-                    Icons.shopping_bag_rounded,
-                    size: 40,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: DesignTokens.space24),
-                // Static bilingual welcome text
-                Text(
-                  'Sudan Goods',
-                  style: AppTypography.heading2.copyWith(
-                    color: Colors.black87,
-                    letterSpacing: -0.5,
-                  ),
-                ),
-                const SizedBox(height: DesignTokens.space8),
-                Text(
-                  'Welcome to the biggest Sudanese\nonline shopping hub',
-                  textAlign: TextAlign.center,
-                  style: AppTypography.bodyLarge.copyWith(
-                    color: Colors.black54,
-                    height: 1.5,
-                  ),
-                ),
-                const SizedBox(height: DesignTokens.space8),
-                Text(
-                  'مرحبا بيك في اكبر مركز تسوق الكتروني سوداني',
-                  textAlign: TextAlign.center,
-                  style: AppTypography.body.copyWith(
-                    color: Colors.black38,
-                    height: 1.4,
-                  ),
-                ),
-                const Spacer(flex: 3),
-                // Language selection cards
-                _LanguageCard(code: 'en'),
-                const SizedBox(height: DesignTokens.space16),
-                _LanguageCard(code: 'ar'),
-                const Spacer(flex: 2),
-              ],
+      );
+    } finally {
+      if (mounted) setState(() => _loadingCode = null);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final compact = OnboardingStyle.isCompact(context);
+    final titleStyle =
+        compact
+            ? AppTypography.heading4.copyWith(
+              color: AppColors.text,
+              letterSpacing: -0.4,
+            )
+            : AppTypography.heading2.copyWith(
+              color: AppColors.text,
+              letterSpacing: -0.5,
+            );
+
+    return OnboardingShell(
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            padding: DesignTokens.paddingPageHorizontal.add(
+              EdgeInsets.only(
+                top: compact ? DesignTokens.space8 : DesignTokens.space16,
+                bottom: DesignTokens.space24,
+              ),
             ),
-          ),
-        ),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: IntrinsicHeight(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SizedBox(
+                      height:
+                          compact
+                              ? DesignTokens.space4
+                              : DesignTokens.space8,
+                    ),
+                    OnboardingIllustration(
+                      assetPath: OnboardingAssets.languageWelcome,
+                      semanticsLabel:
+                          l10n?.onbIllustrationLanguage ??
+                          'Welcome illustration',
+                      maxHeight: OnboardingStyle.illustrationMaxHeight(context) * 0.85,
+                    ),
+                    SizedBox(
+                      height:
+                          compact
+                              ? DesignTokens.space12
+                              : DesignTokens.space20,
+                    ),
+                    Text(
+                      l10n?.appTitle ?? 'Sudan Goods',
+                      textAlign: TextAlign.center,
+                      style: titleStyle,
+                    ),
+                    const SizedBox(height: DesignTokens.space8),
+                    Text(
+                      l10n?.languagePickerSectionTitle ??
+                          l10n?.selectLanguage ??
+                          'Choose your language',
+                      textAlign: TextAlign.center,
+                      style: OnboardingStyle.pageSubtitleStyle(context),
+                    ),
+                    SizedBox(
+                      height:
+                          compact
+                              ? DesignTokens.space20
+                              : DesignTokens.space24,
+                    ),
+                    _LanguageCard(
+                      code: 'en',
+                      isLoading: _loadingCode == 'en',
+                      isDisabled: _loadingCode != null && _loadingCode != 'en',
+                      onTap: () => _selectLanguage('en'),
+                    ),
+                    const SizedBox(height: DesignTokens.space12),
+                    _LanguageCard(
+                      code: 'ar',
+                      isLoading: _loadingCode == 'ar',
+                      isDisabled: _loadingCode != null && _loadingCode != 'ar',
+                      onTap: () => _selectLanguage('ar'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
 }
 
-/// Language selection card with modern styling
 class _LanguageCard extends StatelessWidget {
-  final String code;
+  const _LanguageCard({
+    required this.code,
+    required this.onTap,
+    required this.isLoading,
+    required this.isDisabled,
+  });
 
-  const _LanguageCard({required this.code});
+  final String code;
+  final VoidCallback onTap;
+  final bool isLoading;
+  final bool isDisabled;
 
   @override
   Widget build(BuildContext context) {
-    final controller = Provider.of<LocaleController>(context, listen: false);
     final isArabic = code == 'ar';
 
-    return Material(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(DesignTokens.radiusXLarge),
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: () async {
-          await controller.setLanguageCode(code);
-          if (context.mounted) {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (_) => const OnboardingScreen()),
-            );
-          }
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(DesignTokens.radiusXLarge),
-            border: Border.all(color: Colors.black.withAlpha(15), width: 1.5),
-          ),
-          padding: const EdgeInsets.symmetric(
-            horizontal: DesignTokens.space20,
-            vertical: DesignTokens.space16,
-          ),
-          child: Localizations.override(
-            context: context,
-            locale: Locale(code),
-            child: Builder(
-              builder: (ctx) {
-                final l10n = AppLocalizations.of(ctx);
-                return Row(
-                  children: [
-                    // Language flag/icon bubble
-                    Container(
-                      width: 52,
-                      height: 52,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: const LinearGradient(
-                          colors: [AppColors.primary, Color(0xFFFF8A3D)],
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.primary.withAlpha(51),
-                            blurRadius: 12,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Center(
-                        child: Text(
-                          isArabic ? 'ع' : 'EN',
-                          style: AppTypography.bodyBold.copyWith(
-                            color: Colors.white,
-                            fontSize: 18,
-                          ),
-                        ),
-                      ),
+    return Localizations.override(
+      context: context,
+      locale: Locale(code),
+      child: Builder(
+        builder: (ctx) {
+          final l10n = AppLocalizations.of(ctx);
+          final nativeLabel =
+              isArabic
+                  ? (l10n?.languageArabic ?? 'العربية')
+                  : (l10n?.languageEnglish ?? 'English');
+          final secondaryLabel =
+              isArabic
+                  ? (l10n?.langArabic ?? 'Arabic')
+                  : (l10n?.langEnglish ?? 'English');
+
+          return Semantics(
+            button: true,
+            enabled: !isDisabled,
+            label: nativeLabel,
+            child: Material(
+              color: Colors.white,
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(DesignTokens.radiusXLarge),
+                side: BorderSide(
+                  color: AppColors.text.withValues(alpha: 0.08),
+                ),
+              ),
+              child: InkWell(
+                onTap: isDisabled ? null : onTap,
+                borderRadius: BorderRadius.circular(DesignTokens.radiusXLarge),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(minHeight: 52),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: DesignTokens.space16,
+                      vertical: DesignTokens.space12,
                     ),
-                    const SizedBox(width: DesignTokens.space16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            isArabic
-                                ? (l10n?.languageArabic ?? 'العربية')
-                                : (l10n?.languageEnglish ?? 'English'),
-                            style: AppTypography.heading6.copyWith(
-                              color: Colors.black87,
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 44,
+                          height: 44,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: OnboardingStyle.brandGradient,
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            isArabic ? 'ع' : 'EN',
+                            style: AppTypography.bodyBold.copyWith(
+                              color: Colors.white,
+                              fontSize: 16,
                             ),
                           ),
-                          const SizedBox(height: DesignTokens.space4),
-                          Text(
-                            isArabic ? 'Arabic' : 'English',
-                            style: AppTypography.small.copyWith(
-                              color: Colors.black45,
-                            ),
+                        ),
+                        const SizedBox(width: DesignTokens.space16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                nativeLabel,
+                                style: AppTypography.heading6.copyWith(
+                                  color: AppColors.text,
+                                ),
+                              ),
+                              const SizedBox(height: DesignTokens.space4),
+                              Text(
+                                secondaryLabel,
+                                style: AppTypography.small.copyWith(
+                                  color: AppColors.text.withValues(alpha: 0.5),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                        if (isLoading)
+                          const SizedBox(
+                            width: 22,
+                            height: 22,
+                            child: CircularProgressIndicator(strokeWidth: 2.2),
+                          )
+                        else
+                          Icon(
+                            Icons.chevron_right,
+                            color: AppColors.primary,
+                            textDirection:
+                                isArabic
+                                    ? TextDirection.rtl
+                                    : TextDirection.ltr,
+                          ),
+                      ],
                     ),
-                    Icon(
-                      isArabic ? Icons.chevron_left : Icons.chevron_right,
-                      color: AppColors.primary,
-                      size: 24,
-                    ),
-                  ],
-                );
-              },
+                  ),
+                ),
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

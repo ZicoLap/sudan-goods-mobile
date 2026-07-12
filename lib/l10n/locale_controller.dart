@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:sudan_goods/l10n/locale_persistence_service.dart';
+import 'package:sudan_goods/l10n/supported_app_locales.dart';
 
 /// Controller responsible for managing the current application [Locale].
 /// Uses a ValueNotifier to notify listeners when the locale changes.
@@ -16,15 +17,14 @@ class LocaleController {
   /// Loads a saved language code from persistence and updates [locale].
   Future<void> loadSavedLocale() async {
     final code = await _persistenceService.getSavedLanguageCode();
-    if (code == null || code.isEmpty) {
-      locale.value = null; // system default
-    } else {
-      locale.value = Locale(code);
-    }
+    locale.value = code == null ? null : Locale(code);
   }
 
   /// Sets the language using its code (e.g., 'en', 'ar') and persists it.
   Future<void> setLanguageCode(String code) async {
+    if (!SupportedAppLocales.isSupported(code)) {
+      throw ArgumentError.value(code, 'code', 'Unsupported language code');
+    }
     await _persistenceService.saveLanguageCode(code);
     locale.value = Locale(code);
   }

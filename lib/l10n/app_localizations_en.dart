@@ -681,13 +681,51 @@ class AppLocalizationsEn extends AppLocalizations {
   String get actionGetStarted => 'Get started';
 
   @override
+  String get languagePickerTaglineEn => 'Welcome to the biggest Sudanese\nonline shopping hub';
+
+  @override
+  String get languagePickerTaglineAr => 'مرحبا بيك في اكبر مركز تسوق الكتروني سوداني';
+
+  @override
+  String onbStepProgress(int current, int total) {
+    return 'Step $current of $total';
+  }
+
+  @override
+  String get appStartLoadError => 'Unable to load app settings. Please try again.';
+
+  @override
+  String get languagePickerSectionTitle => 'Choose your language';
+
+  @override
+  String get onbIllustrationLanguage => 'Welcome illustration showing a friendly shopper at a Sudanese marketplace';
+
+  @override
+  String get onbIllustrationWelcome => 'Illustration of Sudanese marketplace products';
+
+  @override
+  String get onbIllustrationOrder => 'Illustration of fast home delivery';
+
+  @override
+  String get onbIllustrationDiscover => 'Illustration of browsing stores and products';
+
+  @override
+  String get onbIllustrationStart => 'Illustration of starting to shop with confidence';
+
+  @override
   String get onbTitle1 => 'Welcome to Sudan Goods';
+
+  @override
+  String get onbSubtitle1 => 'Discover authentic Sudanese products from trusted local stores.';
 
   @override
   String get onbBody1 => 'Bringing Sudanese products closer to you.';
 
   @override
   String get onbTitle2 => 'Order without waiting';
+
+  @override
+  String get onbSubtitle2 => 'Shop directly from sellers—no need to wait for travelers.';
 
   @override
   String get onbBody2 => 'No need to wait for travelers—buy directly from trusted sellers.';
@@ -708,6 +746,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onbTitle5 => 'Stay in the loop';
 
   @override
+  String get onbSubtitle3 => 'Follow stores, get updates, and request hard-to-find items.';
+
+  @override
   String get onbBody5 => 'Follow stores and get notified when new products arrive.';
 
   @override
@@ -718,6 +759,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onbTitle7 => 'Start in minutes';
+
+  @override
+  String get onbSubtitle4 => 'Create your account, add an address, and start shopping today.';
 
   @override
   String get onbBody7 => 'Register with your address and start shopping Sudanese products.';

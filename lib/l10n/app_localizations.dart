@@ -1361,11 +1361,77 @@ abstract class AppLocalizations {
   /// **'Get started'**
   String get actionGetStarted;
 
+  /// No description provided for @languagePickerTaglineEn.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to the biggest Sudanese\nonline shopping hub'**
+  String get languagePickerTaglineEn;
+
+  /// No description provided for @languagePickerTaglineAr.
+  ///
+  /// In en, this message translates to:
+  /// **'مرحبا بيك في اكبر مركز تسوق الكتروني سوداني'**
+  String get languagePickerTaglineAr;
+
+  /// Onboarding step counter label
+  ///
+  /// In en, this message translates to:
+  /// **'Step {current} of {total}'**
+  String onbStepProgress(int current, int total);
+
+  /// No description provided for @appStartLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load app settings. Please try again.'**
+  String get appStartLoadError;
+
+  /// No description provided for @languagePickerSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose your language'**
+  String get languagePickerSectionTitle;
+
+  /// No description provided for @onbIllustrationLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome illustration showing a friendly shopper at a Sudanese marketplace'**
+  String get onbIllustrationLanguage;
+
+  /// No description provided for @onbIllustrationWelcome.
+  ///
+  /// In en, this message translates to:
+  /// **'Illustration of Sudanese marketplace products'**
+  String get onbIllustrationWelcome;
+
+  /// No description provided for @onbIllustrationOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Illustration of fast home delivery'**
+  String get onbIllustrationOrder;
+
+  /// No description provided for @onbIllustrationDiscover.
+  ///
+  /// In en, this message translates to:
+  /// **'Illustration of browsing stores and products'**
+  String get onbIllustrationDiscover;
+
+  /// No description provided for @onbIllustrationStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Illustration of starting to shop with confidence'**
+  String get onbIllustrationStart;
+
   /// No description provided for @onbTitle1.
   ///
   /// In en, this message translates to:
   /// **'Welcome to Sudan Goods'**
   String get onbTitle1;
+
+  /// No description provided for @onbSubtitle1.
+  ///
+  /// In en, this message translates to:
+  /// **'Discover authentic Sudanese products from trusted local stores.'**
+  String get onbSubtitle1;
 
   /// No description provided for @onbBody1.
   ///
@@ -1378,6 +1444,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Order without waiting'**
   String get onbTitle2;
+
+  /// No description provided for @onbSubtitle2.
+  ///
+  /// In en, this message translates to:
+  /// **'Shop directly from sellers—no need to wait for travelers.'**
+  String get onbSubtitle2;
 
   /// No description provided for @onbBody2.
   ///
@@ -1415,6 +1487,12 @@ abstract class AppLocalizations {
   /// **'Stay in the loop'**
   String get onbTitle5;
 
+  /// No description provided for @onbSubtitle3.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow stores, get updates, and request hard-to-find items.'**
+  String get onbSubtitle3;
+
   /// No description provided for @onbBody5.
   ///
   /// In en, this message translates to:
@@ -1438,6 +1516,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Start in minutes'**
   String get onbTitle7;
+
+  /// No description provided for @onbSubtitle4.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your account, add an address, and start shopping today.'**
+  String get onbSubtitle4;
 
   /// No description provided for @onbBody7.
   ///

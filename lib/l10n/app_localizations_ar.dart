@@ -681,13 +681,51 @@ class AppLocalizationsAr extends AppLocalizations {
   String get actionGetStarted => 'ابدأ الآن';
 
   @override
+  String get languagePickerTaglineEn => 'Welcome to the biggest Sudanese\nonline shopping hub';
+
+  @override
+  String get languagePickerTaglineAr => 'مرحبا بيك في اكبر مركز تسوق الكتروني سوداني';
+
+  @override
+  String onbStepProgress(int current, int total) {
+    return 'الخطوة $current من $total';
+  }
+
+  @override
+  String get appStartLoadError => 'تعذّر تحميل إعدادات التطبيق. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get languagePickerSectionTitle => 'اختر لغتك';
+
+  @override
+  String get onbIllustrationLanguage => 'رسم ترحيبي يظهر متسوقاً ودوداً في سوق سوداني';
+
+  @override
+  String get onbIllustrationWelcome => 'رسم لمنتجات سودانية في سوق';
+
+  @override
+  String get onbIllustrationOrder => 'رسم لتوصيل سريع إلى المنزل';
+
+  @override
+  String get onbIllustrationDiscover => 'رسم لتصفح المتاجر والمنتجات';
+
+  @override
+  String get onbIllustrationStart => 'رسم للبدء في التسوق بثقة';
+
+  @override
   String get onbTitle1 => 'مرحباً بك في سلع السودان';
+
+  @override
+  String get onbSubtitle1 => 'اكتشف منتجات سودانية أصيلة من متاجر محلية موثوقة.';
 
   @override
   String get onbBody1 => 'نقرّب المنتجات السودانية إليك.';
 
   @override
   String get onbTitle2 => 'اطلب بلا انتظار';
+
+  @override
+  String get onbSubtitle2 => 'تسوّق مباشرة من الباعة—لا حاجة لانتظار المسافرين.';
 
   @override
   String get onbBody2 => 'لا حاجة لانتظار المسافرين—اشترِ مباشرة من باعة موثوقين.';
@@ -708,6 +746,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get onbTitle5 => 'ابقَ على اطلاع';
 
   @override
+  String get onbSubtitle3 => 'تابِع المتاجر، واحصل على التحديثات، واطلب المنتجات النادرة.';
+
+  @override
   String get onbBody5 => 'تابِع المتاجر وتلقَّ إشعاراً عند توفر منتجات جديدة.';
 
   @override
@@ -718,6 +759,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get onbTitle7 => 'ابدأ خلال دقائق';
+
+  @override
+  String get onbSubtitle4 => 'أنشئ حسابك، أضف عنوانك، وابدأ التسوق اليوم.';
 
   @override
   String get onbBody7 => 'سجّل عنوانك وابدأ شراء المنتجات السودانية.';

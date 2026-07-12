@@ -124,7 +124,7 @@ class MyApp extends StatelessWidget {
           theme: AppTheme.lightTheme,
           debugShowCheckedModeBanner: false,
           home:
-              const AppStartGate(), // App start gate decides Language → Onboarding → Auth
+              AppStartGate(), // App start gate decides Language → Onboarding → Auth
         );
       },
     );
