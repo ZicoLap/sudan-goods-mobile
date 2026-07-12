@@ -33,7 +33,7 @@ class StoreCoverSection extends StatelessWidget {
           child: Stack(
             children: [
               // Cover Image with shimmer loading
-              Container(
+              SizedBox(
                 height: isTablet ? 400 : 250,
                 width: double.infinity,
                 child:

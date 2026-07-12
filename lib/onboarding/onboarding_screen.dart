@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
 import 'package:sudan_goods/onboarding/models/onboarding_page.dart';
+import 'package:sudan_goods/onboarding/onboarding_animations.dart';
 import 'package:sudan_goods/onboarding/onboarding_assets.dart';
 import 'package:sudan_goods/onboarding/onboarding_persistence_service.dart';
 import 'package:sudan_goods/onboarding/onboarding_style.dart';
 import 'package:sudan_goods/authentication/auth_gate_page.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 
-/// Illustration-led onboarding walkthrough with simplified copy.
+/// Premium illustration-led onboarding walkthrough.
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({
     super.key,
@@ -16,10 +17,7 @@ class OnboardingScreen extends StatefulWidget {
     this.nextScreen,
   });
 
-  /// Optional override for tests.
   final OnboardingPersistenceService? persistenceService;
-
-  /// Screen shown after onboarding completes. Defaults to [AuthGate].
   final Widget? nextScreen;
 
   @override
@@ -52,14 +50,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       await persistence.setHasSeenOnboarding(true);
       if (!mounted) return;
       await Navigator.of(context).pushReplacement(
-        PageRouteBuilder(
-          pageBuilder:
-              (_, __, ___) => widget.nextScreen ?? const AuthGate(),
-          transitionsBuilder: (_, animation, __, child) {
-            return FadeTransition(opacity: animation, child: child);
-          },
-          transitionDuration: const Duration(milliseconds: 280),
-        ),
+        onboardingFadeRoute(widget.nextScreen ?? const AuthGate()),
       );
     } finally {
       if (mounted) setState(() => _isFinishing = false);
@@ -72,7 +63,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     if (_index < _pageCount - 1) {
       HapticFeedback.selectionClick();
       _controller.nextPage(
-        duration: const Duration(milliseconds: 360),
+        duration: const Duration(milliseconds: 420),
         curve: Curves.easeOutCubic,
       );
     } else {
@@ -127,15 +118,23 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             top: compact ? DesignTokens.space4 : DesignTokens.space8,
           ),
         ),
-        child: Align(
-          alignment: AlignmentDirectional.centerEnd,
-          child:
-              _isLastPage
-                  ? const SizedBox(height: 48)
-                  : TextButton(
-                    onPressed: _isFinishing ? null : _finish,
-                    child: Text(l10n.actionSkip),
-                  ),
+        child: Row(
+          children: [
+            Expanded(
+              child: OnboardingLinearProgress(
+                current: _index + 1,
+                total: _pageCount,
+                label: l10n.onbStepProgress(_index + 1, _pageCount),
+              ),
+            ),
+            if (!_isLastPage)
+              OnboardingSkipButton(
+                label: l10n.actionSkip,
+                onPressed: _isFinishing ? null : _finish,
+              )
+            else
+              const SizedBox(width: 48),
+          ],
         ),
       ),
       body: Column(
@@ -148,7 +147,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               physics: const BouncingScrollPhysics(),
               onPageChanged: (i) => setState(() => _index = i),
               itemBuilder: (context, i) {
-                return _OnboardingPageView(page: pages[i]);
+                return _OnboardingPageView(
+                  page: pages[i],
+                  pageIndex: i,
+                  isActive: _index == i,
+                );
               },
             ),
           ),
@@ -156,8 +159,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             padding: DesignTokens.paddingPageHorizontal.add(
               EdgeInsets.only(
                 top: DesignTokens.space8,
-                bottom:
-                    compact ? DesignTokens.space16 : DesignTokens.space24,
+                bottom: compact ? DesignTokens.space16 : DesignTokens.space24,
               ),
             ),
             child: Column(
@@ -167,17 +169,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   duration:
                       disableAnimations
                           ? Duration.zero
-                          : const Duration(milliseconds: 220),
+                          : const Duration(milliseconds: 280),
                   child: OnboardingPageDots(
                     key: ValueKey(_index),
                     count: _pageCount,
                     currentIndex: _index,
                   ),
                 ),
-                const SizedBox(height: DesignTokens.space16),
+                const SizedBox(height: DesignTokens.space20),
                 OnboardingPrimaryButton(
-                  label:
-                      _isLastPage ? l10n.actionGetStarted : l10n.actionNext,
+                  label: _isLastPage ? l10n.actionGetStarted : l10n.actionNext,
                   onPressed: _next,
                   showTrailingIcon: !_isLastPage,
                   isLoading: _isFinishing,
@@ -191,56 +192,135 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 }
 
-class _OnboardingPageView extends StatelessWidget {
-  const _OnboardingPageView({required this.page});
+class _OnboardingPageView extends StatefulWidget {
+  const _OnboardingPageView({
+    required this.page,
+    required this.pageIndex,
+    required this.isActive,
+  });
 
   final OnboardingPage page;
+  final int pageIndex;
+  final bool isActive;
+
+  @override
+  State<_OnboardingPageView> createState() => _OnboardingPageViewState();
+}
+
+class _OnboardingPageViewState extends State<_OnboardingPageView>
+    with SingleTickerProviderStateMixin {
+  AnimationController? _entryController;
+  bool _entryStarted = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (widget.isActive && !_entryStarted) {
+      _startEntryAnimation();
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant _OnboardingPageView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isActive && !oldWidget.isActive) {
+      _entryStarted = false;
+      _startEntryAnimation();
+    }
+  }
+
+  void _startEntryAnimation() {
+    if (_entryStarted || !widget.isActive) return;
+    if (MediaQuery.disableAnimationsOf(context)) {
+      _entryStarted = true;
+      return;
+    }
+
+    _entryStarted = true;
+    _entryController?.dispose();
+    _entryController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 680),
+    )..forward();
+  }
+
+  @override
+  void dispose() {
+    _entryController?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    final compact = OnboardingStyle.isCompact(context);
+    final disableAnimations = MediaQuery.disableAnimationsOf(context);
+    final controller = _entryController;
+    final alwaysVisible = AlwaysStoppedAnimation<double>(1);
+
+    final illustrationAnim =
+        disableAnimations || controller == null
+            ? alwaysVisible
+            : onboardingPageAnimation(controller, 0);
+    final titleAnim =
+        disableAnimations || controller == null
+            ? alwaysVisible
+            : onboardingPageAnimation(controller, 1);
+    final subtitleAnim =
+        disableAnimations || controller == null
+            ? alwaysVisible
+            : onboardingPageAnimation(controller, 2);
+
+    Widget content = Padding(
       padding: DesignTokens.paddingPageHorizontal,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           SizedBox(
-            height:
-                OnboardingStyle.isCompact(context)
-                    ? DesignTokens.space8
-                    : DesignTokens.space12,
+            height: compact ? DesignTokens.space4 : DesignTokens.space8,
           ),
           Expanded(
             child: Center(
-              child: OnboardingIllustration(
-                assetPath: page.assetPath,
-                semanticsLabel: page.semanticsLabel,
-                backdropVariant: page.backdropVariant,
+              child: OnboardingScaleIn(
+                animation: illustrationAnim,
+                child: OnboardingIllustration(
+                  assetPath: widget.page.assetPath,
+                  semanticsLabel: widget.page.semanticsLabel,
+                  backdropVariant: widget.page.backdropVariant,
+                  enableFloat: true,
+                ),
               ),
             ),
           ),
-          Text(
-            page.title,
-            textAlign: TextAlign.center,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: OnboardingStyle.pageTitleStyle(context),
+          OnboardingFadeSlide(
+            animation: titleAnim,
+            child: Text(
+              widget.page.title,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: OnboardingStyle.pageTitleStyle(context),
+            ),
           ),
           const SizedBox(height: DesignTokens.space12),
-          Text(
-            page.subtitle,
-            textAlign: TextAlign.center,
-            maxLines: 3,
-            overflow: TextOverflow.ellipsis,
-            style: OnboardingStyle.pageSubtitleStyle(context),
+          OnboardingFadeSlide(
+            animation: subtitleAnim,
+            child: Text(
+              widget.page.subtitle,
+              textAlign: TextAlign.center,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+              style: OnboardingStyle.pageSubtitleStyle(context),
+            ),
           ),
           SizedBox(
-            height:
-                OnboardingStyle.isCompact(context)
-                    ? DesignTokens.space12
-                    : DesignTokens.space16,
+            height: compact ? DesignTokens.space8 : DesignTokens.space12,
           ),
         ],
       ),
     );
+
+    if (disableAnimations) return content;
+
+    return content;
   }
 }

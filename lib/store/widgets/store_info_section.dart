@@ -91,7 +91,7 @@ class StoreInfoSection extends StatelessWidget {
               _MetaChip(
                 icon: Icons.star_rounded,
                 iconGradient: [Colors.amber.shade400, Colors.orange.shade500],
-                label: '${store.rating.toStringAsFixed(1)}',
+                label: store.rating.toStringAsFixed(1),
                 value: '(${store.ratingCount} reviews)',
                 isHighlighted: store.rating >= 4.0,
               ),

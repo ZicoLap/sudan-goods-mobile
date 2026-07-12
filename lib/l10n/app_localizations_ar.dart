@@ -678,6 +678,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get actionNext => 'التالي';
 
   @override
+  String get actionContinue => 'متابعة';
+
+  @override
   String get actionGetStarted => 'ابدأ الآن';
 
   @override
@@ -698,19 +701,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get languagePickerSectionTitle => 'اختر لغتك';
 
   @override
-  String get onbIllustrationLanguage => 'رسم ترحيبي يظهر متسوقاً ودوداً في سوق سوداني';
+  String get onbIllustrationLanguage => 'رسم ثلاثي الأبعاد لاختيار اللغة بين الإنجليزية والعربية';
 
   @override
-  String get onbIllustrationWelcome => 'رسم لمنتجات سودانية في سوق';
+  String get onbIllustrationWelcome => 'رسم ثلاثي الأبعاد لاكتشاف المنتجات من المتاجر المحلية';
 
   @override
-  String get onbIllustrationOrder => 'رسم لتوصيل سريع إلى المنزل';
+  String get onbIllustrationOrder => 'رسم ثلاثي الأبعاد للطلب المباشر والتوصيل السريع';
 
   @override
-  String get onbIllustrationDiscover => 'رسم لتصفح المتاجر والمنتجات';
+  String get onbIllustrationDiscover => 'رسم ثلاثي الأبعاد لتصفح المتاجر وتلقي التحديثات';
 
   @override
-  String get onbIllustrationStart => 'رسم للبدء في التسوق بثقة';
+  String get onbIllustrationStart => 'رسم ثلاثي الأبعاد للبدء والاستعداد للتسوق';
 
   @override
   String get onbTitle1 => 'مرحباً بك في سلع السودان';

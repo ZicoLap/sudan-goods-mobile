@@ -136,10 +136,12 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                     show: _showNew,
                     onToggle: () => setState(() => _showNew = !_showNew),
                     validator: (v) {
-                      if (v == null || v.isEmpty)
+                      if (v == null || v.isEmpty) {
                         return l10n.pleaseEnterField(l10n.password);
-                      if (v.length < 6)
+                      }
+                      if (v.length < 6) {
                         return l10n.errorWithMessage('Minimum 6 characters');
+                      }
                       return null;
                     },
                   ),
@@ -151,8 +153,9 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                     onToggle:
                         () => setState(() => _showConfirm = !_showConfirm),
                     validator: (v) {
-                      if (v == null || v.isEmpty)
+                      if (v == null || v.isEmpty) {
                         return l10n.pleaseEnterField(l10n.confirmPassword);
+                      }
                       if (v != _newCtrl.text) return l10n.passwordsDoNotMatch;
                       return null;
                     },

@@ -54,7 +54,7 @@ class _EditUserInfoSheetState extends State<EditUserInfoSheet> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    Widget _iconBubble(IconData icon) {
+    Widget iconBubble(IconData icon) {
       return Container(
         width: 36,
         height: 36,
@@ -104,7 +104,7 @@ class _EditUserInfoSheetState extends State<EditUserInfoSheet> {
               // Header
               Row(
                 children: [
-                  _iconBubble(Icons.person_outline),
+                  iconBubble(Icons.person_outline),
                   const SizedBox(width: DesignTokens.space12),
                   Expanded(
                     child: Text(

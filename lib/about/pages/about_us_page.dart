@@ -488,8 +488,9 @@ class _ContactInfoSection extends StatelessWidget {
       );
     }
     if (content.email != null) {
-      if (rows.isNotEmpty)
+      if (rows.isNotEmpty) {
         rows.add(Divider(height: 1, color: Colors.black.withOpacity(0.06)));
+      }
       rows.add(
         _InfoRow(
           icon: Icons.email_rounded,
@@ -501,8 +502,9 @@ class _ContactInfoSection extends StatelessWidget {
       );
     }
     if (content.website != null) {
-      if (rows.isNotEmpty)
+      if (rows.isNotEmpty) {
         rows.add(Divider(height: 1, color: Colors.black.withOpacity(0.06)));
+      }
       rows.add(
         _InfoRow(
           icon: Icons.language_rounded,
@@ -623,8 +625,9 @@ class _SocialSection extends StatelessWidget {
       );
     }
     if (content.twitter != null) {
-      if (rows.isNotEmpty)
+      if (rows.isNotEmpty) {
         rows.add(Divider(height: 1, color: Colors.black.withOpacity(0.06)));
+      }
       rows.add(
         _SocialRow(
           label: l10n.aboutUsTwitter,
@@ -635,8 +638,9 @@ class _SocialSection extends StatelessWidget {
       );
     }
     if (content.facebook != null) {
-      if (rows.isNotEmpty)
+      if (rows.isNotEmpty) {
         rows.add(Divider(height: 1, color: Colors.black.withOpacity(0.06)));
+      }
       rows.add(
         _SocialRow(
           label: l10n.aboutUsFacebook,

@@ -678,6 +678,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get actionNext => 'Next';
 
   @override
+  String get actionContinue => 'Continue';
+
+  @override
   String get actionGetStarted => 'Get started';
 
   @override
@@ -698,19 +701,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get languagePickerSectionTitle => 'Choose your language';
 
   @override
-  String get onbIllustrationLanguage => 'Welcome illustration showing a friendly shopper at a Sudanese marketplace';
+  String get onbIllustrationLanguage => '3D illustration of language selection with English and Arabic options';
 
   @override
-  String get onbIllustrationWelcome => 'Illustration of Sudanese marketplace products';
+  String get onbIllustrationWelcome => '3D illustration of discovering products from local stores';
 
   @override
-  String get onbIllustrationOrder => 'Illustration of fast home delivery';
+  String get onbIllustrationOrder => '3D illustration of fast direct ordering and delivery';
 
   @override
-  String get onbIllustrationDiscover => 'Illustration of browsing stores and products';
+  String get onbIllustrationDiscover => '3D illustration of browsing stores and receiving updates';
 
   @override
-  String get onbIllustrationStart => 'Illustration of starting to shop with confidence';
+  String get onbIllustrationStart => '3D illustration of getting started and ready to shop';
 
   @override
   String get onbTitle1 => 'Welcome to Sudan Goods';

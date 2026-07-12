@@ -356,10 +356,12 @@ class _FormBody extends StatelessWidget {
                     ),
                     validator: (v) {
                       final trimmed = v?.trim() ?? '';
-                      if (trimmed.isEmpty)
+                      if (trimmed.isEmpty) {
                         return l10n.contactFormValidationEmpty;
-                      if (trimmed.length < minChars)
+                      }
+                      if (trimmed.length < minChars) {
                         return l10n.contactFormValidationTooShort;
+                      }
                       return null;
                     },
                   ),

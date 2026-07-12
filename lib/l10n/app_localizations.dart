@@ -1355,6 +1355,12 @@ abstract class AppLocalizations {
   /// **'Next'**
   String get actionNext;
 
+  /// No description provided for @actionContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get actionContinue;
+
   /// No description provided for @actionGetStarted.
   ///
   /// In en, this message translates to:
@@ -1394,31 +1400,31 @@ abstract class AppLocalizations {
   /// No description provided for @onbIllustrationLanguage.
   ///
   /// In en, this message translates to:
-  /// **'Welcome illustration showing a friendly shopper at a Sudanese marketplace'**
+  /// **'3D illustration of language selection with English and Arabic options'**
   String get onbIllustrationLanguage;
 
   /// No description provided for @onbIllustrationWelcome.
   ///
   /// In en, this message translates to:
-  /// **'Illustration of Sudanese marketplace products'**
+  /// **'3D illustration of discovering products from local stores'**
   String get onbIllustrationWelcome;
 
   /// No description provided for @onbIllustrationOrder.
   ///
   /// In en, this message translates to:
-  /// **'Illustration of fast home delivery'**
+  /// **'3D illustration of fast direct ordering and delivery'**
   String get onbIllustrationOrder;
 
   /// No description provided for @onbIllustrationDiscover.
   ///
   /// In en, this message translates to:
-  /// **'Illustration of browsing stores and products'**
+  /// **'3D illustration of browsing stores and receiving updates'**
   String get onbIllustrationDiscover;
 
   /// No description provided for @onbIllustrationStart.
   ///
   /// In en, this message translates to:
-  /// **'Illustration of starting to shop with confidence'**
+  /// **'3D illustration of getting started and ready to shop'**
   String get onbIllustrationStart;
 
   /// No description provided for @onbTitle1.
