@@ -1,13 +1,20 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sudan_goods/models/store/cart_item_model.dart';
+import 'package:sudan_goods/models/store/live_cart_item.dart';
 import 'package:sudan_goods/models/store/store_model.dart';
 
 /// Manages carts per store, syncing with Firestore and notifying listeners
 /// on changes. Each store has its own list of [CartItem]s.
 class CartController extends ChangeNotifier {
   final Map<String, List<CartItem>> _storeCarts = {};
+
+  /// I4: Set when a Firestore sync fails. Cleared on the next successful sync.
+  /// Listeners may display a snackbar or banner when this is non-null.
+  String? syncError;
 
   /// Exposes the in-memory carts keyed by [storeId].
   Map<String, List<CartItem>> get storeCarts => _storeCarts;
@@ -17,29 +24,128 @@ class CartController extends ChangeNotifier {
       .expand((items) => items)
       .fold(0, (sum, item) => sum + item.quantity);
 
-  /// 💰 Total price across all carts
-  double get totalPrice => _storeCarts.values
-      .expand((items) => items)
-      .fold(0, (sum, item) => sum + item.totalPrice);
-
-  /// 📦 Is the cart system empty?
+  ///  Is the cart system empty?
   bool get isEmpty => _storeCarts.isEmpty;
 
   /// 💡 Get cart for a store
   List<CartItem> getItemsByStore(String storeId) => _storeCarts[storeId] ?? [];
 
-  /// Calculates the subtotal for all items in the cart for the given [storeId].
-  double getSubtotal(String storeId) {
-    return getItemsByStore(
-      storeId,
-    ).fold(0, (sum, item) => sum + item.totalPrice);
+  /// Combines cart references with live product data for display.
+  ///
+  /// Listens to both the cart document AND each product document in real time.
+  /// Any change to cart quantity OR product price/stock immediately re-emits
+  /// the merged [LiveCartItem] list.
+  ///
+  /// Uses [asyncExpand] as a switchMap: when the cart doc changes (items
+  /// added/removed) the previous product listeners are cancelled and fresh
+  /// ones are opened for the new set of product IDs.
+  Stream<List<LiveCartItem>> watchCartWithProducts(String storeId) {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return const Stream.empty();
+
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .collection('carts')
+        .doc(storeId)
+        .snapshots()
+        .asyncExpand((cartSnap) {
+          if (!cartSnap.exists) return Stream.value(<LiveCartItem>[]);
+
+          final rawItems = (cartSnap.data()?['items'] as List? ?? []);
+          final cartItems =
+              rawItems
+                  .map(
+                    (e) =>
+                        CartItem.fromJson(Map<String, dynamic>.from(e as Map)),
+                  )
+                  .toList();
+
+          if (cartItems.isEmpty) return Stream.value(<LiveCartItem>[]);
+
+          // Open a real-time .snapshots() listener for every product doc.
+          final productStreams =
+              cartItems
+                  .map(
+                    (item) =>
+                        FirebaseFirestore.instance
+                            .collection('products')
+                            .doc(item.productId)
+                            .snapshots(),
+                  )
+                  .toList();
+
+          // Merge all product streams and re-emit the full list on every change.
+          return _mergeProductStreams(cartItems, productStreams, storeId);
+        });
   }
 
-  /// Calculates the total weight for the current cart of [storeId].
-  double getTotalWeight(String storeId) {
-    return getItemsByStore(
-      storeId,
-    ).fold(0, (sum, item) => sum + item.totalWeight);
+  /// Fans in [productStreams] and re-emits the full merged [LiveCartItem] list
+  /// whenever any single product document changes.
+  Stream<List<LiveCartItem>> _mergeProductStreams(
+    List<CartItem> cartItems,
+    List<Stream<DocumentSnapshot<Map<String, dynamic>>>> productStreams,
+    String storeId,
+  ) {
+    final controller = StreamController<List<LiveCartItem>>();
+    final latestData = List<Map<String, dynamic>?>.filled(
+      productStreams.length,
+      null,
+    );
+    final subs = <StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>>[];
+    var cancelled = false;
+
+    void tryEmit() {
+      if (cancelled) return;
+      // Wait until every product has been received at least once.
+      if (latestData.any((d) => d == null)) return;
+
+      final result = <LiveCartItem>[];
+      for (var i = 0; i < cartItems.length; i++) {
+        final p = latestData[i];
+        if (p == null) continue;
+        final rawPrice = (p['price'] as num).toDouble();
+        final discount = p['discountPrice'] as num?;
+        final effectivePrice =
+            (discount != null && discount > 0) ? discount.toDouble() : rawPrice;
+        result.add(
+          LiveCartItem(
+            productId: cartItems[i].productId,
+            storeId: storeId,
+            quantity: cartItems[i].quantity,
+            name: (p['name'] as String?) ?? '',
+            price: effectivePrice,
+            imageUrl:
+                (p['images'] as List?)?.isNotEmpty == true
+                    ? (p['images'] as List).first as String?
+                    : null,
+            weight: (p['weight'] as num? ?? 0).toDouble(),
+            stock: (p['quantity'] as num? ?? 0).toInt(),
+            isAvailable: (p['isAvailable'] as bool?) ?? true,
+          ),
+        );
+      }
+      controller.add(result);
+    }
+
+    for (var i = 0; i < productStreams.length; i++) {
+      final idx = i;
+      subs.add(
+        productStreams[idx].listen((snap) {
+          latestData[idx] = snap.data();
+          tryEmit();
+        }, onError: controller.addError),
+      );
+    }
+
+    controller.onCancel = () {
+      cancelled = true;
+      for (final s in subs) {
+        s.cancel();
+      }
+    };
+
+    return controller.stream;
   }
 
   /// 🔄 Add or update item
@@ -118,6 +224,9 @@ class CartController extends ChangeNotifier {
   }
 
   /// 🔁 Firestore sync (per store)
+  ///
+  /// I4: Catches network/Firestore errors and sets [syncError] so the UI
+  /// can surface a snackbar. Clears [syncError] on success.
   Future<void> syncCartToFirestore(String storeId) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
@@ -128,18 +237,25 @@ class CartController extends ChangeNotifier {
         .collection('carts')
         .doc(storeId);
 
-    final items = _storeCarts[storeId];
-    if (items == null || items.isEmpty) {
-      await cartRef.delete();
-      return;
+    try {
+      final items = _storeCarts[storeId];
+      if (items == null || items.isEmpty) {
+        await cartRef.delete();
+      } else {
+        final itemsMap = {
+          'items': items.map((e) => e.toJson()).toList(),
+          'updatedAt': FieldValue.serverTimestamp(),
+        };
+        await cartRef.set(itemsMap);
+      }
+      if (syncError != null) {
+        syncError = null;
+        notifyListeners();
+      }
+    } catch (e) {
+      syncError = 'Cart could not be saved. Check your connection.';
+      notifyListeners();
     }
-
-    final itemsMap = {
-      'items': items.map((e) => e.toJson()).toList(),
-      'updatedAt': FieldValue.serverTimestamp(),
-    };
-
-    await cartRef.set(itemsMap);
   }
 
   /// 🔁 Load all carts from Firestore
@@ -172,15 +288,7 @@ class CartController extends ChangeNotifier {
     return _storeCarts[storeId]
             ?.firstWhere(
               (e) => e.productId == productId,
-              orElse:
-                  () => CartItem(
-                    productId: '',
-                    storeId: '',
-                    name: '',
-                    price: 0,
-                    weight: 0,
-                    quantity: 0,
-                  ),
+              orElse: () => CartItem(productId: '', storeId: '', quantity: 0),
             )
             .quantity ??
         0;

@@ -1,51 +1,225 @@
+// EMULATOR RULES — exact mirror of production firestore.rules
+// Keep this file in sync whenever production rules change.
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // ── Global helpers ────────────────────────────────────────────────────────
     function isSignedIn() {
       return request.auth != null;
     }
 
-    // Users can read/write only their own following subcollection
-    match /users/{userId}/following/{storeId} {
-      allow read: if isSignedIn() && request.auth.uid == userId;
-
-      allow create: if isSignedIn() && request.auth.uid == userId
-        && request.resource.data.storeId == storeId
-        && request.resource.data.keys().hasOnly(['storeId','storeName','storeLogoUrl','storeIsActive','followedAt'])
-        && get(/databases/$(database)/documents/stores/$(storeId)).data.isActive == true
-        && get(/databases/$(database)/documents/stores/$(storeId)).data.isApproved == true;
-
-      // For simplicity, block updates; clients can only create (follow) or delete (unfollow)
-      allow update: if false;
-
-      // Unfollow allowed by the user themselves
-      allow delete: if isSignedIn() && request.auth.uid == userId;
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.role == 'admin';
     }
 
-    // Mirror followers under each store. For emulator/dev we allow clients to
-    // write their own follower document. In production you should restrict this
-    // and perform writes via Cloud Functions.
-    match /stores/{storeId}/followers/{userId} {
-      allow read: if isSignedIn();
-
-      allow create: if isSignedIn() && request.auth.uid == userId
-        && request.resource.data.keys().hasOnly(['userId','followedAt'])
-        && request.resource.data.userId == userId
-        && get(/databases/$(database)/documents/stores/$(storeId)).data.isActive == true
-        && get(/databases/$(database)/documents/stores/$(storeId)).data.isApproved == true;
-
-      // Prevent arbitrary updates; clients can only create or delete
-      allow update: if false;
-      allow delete: if isSignedIn() && request.auth.uid == userId;
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
     }
 
-    // Note: You may have other rules for /stores/{storeId}. This draft intentionally
-    // does not permit client writes to followersCount; leave updates to backend.
+    // ── Users ─────────────────────────────────────────────────────────────────
+    match /users/{userId} {
+      allow get:    if isOwner(userId) || isAdmin();
+      allow list:   if isAdmin();
+      allow create: if false;
+      allow update: if (isOwner(userId) && onlyProfileFields()) || isAdmin();
+      allow delete: if false;
+
+      function onlyProfileFields() {
+        return request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['firstName', 'lastName', 'phoneNumber', 'email']);
+      }
+
+      match /inbox/{conversationId} {
+        allow read:   if isOwner(userId);
+        allow create: if isOwner(userId);
+        allow update: if isOwner(userId) && onlySafeInboxUpdateFields();
+        allow delete: if false;
+
+        function onlySafeInboxUpdateFields() {
+          return request.resource.data.diff(resource.data).affectedKeys()
+              .hasOnly([
+                'lastMessageText', 'lastMessageSenderId', 'lastMessageAt',
+                'updatedAt', 'unreadCount', 'storeId', 'storeName',
+                'storeLogoUrl', 'storeIsActive', 'storeIsApproved'
+              ]);
+        }
+      }
+
+      // ── Carts (per-store shopping carts) ───────────────────────────────────
+      match /carts/{storeId} {
+        allow read:   if isOwner(userId);
+        allow write:  if isOwner(userId)
+            && request.resource.data.keys().hasOnly(['items', 'updatedAt']);
+        allow delete: if isOwner(userId);
+      }
+
+      match /following/{storeId} {
+        allow read:   if isOwner(userId);
+        allow create: if isOwner(userId) && validFollowCreate();
+        allow update: if false;
+        allow delete: if isOwner(userId);
+
+        function validFollowCreate() {
+          let store = get(/databases/$(database)/documents/stores/$(storeId)).data;
+          return request.resource.data.storeId == storeId
+              && request.resource.data.keys().hasOnly([
+                   'storeId', 'storeName', 'storeLogoUrl',
+                   'storeIsActive', 'followedAt'
+                 ])
+              && store.isActive == true
+              && store.isApproved == true;
+        }
+      }
+    }
+
+    // ── Stores ────────────────────────────────────────────────────────────────
     match /stores/{storeId} {
-      allow read: if true; // public store data
-      // Do not allow client updates in this draft.
+      allow read:  if isSignedIn();
       allow write: if false;
+
+      match /followers/{userId} {
+        allow read:   if isSignedIn();
+        allow create: if isOwner(userId) && validFollowerMirrorCreate();
+        allow update: if false;
+        allow delete: if isOwner(userId);
+
+        function validFollowerMirrorCreate() {
+          let store = get(/databases/$(database)/documents/stores/$(storeId)).data;
+          return request.resource.data.keys().hasOnly(['userId', 'followedAt'])
+              && request.resource.data.userId == userId
+              && store.isActive == true
+              && store.isApproved == true;
+        }
+      }
+    }
+
+    // ── Products ──────────────────────────────────────────────────────────────
+    match /products/{productId} {
+      allow read:  if isSignedIn();
+      allow write: if false;
+    }
+
+    // ── Product collections ───────────────────────────────────────────────────
+    match /collections/{collectionId} {
+      allow read:  if isSignedIn();
+      allow write: if false;
+    }
+
+    // ── Categories ────────────────────────────────────────────────────────────
+    match /categories/{categoryId} {
+      allow read:  if isSignedIn();
+      allow write: if false;
+    }
+
+    // ── Orders ────────────────────────────────────────────────────────────────
+    match /orders/{orderId} {
+      allow read:   if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if isSignedIn()
+          && resource.data.userId == request.auth.uid
+          && resource.data.status == 'pending';
+    }
+
+    // ── Order requests (idempotency records) ──────────────────────────────────
+    match /orderRequests/{requestId} {
+      allow read:  if false;
+      allow write: if false;
+    }
+
+    // ── Wanted requests ───────────────────────────────────────────────────────
+    match /wanted_requests/{requestId} {
+      allow create: if isSignedIn();
+      allow read:   if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    // ── Conversations ─────────────────────────────────────────────────────────
+    match /conversations/{conversationId} {
+      allow read: if isSignedIn()
+          && resource.data.userId == request.auth.uid;
+
+      allow create: if isSignedIn()
+          && request.resource.data.userId == request.auth.uid
+          && request.resource.data.keys().hasOnly([
+               'userId', 'storeId', 'storeName', 'storeLogoUrl',
+               'storeIsActive', 'storeIsApproved',
+               'lastMessageAt', 'createdAt', 'updatedAt'
+             ]);
+
+      allow update: if isSignedIn()
+          && resource.data.userId == request.auth.uid
+          && request.resource.data.diff(resource.data).affectedKeys()
+              .hasOnly([
+                'lastMessageText', 'lastMessageSenderId', 'lastMessageAt',
+                'updatedAt', 'storeId', 'storeName', 'storeLogoUrl',
+                'storeIsActive', 'storeIsApproved'
+              ]);
+
+      allow delete: if false;
+
+      match /messages/{messageId} {
+        allow read: if isSignedIn()
+            && get(/databases/$(database)/documents/conversations/$(conversationId)).data.userId
+                == request.auth.uid;
+
+        allow create: if isSignedIn()
+            && get(/databases/$(database)/documents/conversations/$(conversationId)).data.userId
+                == request.auth.uid
+            && request.resource.data.keys().hasOnly([
+                 'senderId', 'text', 'imageUrl', 'sentAt', 'readBy'
+               ])
+            && request.resource.data.senderId == request.auth.uid;
+
+        allow update: if isSignedIn()
+            && get(/databases/$(database)/documents/conversations/$(conversationId)).data.userId
+                == request.auth.uid
+            && request.resource.data.diff(resource.data).affectedKeys()
+                .hasOnly(['readBy']);
+
+        allow delete: if false;
+      }
+    }
+
+    // ── Support messages ──────────────────────────────────────────────────────
+    match /supportmessages/{threadId} {
+      allow read: if isSignedIn()
+          && threadId == 'u_' + request.auth.uid;
+
+      allow create: if isSignedIn()
+          && threadId == 'u_' + request.auth.uid
+          && request.resource.data.userId == request.auth.uid;
+
+      allow update: if isSignedIn()
+          && threadId == 'u_' + request.auth.uid
+          && request.resource.data.diff(resource.data).affectedKeys()
+              .hasOnly([
+                'lastMessageText', 'lastMessageSenderId', 'lastMessageAt',
+                'updatedAt', 'readBy', 'userId'
+              ]);
+
+      allow delete: if false;
+
+      match /messages/{messageId} {
+        allow read: if isSignedIn()
+            && threadId == 'u_' + request.auth.uid;
+
+        allow create: if isSignedIn()
+            && threadId == 'u_' + request.auth.uid
+            && request.resource.data.keys().hasOnly([
+                 'senderId', 'text', 'imageUrl', 'sentAt', 'readBy'
+               ])
+            && request.resource.data.senderId == request.auth.uid;
+
+        allow update: if isSignedIn()
+            && threadId == 'u_' + request.auth.uid
+            && request.resource.data.diff(resource.data).affectedKeys()
+                .hasOnly(['readBy']);
+
+        allow delete: if false;
+      }
     }
   }
 }

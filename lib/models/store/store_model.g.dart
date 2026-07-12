@@ -17,6 +17,8 @@ Store _$StoreFromJson(Map<String, dynamic> json) => Store(
   phoneNumber: json['phoneNumber'] as String?,
   logoUrl: json['logoUrl'] as String?,
   coverImageUrl: json['coverImageUrl'] as String?,
+  logoThumbUrl: json['logoThumbUrl'] as String?,
+  coverThumbUrl: json['coverThumbUrl'] as String?,
   tags:
       (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList() ??
       const [],
@@ -55,6 +57,8 @@ Map<String, dynamic> _$StoreToJson(Store instance) => <String, dynamic>{
   'phoneNumber': instance.phoneNumber,
   'logoUrl': instance.logoUrl,
   'coverImageUrl': instance.coverImageUrl,
+  'logoThumbUrl': instance.logoThumbUrl,
+  'coverThumbUrl': instance.coverThumbUrl,
   'address': instance.address.toJson(),
   'tags': instance.tags,
   'isActive': instance.isActive,

@@ -4,6 +4,7 @@ import 'package:sudan_goods/Home/widgets/big_store_card_enhanced.dart';
 import 'package:sudan_goods/Home/widgets/shimmer_components.dart';
 import 'package:sudan_goods/models/store/store_model.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
+import 'package:sudan_goods/theme/app_theme.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:sudan_goods/Home/controller/store_filter_controller.dart';
@@ -24,27 +25,56 @@ class _AllStoresSectionState extends State<AllStoresSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Title
         Padding(
           padding: DesignTokens.paddingPageHorizontal,
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              // Icon bubble
+              Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [AppColors.primary, Color(0xFFBF4000)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Icon(
+                  Icons.store_mall_directory_rounded,
+                  color: Colors.white,
+                  size: 17,
+                ),
+              ),
+              const SizedBox(width: 10),
               Text(
                 AppLocalizations.of(context)!.allStoresTitle,
                 style: AppTypography.sectionTitle.copyWith(
-                  color: Colors.black,
+                  color: Colors.black87,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w800,
                 ),
               ),
-              TextButton(
-                onPressed: () {
-                  // TODO: Navigate to all stores page
-                },
-                child: Text(
-                  AppLocalizations.of(context)!.viewAll,
-                  style: AppTypography.small.copyWith(
-                    color: Colors.orange,
-                    fontWeight: FontWeight.w600,
+              const Spacer(),
+              GestureDetector(
+                onTap: () {},
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 5,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withOpacity(0.08),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    AppLocalizations.of(context)!.viewAll,
+                    style: TextStyle(
+                      fontSize: 11.5,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.primary,
+                    ),
                   ),
                 ),
               ),
@@ -55,64 +85,78 @@ class _AllStoresSectionState extends State<AllStoresSection> {
 
         // Real-time store list
         StreamBuilder<List<Store>>(
-          stream: filter.isAll
-              ? StoreServices().streamAllApprovedStores()
-              : StoreServices().streamApprovedStoresByCategory(filter.selectedCategoryId),
+          stream:
+              filter.isAll
+                  ? StoreServices().streamAllApprovedStores()
+                  : StoreServices().streamApprovedStoresByCategory(
+                    filter.selectedCategoryId,
+                  ),
           builder: (context, snapshot) {
             // Cache last non-empty data for smoother transitions
             if (snapshot.hasData) {
               _lastStores = snapshot.data;
             }
 
-            final isWaiting = snapshot.connectionState == ConnectionState.waiting;
+            final isWaiting =
+                snapshot.connectionState == ConnectionState.waiting;
             final hasError = snapshot.hasError && !isWaiting;
             final stores = snapshot.data ?? _lastStores ?? [];
 
             if (hasError) {
-              return Center(child: Text(AppLocalizations.of(context)!.failedToLoadStores));
+              return Padding(
+                padding: DesignTokens.paddingPageHorizontal,
+                child: Center(
+                  child: Text(AppLocalizations.of(context)!.failedToLoadStores),
+                ),
+              );
             }
 
             if (stores.isEmpty && isWaiting) {
-              // Initial load
               return ListView.separated(
                 shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 padding: DesignTokens.paddingPageHorizontal,
                 itemCount: 3,
-                separatorBuilder: (_, __) => SizedBox(height: DesignTokens.space20),
-                itemBuilder: (context, index) => ShimmerComponents.bigStoreCardShimmer(),
+                separatorBuilder:
+                    (_, __) => const SizedBox(height: DesignTokens.space20),
+                itemBuilder: (_, __) => ShimmerComponents.bigStoreCardShimmer(),
               );
             }
 
             if (stores.isEmpty) {
-              return Center(child: Text(AppLocalizations.of(context)!.noStoresAvailable));
+              return Padding(
+                padding: DesignTokens.paddingPageHorizontal,
+                child: Center(
+                  child: Text(AppLocalizations.of(context)!.noStoresAvailable),
+                ),
+              );
             }
 
-            // Show last data while loading new category, with subtle progress indicator
             return Stack(
               children: [
                 ListView.separated(
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   padding: DesignTokens.paddingPageHorizontal,
                   itemCount: stores.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: DesignTokens.space20),
-                  itemBuilder: (context, index) {
-                    return BigStoreCard(
-                      key: ValueKey(stores[index].id),
-                      store: stores[index],
-                      onTap: () {
-                        // TODO: Navigate to StoreDetailsPage
-                      },
-                    );
-                  },
+                  separatorBuilder:
+                      (_, __) => const SizedBox(height: DesignTokens.space20),
+                  itemBuilder:
+                      (context, index) => BigStoreCard(
+                        key: ValueKey(stores[index].id),
+                        store: stores[index],
+                      ),
                 ),
                 if (isWaiting)
-                  const Positioned(
+                  Positioned(
                     top: 0,
                     left: 0,
                     right: 0,
-                    child: LinearProgressIndicator(minHeight: 2),
+                    child: LinearProgressIndicator(
+                      minHeight: 2,
+                      color: AppColors.primary,
+                      backgroundColor: AppColors.primary.withOpacity(0.12),
+                    ),
                   ),
               ],
             );

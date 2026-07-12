@@ -8,8 +8,7 @@ import 'package:sudan_goods/l10n/app_localizations.dart';
 
 class _CartSnapshot {
   final int count;
-  final double subtotal;
-  const _CartSnapshot(this.count, this.subtotal);
+  const _CartSnapshot(this.count);
 }
 
 class FloatingCartBar extends StatelessWidget {
@@ -24,8 +23,7 @@ class FloatingCartBar extends StatelessWidget {
       selector: (_, c) {
         final items = c.getItemsByStore(storeId);
         final count = items.fold<int>(0, (sum, it) => sum + it.quantity);
-        final subtotal = c.getSubtotal(storeId);
-        return _CartSnapshot(count, subtotal);
+        return _CartSnapshot(count);
       },
       builder: (context, snap, _) {
         if (snap.count == 0) return const SizedBox.shrink();
@@ -105,7 +103,7 @@ class FloatingCartBar extends StatelessWidget {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        '${l10n.total} \u200E€${snap.subtotal.toStringAsFixed(2)}',
+                        l10n.itemsCount(snap.count),
                         style: AppTypography.small.copyWith(
                           color: Colors.white.withOpacity(0.9),
                           height: 1.0,

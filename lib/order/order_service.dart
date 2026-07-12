@@ -1,25 +1,38 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:sudan_goods/models/store/order_model.dart' as order_model;
+import 'package:cloud_functions/cloud_functions.dart';
 
-/// Firestore-backed service for performing operations on orders.
+/// Service for creating orders via the backend Cloud Function.
 ///
-/// Currently supports creating an order document in the `orders` collection.
+/// All pricing, validation, and document creation happens server-side.
+/// The client only sends minimal input (storeId, item IDs + quantities).
 class OrderServices {
-  static final _firestore = FirebaseFirestore.instance;
-  static final _ordersRef = _firestore.collection('orders');
+  static final _functions = FirebaseFunctions.instance;
 
-  /// Persists a new [order] document in the `orders` collection.
+  /// Places an order by calling the `createOrder` Cloud Function.
   ///
-  /// Throws on failure so callers can handle errors appropriately
-  /// (e.g., surface a snackbar or retry logic).
-  static Future<void> createOrder(order_model.Order order) async {
-    try {
-      final docRef = await _ordersRef.add(order.toJson());
+  /// An [idempotencyKey] should be generated once per checkout attempt to
+  /// prevent duplicate orders on retries or double-taps.
+  ///
+  /// Returns the Firestore-generated order ID on success.
+  /// Throws [FirebaseFunctionsException] on failure so callers can surface
+  /// user-friendly messages.
+  static Future<String> createOrder({
+    required String storeId,
+    required List<Map<String, dynamic>> items,
+    required String paymentMethod,
+    required String idempotencyKey,
+    String? orderNote,
+  }) async {
+    final callable = _functions.httpsCallable('createOrder');
 
-      print('✅ Order placed successfully with ID: ${docRef.id}');
-    } catch (e) {
-      print('❌ Failed to place order: $e');
-      rethrow;
-    }
+    final response = await callable.call(<String, dynamic>{
+      'storeId': storeId,
+      'items': items,
+      'paymentMethod': paymentMethod,
+      'idempotencyKey': idempotencyKey,
+      if (orderNote != null && orderNote.isNotEmpty) 'orderNote': orderNote,
+    });
+
+    final data = response.data as Map<String, dynamic>;
+    return data['orderId'] as String;
   }
 }

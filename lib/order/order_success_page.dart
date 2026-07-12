@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 
 class OrderSuccessPage extends StatelessWidget {
-  const OrderSuccessPage({super.key});
+  /// C1: true when the backend confirmed order creation within the poll window;
+  /// false when we timed out (payment still went through, order will appear soon).
+  final bool confirmed;
+
+  const OrderSuccessPage({super.key, this.confirmed = true});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Order Confirmed'),
+        title: const Text('Order Placed'),
         centerTitle: true,
         automaticallyImplyLeading: false,
       ),
@@ -17,15 +21,24 @@ class OrderSuccessPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.check_circle, color: Colors.green, size: 100),
+              Icon(
+                confirmed ? Icons.check_circle : Icons.hourglass_top_rounded,
+                color: confirmed ? Colors.green : Colors.orange,
+                size: 100,
+              ),
               const SizedBox(height: 24),
-              const Text(
-                'Thank you for your order!',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              Text(
+                confirmed ? 'Order confirmed!' : 'Payment received!',
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 12),
-              const Text(
-                'Your order has been placed successfully. You will receive a confirmation shortly.',
+              Text(
+                confirmed
+                    ? 'Your order has been placed and will appear in your Orders tab shortly.'
+                    : 'Your payment was received. Your order is being finalised and will appear in your Orders tab shortly.',
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 32),

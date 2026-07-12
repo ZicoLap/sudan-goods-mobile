@@ -254,6 +254,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noStoresAvailable => 'No stores available';
 
   @override
+  String get storeDetailsTitle => 'Store Details';
+
+  @override
+  String get storeNotFound => 'Store not found';
+
+  @override
+  String get storeNotFoundSubtitle => 'The store you\'re looking for doesn\'t exist or has been removed.';
+
+  @override
   String get collectionsTitle => 'Collections';
 
   @override
@@ -541,6 +550,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get birthdayLabel => 'Birthday:';
 
   @override
+  String get birthdayAgeError => 'You must be at least 13 years old';
+
+  @override
   String get addressTitle => 'Address';
 
   @override
@@ -669,13 +681,51 @@ class AppLocalizationsEn extends AppLocalizations {
   String get actionGetStarted => 'Get started';
 
   @override
+  String get languagePickerTaglineEn => 'Welcome to the biggest Sudanese\nonline shopping hub';
+
+  @override
+  String get languagePickerTaglineAr => 'مرحبا بيك في اكبر مركز تسوق الكتروني سوداني';
+
+  @override
+  String onbStepProgress(int current, int total) {
+    return 'Step $current of $total';
+  }
+
+  @override
+  String get appStartLoadError => 'Unable to load app settings. Please try again.';
+
+  @override
+  String get languagePickerSectionTitle => 'Choose your language';
+
+  @override
+  String get onbIllustrationLanguage => 'Welcome illustration showing a friendly shopper at a Sudanese marketplace';
+
+  @override
+  String get onbIllustrationWelcome => 'Illustration of Sudanese marketplace products';
+
+  @override
+  String get onbIllustrationOrder => 'Illustration of fast home delivery';
+
+  @override
+  String get onbIllustrationDiscover => 'Illustration of browsing stores and products';
+
+  @override
+  String get onbIllustrationStart => 'Illustration of starting to shop with confidence';
+
+  @override
   String get onbTitle1 => 'Welcome to Sudan Goods';
+
+  @override
+  String get onbSubtitle1 => 'Discover authentic Sudanese products from trusted local stores.';
 
   @override
   String get onbBody1 => 'Bringing Sudanese products closer to you.';
 
   @override
   String get onbTitle2 => 'Order without waiting';
+
+  @override
+  String get onbSubtitle2 => 'Shop directly from sellers—no need to wait for travelers.';
 
   @override
   String get onbBody2 => 'No need to wait for travelers—buy directly from trusted sellers.';
@@ -696,6 +746,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onbTitle5 => 'Stay in the loop';
 
   @override
+  String get onbSubtitle3 => 'Follow stores, get updates, and request hard-to-find items.';
+
+  @override
   String get onbBody5 => 'Follow stores and get notified when new products arrive.';
 
   @override
@@ -706,6 +759,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onbTitle7 => 'Start in minutes';
+
+  @override
+  String get onbSubtitle4 => 'Create your account, add an address, and start shopping today.';
 
   @override
   String get onbBody7 => 'Register with your address and start shopping Sudanese products.';
@@ -772,4 +828,153 @@ class AppLocalizationsEn extends AppLocalizations {
   String qtyAndPrice(num qty, String price) {
     return '$qty × $price';
   }
+
+  @override
+  String get navInfo => 'Info';
+
+  @override
+  String get infoTabTitle => 'Help & Info';
+
+  @override
+  String get infoTabSubtitle => 'Get in touch or learn more about us';
+
+  @override
+  String get contactUs => 'Contact Us';
+
+  @override
+  String get contactUsSubtitle => 'Send us a message, we reply within 24 hours';
+
+  @override
+  String get aboutUs => 'About Us';
+
+  @override
+  String get aboutUsSubtitle => 'Learn more about Sudan Goods';
+
+  @override
+  String get contactFormTitle => 'We\'d love to hear from you';
+
+  @override
+  String get contactFormSubtitle => 'Fill in the form below and we\'ll get back to you shortly.';
+
+  @override
+  String get contactFormEmailLabel => 'Your email';
+
+  @override
+  String get contactFormSubjectLabel => 'Subject';
+
+  @override
+  String get contactFormMessageLabel => 'Your message';
+
+  @override
+  String get contactFormMessageHint => 'Describe your question or feedback...';
+
+  @override
+  String contactFormCharCount(int count) {
+    return '$count/500';
+  }
+
+  @override
+  String get contactFormSendButton => 'Send Message';
+
+  @override
+  String get contactFormSuccessTitle => 'Message sent!';
+
+  @override
+  String get contactFormSuccessSubtitle => 'Thank you for reaching out. We\'ll get back to you within 24 hours.';
+
+  @override
+  String get contactFormSendAnother => 'Send another message';
+
+  @override
+  String get contactFormError => 'Failed to send message. Please try again.';
+
+  @override
+  String get contactFormValidationEmpty => 'Please enter a message';
+
+  @override
+  String get contactFormValidationTooShort => 'Message must be at least 10 characters';
+
+  @override
+  String get subjectGeneral => 'General';
+
+  @override
+  String get subjectOrderIssue => 'Order Issue';
+
+  @override
+  String get subjectFeedback => 'Feedback';
+
+  @override
+  String get aboutUsLoadError => 'Failed to load About Us content. Please try again.';
+
+  @override
+  String get aboutUsEmpty => 'Content coming soon';
+
+  @override
+  String get aboutUsPhone => 'Phone';
+
+  @override
+  String get aboutUsEmail => 'Email';
+
+  @override
+  String get aboutUsWebsite => 'Website';
+
+  @override
+  String get aboutUsInstagram => 'Instagram';
+
+  @override
+  String get aboutUsTwitter => 'X (Twitter)';
+
+  @override
+  String get aboutUsFacebook => 'Facebook';
+
+  @override
+  String get aboutUsSocial => 'Follow Us';
+
+  @override
+  String get contactUsTag => 'Free';
+
+  @override
+  String get aboutUsTag => 'Info';
+
+  @override
+  String get addAddress => 'Add Address';
+
+  @override
+  String get saveAddress => 'Save Address';
+
+  @override
+  String get deleteAddress => 'Delete Address';
+
+  @override
+  String get deleteAddressConfirmation => 'Are you sure you want to delete this address?';
+
+  @override
+  String get defaultAddress => 'Default';
+
+  @override
+  String get noAddressesYet => 'No saved addresses';
+
+  @override
+  String get addAddressPrompt => 'Add an address to use for delivery.';
+
+  @override
+  String get addressLabel => 'Label';
+
+  @override
+  String get addressLabelHint => 'e.g. Home, Work';
+
+  @override
+  String get streetHint => 'e.g. 123 Main St';
+
+  @override
+  String get cityHint => 'e.g. Khartoum';
+
+  @override
+  String get failedToDeleteAddress => 'Failed to delete address. Please try again.';
+
+  @override
+  String get failedToSaveAddress => 'Failed to save address. Please try again.';
+
+  @override
+  String get fieldRequired => 'This field is required';
 }

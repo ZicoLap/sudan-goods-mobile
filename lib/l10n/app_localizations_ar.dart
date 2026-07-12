@@ -254,6 +254,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get noStoresAvailable => 'لا توجد متاجر متاحة';
 
   @override
+  String get storeDetailsTitle => 'تفاصيل المتجر';
+
+  @override
+  String get storeNotFound => 'المتجر غير موجود';
+
+  @override
+  String get storeNotFoundSubtitle => 'المتجر الذي تبحث عنه غير موجود أو تمت إزالته.';
+
+  @override
   String get collectionsTitle => 'المجموعات';
 
   @override
@@ -541,6 +550,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get birthdayLabel => 'تاريخ الميلاد:';
 
   @override
+  String get birthdayAgeError => 'يجب أن يكون عمرك 13 عامًا على الأقل';
+
+  @override
   String get addressTitle => 'العنوان';
 
   @override
@@ -669,13 +681,51 @@ class AppLocalizationsAr extends AppLocalizations {
   String get actionGetStarted => 'ابدأ الآن';
 
   @override
+  String get languagePickerTaglineEn => 'Welcome to the biggest Sudanese\nonline shopping hub';
+
+  @override
+  String get languagePickerTaglineAr => 'مرحبا بيك في اكبر مركز تسوق الكتروني سوداني';
+
+  @override
+  String onbStepProgress(int current, int total) {
+    return 'الخطوة $current من $total';
+  }
+
+  @override
+  String get appStartLoadError => 'تعذّر تحميل إعدادات التطبيق. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get languagePickerSectionTitle => 'اختر لغتك';
+
+  @override
+  String get onbIllustrationLanguage => 'رسم ترحيبي يظهر متسوقاً ودوداً في سوق سوداني';
+
+  @override
+  String get onbIllustrationWelcome => 'رسم لمنتجات سودانية في سوق';
+
+  @override
+  String get onbIllustrationOrder => 'رسم لتوصيل سريع إلى المنزل';
+
+  @override
+  String get onbIllustrationDiscover => 'رسم لتصفح المتاجر والمنتجات';
+
+  @override
+  String get onbIllustrationStart => 'رسم للبدء في التسوق بثقة';
+
+  @override
   String get onbTitle1 => 'مرحباً بك في سلع السودان';
+
+  @override
+  String get onbSubtitle1 => 'اكتشف منتجات سودانية أصيلة من متاجر محلية موثوقة.';
 
   @override
   String get onbBody1 => 'نقرّب المنتجات السودانية إليك.';
 
   @override
   String get onbTitle2 => 'اطلب بلا انتظار';
+
+  @override
+  String get onbSubtitle2 => 'تسوّق مباشرة من الباعة—لا حاجة لانتظار المسافرين.';
 
   @override
   String get onbBody2 => 'لا حاجة لانتظار المسافرين—اشترِ مباشرة من باعة موثوقين.';
@@ -696,6 +746,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get onbTitle5 => 'ابقَ على اطلاع';
 
   @override
+  String get onbSubtitle3 => 'تابِع المتاجر، واحصل على التحديثات، واطلب المنتجات النادرة.';
+
+  @override
   String get onbBody5 => 'تابِع المتاجر وتلقَّ إشعاراً عند توفر منتجات جديدة.';
 
   @override
@@ -706,6 +759,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get onbTitle7 => 'ابدأ خلال دقائق';
+
+  @override
+  String get onbSubtitle4 => 'أنشئ حسابك، أضف عنوانك، وابدأ التسوق اليوم.';
 
   @override
   String get onbBody7 => 'سجّل عنوانك وابدأ شراء المنتجات السودانية.';
@@ -772,4 +828,153 @@ class AppLocalizationsAr extends AppLocalizations {
   String qtyAndPrice(num qty, String price) {
     return '$qty × $price';
   }
+
+  @override
+  String get navInfo => 'معلومات';
+
+  @override
+  String get infoTabTitle => 'مساعدة ومعلومات';
+
+  @override
+  String get infoTabSubtitle => 'تواصل معنا أو تعرّف علينا أكثر';
+
+  @override
+  String get contactUs => 'تواصل معنا';
+
+  @override
+  String get contactUsSubtitle => 'أرسل لنا رسالة، نرد خلال 24 ساعة';
+
+  @override
+  String get aboutUs => 'من نحن';
+
+  @override
+  String get aboutUsSubtitle => 'تعرّف على بضائع السودان';
+
+  @override
+  String get contactFormTitle => 'يسعدنا سماعك';
+
+  @override
+  String get contactFormSubtitle => 'املأ النموذج أدناه وسنتواصل معك قريباً.';
+
+  @override
+  String get contactFormEmailLabel => 'بريدك الإلكتروني';
+
+  @override
+  String get contactFormSubjectLabel => 'الموضوع';
+
+  @override
+  String get contactFormMessageLabel => 'رسالتك';
+
+  @override
+  String get contactFormMessageHint => 'اشرح سؤالك أو ملاحظاتك...';
+
+  @override
+  String contactFormCharCount(int count) {
+    return '$count/500';
+  }
+
+  @override
+  String get contactFormSendButton => 'إرسال الرسالة';
+
+  @override
+  String get contactFormSuccessTitle => 'تم الإرسال!';
+
+  @override
+  String get contactFormSuccessSubtitle => 'شكراً لتواصلك. سنرد عليك خلال 24 ساعة.';
+
+  @override
+  String get contactFormSendAnother => 'إرسال رسالة أخرى';
+
+  @override
+  String get contactFormError => 'فشل إرسال الرسالة. يرجى المحاولة مجدداً.';
+
+  @override
+  String get contactFormValidationEmpty => 'يرجى كتابة رسالة';
+
+  @override
+  String get contactFormValidationTooShort => 'يجب أن تكون الرسالة 10 أحرف على الأقل';
+
+  @override
+  String get subjectGeneral => 'عام';
+
+  @override
+  String get subjectOrderIssue => 'مشكلة في الطلب';
+
+  @override
+  String get subjectFeedback => 'ملاحظات';
+
+  @override
+  String get aboutUsLoadError => 'فشل تحميل محتوى من نحن. يرجى المحاولة مجدداً.';
+
+  @override
+  String get aboutUsEmpty => 'المحتوى قريباً';
+
+  @override
+  String get aboutUsPhone => 'الهاتف';
+
+  @override
+  String get aboutUsEmail => 'البريد الإلكتروني';
+
+  @override
+  String get aboutUsWebsite => 'الموقع الإلكتروني';
+
+  @override
+  String get aboutUsInstagram => 'إنستغرام';
+
+  @override
+  String get aboutUsTwitter => 'إكس (تويتر)';
+
+  @override
+  String get aboutUsFacebook => 'فيسبوك';
+
+  @override
+  String get aboutUsSocial => 'تابعنا';
+
+  @override
+  String get contactUsTag => 'مجاني';
+
+  @override
+  String get aboutUsTag => 'معلومات';
+
+  @override
+  String get addAddress => 'إضافة عنوان';
+
+  @override
+  String get saveAddress => 'حفظ العنوان';
+
+  @override
+  String get deleteAddress => 'حذف العنوان';
+
+  @override
+  String get deleteAddressConfirmation => 'هل أنت متأكد من حذف هذا العنوان؟';
+
+  @override
+  String get defaultAddress => 'افتراضي';
+
+  @override
+  String get noAddressesYet => 'لا توجد عناوين محفوظة';
+
+  @override
+  String get addAddressPrompt => 'أضف عنواناً لاستخدامه في التوصيل.';
+
+  @override
+  String get addressLabel => 'التسمية';
+
+  @override
+  String get addressLabelHint => 'مثال: المنزل، العمل';
+
+  @override
+  String get streetHint => 'مثال: شارع النيل 123';
+
+  @override
+  String get cityHint => 'مثال: الخرطوم';
+
+  @override
+  String get failedToDeleteAddress => 'فشل حذف العنوان. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get failedToSaveAddress => 'فشل حفظ العنوان. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get fieldRequired => 'هذا الحقل مطلوب';
 }

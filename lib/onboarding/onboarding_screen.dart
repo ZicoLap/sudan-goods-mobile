@@ -1,12 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
+import 'package:sudan_goods/onboarding/models/onboarding_page.dart';
+import 'package:sudan_goods/onboarding/onboarding_assets.dart';
 import 'package:sudan_goods/onboarding/onboarding_persistence_service.dart';
+import 'package:sudan_goods/onboarding/onboarding_style.dart';
 import 'package:sudan_goods/authentication/auth_gate_page.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
-import 'package:sudan_goods/theme/app_theme.dart';
 
+/// Illustration-led onboarding walkthrough with simplified copy.
 class OnboardingScreen extends StatefulWidget {
-  const OnboardingScreen({super.key});
+  const OnboardingScreen({
+    super.key,
+    this.persistenceService,
+    this.nextScreen,
+  });
+
+  /// Optional override for tests.
+  final OnboardingPersistenceService? persistenceService;
+
+  /// Screen shown after onboarding completes. Defaults to [AuthGate].
+  final Widget? nextScreen;
 
   @override
   State<OnboardingScreen> createState() => _OnboardingScreenState();
@@ -15,6 +29,9 @@ class OnboardingScreen extends StatefulWidget {
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _controller = PageController();
   int _index = 0;
+  bool _isFinishing = false;
+
+  static const int _pageCount = 4;
 
   @override
   void dispose() {
@@ -22,231 +39,208 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     super.dispose();
   }
 
+  bool get _isLastPage => _index >= _pageCount - 1;
+
+  Future<void> _finish() async {
+    if (_isFinishing) return;
+    setState(() => _isFinishing = true);
+    HapticFeedback.mediumImpact();
+
+    try {
+      final persistence =
+          widget.persistenceService ?? OnboardingPersistenceService();
+      await persistence.setHasSeenOnboarding(true);
+      if (!mounted) return;
+      await Navigator.of(context).pushReplacement(
+        PageRouteBuilder(
+          pageBuilder:
+              (_, __, ___) => widget.nextScreen ?? const AuthGate(),
+          transitionsBuilder: (_, animation, __, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+          transitionDuration: const Duration(milliseconds: 280),
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _isFinishing = false);
+    }
+  }
+
   void _next() {
-    if (_index < 7) {
+    if (_isFinishing) return;
+
+    if (_index < _pageCount - 1) {
+      HapticFeedback.selectionClick();
       _controller.nextPage(
-        duration: const Duration(milliseconds: 250),
-        curve: Curves.easeOut,
+        duration: const Duration(milliseconds: 360),
+        curve: Curves.easeOutCubic,
       );
     } else {
       _finish();
     }
   }
 
-  Future<void> _finish() async {
-    await OnboardingPersistenceService().setHasSeenOnboarding(true);
-    if (!mounted) return;
-    Navigator.of(
-      context,
-    ).pushReplacement(MaterialPageRoute(builder: (_) => const AuthGate()));
+  List<OnboardingPage> _buildPages(AppLocalizations l10n) {
+    return [
+      OnboardingPage(
+        assetPath: OnboardingAssets.welcome,
+        title: l10n.onbTitle1,
+        subtitle: l10n.onbSubtitle1,
+        semanticsLabel: l10n.onbIllustrationWelcome,
+        backdropVariant: 0,
+      ),
+      OnboardingPage(
+        assetPath: OnboardingAssets.order,
+        title: l10n.onbTitle2,
+        subtitle: l10n.onbSubtitle2,
+        semanticsLabel: l10n.onbIllustrationOrder,
+        backdropVariant: 1,
+      ),
+      OnboardingPage(
+        assetPath: OnboardingAssets.discover,
+        title: l10n.onbTitle5,
+        subtitle: l10n.onbSubtitle3,
+        semanticsLabel: l10n.onbIllustrationDiscover,
+        backdropVariant: 2,
+      ),
+      OnboardingPage(
+        assetPath: OnboardingAssets.start,
+        title: l10n.onbTitle7,
+        subtitle: l10n.onbSubtitle4,
+        semanticsLabel: l10n.onbIllustrationStart,
+        backdropVariant: 3,
+      ),
+    ];
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final titles = [
-      l10n.onbTitle1,
-      l10n.onbTitle2,
-      l10n.onbTitle3,
-      l10n.onbTitle4,
-      l10n.onbTitle5,
-      l10n.onbTitle6,
-      l10n.onbTitle7,
-      l10n.onbTitle8,
-    ];
-    final bodies = [
-      l10n.onbBody1,
-      l10n.onbBody2,
-      l10n.onbBody3,
-      l10n.onbBody4,
-      l10n.onbBody5,
-      l10n.onbBody6,
-      l10n.onbBody7,
-      l10n.onbBody8,
-    ];
-    final icons = [
-      Icons.local_mall_rounded,
-      Icons.search_rounded,
-      Icons.storefront_rounded,
-      Icons.shopping_cart_rounded,
-      Icons.payments_rounded,
-      Icons.local_shipping_rounded,
-      Icons.support_agent_rounded,
-      Icons.verified_rounded,
-    ];
+    final pages = _buildPages(l10n);
+    final compact = OnboardingStyle.isCompact(context);
+    final disableAnimations = MediaQuery.disableAnimationsOf(context);
 
-    return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              AppColors.primary.withOpacity(0.05),
-              Colors.transparent,
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+    return OnboardingShell(
+      topBar: Padding(
+        padding: DesignTokens.paddingPageHorizontal.add(
+          EdgeInsets.only(
+            top: compact ? DesignTokens.space4 : DesignTokens.space8,
           ),
         ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              Expanded(
-                child: PageView.builder(
-                  controller: _controller,
-                  itemCount: 8,
-                  physics: const BouncingScrollPhysics(),
-                  onPageChanged: (i) => setState(() => _index = i),
-                  itemBuilder: (context, i) {
-                    return Padding(
-                      padding: DesignTokens.paddingPageHorizontal.add(
-                        const EdgeInsets.only(top: DesignTokens.space32),
-                      ),
-                      child: Center(
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 560),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(DesignTokens.radiusXLarge),
-                              border: Border.all(color: Colors.black.withOpacity(0.06)),
-                              boxShadow: DesignTokens.shadowSmall,
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: DesignTokens.space20,
-                              vertical: DesignTokens.space24,
-                            ),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                _iconBubble(icons[i]),
-                                const SizedBox(height: DesignTokens.space20),
-                                Text(
-                                  titles[i],
-                                  style: AppTypography.heading4,
-                                  textAlign: TextAlign.center,
-                                ),
-                                const SizedBox(height: DesignTokens.space12),
-                                Text(
-                                  bodies[i],
-                                  style: AppTypography.bodyLarge.copyWith(color: AppColors.text),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
-                    border: Border.all(color: Colors.black.withOpacity(0.06)),
-                    boxShadow: DesignTokens.shadowSmall,
+        child: Align(
+          alignment: AlignmentDirectional.centerEnd,
+          child:
+              _isLastPage
+                  ? const SizedBox(height: 48)
+                  : TextButton(
+                    onPressed: _isFinishing ? null : _finish,
+                    child: Text(l10n.actionSkip),
                   ),
-                  padding: const EdgeInsets.all(DesignTokens.space12),
-                  child: Row(
-                    children: [
-                      TextButton(
-                        onPressed: _finish,
-                        child: Text(l10n.actionSkip),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Center(
-                          child: FittedBox(
-                            child: _Dots(count: 8, index: _index),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      FittedBox(
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: const Size(0, 44),
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          ),
-                          onPressed: _next,
-                          child: Text(
-                            _index == 7 ? l10n.actionGetStarted : l10n.actionNext,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 8),
-            ],
-          ),
         ),
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: PageView.builder(
+              controller: _controller,
+              itemCount: _pageCount,
+              physics: const BouncingScrollPhysics(),
+              onPageChanged: (i) => setState(() => _index = i),
+              itemBuilder: (context, i) {
+                return _OnboardingPageView(page: pages[i]);
+              },
+            ),
+          ),
+          Padding(
+            padding: DesignTokens.paddingPageHorizontal.add(
+              EdgeInsets.only(
+                top: DesignTokens.space8,
+                bottom:
+                    compact ? DesignTokens.space16 : DesignTokens.space24,
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                AnimatedSwitcher(
+                  duration:
+                      disableAnimations
+                          ? Duration.zero
+                          : const Duration(milliseconds: 220),
+                  child: OnboardingPageDots(
+                    key: ValueKey(_index),
+                    count: _pageCount,
+                    currentIndex: _index,
+                  ),
+                ),
+                const SizedBox(height: DesignTokens.space16),
+                OnboardingPrimaryButton(
+                  label:
+                      _isLastPage ? l10n.actionGetStarted : l10n.actionNext,
+                  onPressed: _next,
+                  showTrailingIcon: !_isLastPage,
+                  isLoading: _isFinishing,
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
 }
 
-class _Dots extends StatelessWidget {
-  final int count;
-  final int index;
-  const _Dots({required this.count, required this.index});
+class _OnboardingPageView extends StatelessWidget {
+  const _OnboardingPageView({required this.page});
+
+  final OnboardingPage page;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: List.generate(count, (i) {
-        final active = i == index;
-        return AnimatedContainer(
-          duration: const Duration(milliseconds: 220),
-          margin: const EdgeInsets.symmetric(horizontal: 3),
-          height: 8,
-          width: active ? 18 : 8,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            border: active ? null : Border.all(color: Colors.black.withOpacity(0.10)),
-            color: active ? null : Colors.black.withOpacity(0.08),
-            gradient: active
-                ? LinearGradient(
-                    colors: [
-                      AppColors.primary.withOpacity(0.95),
-                      AppColors.primary.withOpacity(0.75),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  )
-                : null,
+    return Padding(
+      padding: DesignTokens.paddingPageHorizontal,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SizedBox(
+            height:
+                OnboardingStyle.isCompact(context)
+                    ? DesignTokens.space8
+                    : DesignTokens.space12,
           ),
-        );
-      }),
+          Expanded(
+            child: Center(
+              child: OnboardingIllustration(
+                assetPath: page.assetPath,
+                semanticsLabel: page.semanticsLabel,
+                backdropVariant: page.backdropVariant,
+              ),
+            ),
+          ),
+          Text(
+            page.title,
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: OnboardingStyle.pageTitleStyle(context),
+          ),
+          const SizedBox(height: DesignTokens.space12),
+          Text(
+            page.subtitle,
+            textAlign: TextAlign.center,
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+            style: OnboardingStyle.pageSubtitleStyle(context),
+          ),
+          SizedBox(
+            height:
+                OnboardingStyle.isCompact(context)
+                    ? DesignTokens.space12
+                    : DesignTokens.space16,
+          ),
+        ],
+      ),
     );
   }
-}
-
-Widget _iconBubble(IconData icon) {
-  return Container(
-    width: 72,
-    height: 72,
-    decoration: BoxDecoration(
-      shape: BoxShape.circle,
-      gradient: LinearGradient(
-        colors: [
-          AppColors.primary.withOpacity(0.95),
-          AppColors.primary.withOpacity(0.75),
-        ],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ),
-      boxShadow: const [
-        BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 4)),
-      ],
-    ),
-    child: Icon(icon, color: Colors.white, size: 36),
-  );
 }

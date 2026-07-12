@@ -18,17 +18,10 @@ class ShimmerCollectionCard extends StatelessWidget {
         child: Column(
           children: [
             Expanded(
-              child: Container(
-                width: double.infinity,
-                color: Colors.white,
-              ),
+              child: Container(width: double.infinity, color: Colors.white),
             ),
             const SizedBox(height: 8),
-            Container(
-              height: 12,
-              width: 60,
-              color: Colors.white,
-            ),
+            Container(height: 12, width: 60, color: Colors.white),
           ],
         ),
       ),

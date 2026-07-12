@@ -539,6 +539,24 @@ abstract class AppLocalizations {
   /// **'No stores available'**
   String get noStoresAvailable;
 
+  /// No description provided for @storeDetailsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Store Details'**
+  String get storeDetailsTitle;
+
+  /// No description provided for @storeNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Store not found'**
+  String get storeNotFound;
+
+  /// No description provided for @storeNotFoundSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The store you\'re looking for doesn\'t exist or has been removed.'**
+  String get storeNotFoundSubtitle;
+
   /// No description provided for @collectionsTitle.
   ///
   /// In en, this message translates to:
@@ -1085,6 +1103,12 @@ abstract class AppLocalizations {
   /// **'Birthday:'**
   String get birthdayLabel;
 
+  /// No description provided for @birthdayAgeError.
+  ///
+  /// In en, this message translates to:
+  /// **'You must be at least 13 years old'**
+  String get birthdayAgeError;
+
   /// No description provided for @addressTitle.
   ///
   /// In en, this message translates to:
@@ -1337,11 +1361,77 @@ abstract class AppLocalizations {
   /// **'Get started'**
   String get actionGetStarted;
 
+  /// No description provided for @languagePickerTaglineEn.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to the biggest Sudanese\nonline shopping hub'**
+  String get languagePickerTaglineEn;
+
+  /// No description provided for @languagePickerTaglineAr.
+  ///
+  /// In en, this message translates to:
+  /// **'مرحبا بيك في اكبر مركز تسوق الكتروني سوداني'**
+  String get languagePickerTaglineAr;
+
+  /// Onboarding step counter label
+  ///
+  /// In en, this message translates to:
+  /// **'Step {current} of {total}'**
+  String onbStepProgress(int current, int total);
+
+  /// No description provided for @appStartLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load app settings. Please try again.'**
+  String get appStartLoadError;
+
+  /// No description provided for @languagePickerSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose your language'**
+  String get languagePickerSectionTitle;
+
+  /// No description provided for @onbIllustrationLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome illustration showing a friendly shopper at a Sudanese marketplace'**
+  String get onbIllustrationLanguage;
+
+  /// No description provided for @onbIllustrationWelcome.
+  ///
+  /// In en, this message translates to:
+  /// **'Illustration of Sudanese marketplace products'**
+  String get onbIllustrationWelcome;
+
+  /// No description provided for @onbIllustrationOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Illustration of fast home delivery'**
+  String get onbIllustrationOrder;
+
+  /// No description provided for @onbIllustrationDiscover.
+  ///
+  /// In en, this message translates to:
+  /// **'Illustration of browsing stores and products'**
+  String get onbIllustrationDiscover;
+
+  /// No description provided for @onbIllustrationStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Illustration of starting to shop with confidence'**
+  String get onbIllustrationStart;
+
   /// No description provided for @onbTitle1.
   ///
   /// In en, this message translates to:
   /// **'Welcome to Sudan Goods'**
   String get onbTitle1;
+
+  /// No description provided for @onbSubtitle1.
+  ///
+  /// In en, this message translates to:
+  /// **'Discover authentic Sudanese products from trusted local stores.'**
+  String get onbSubtitle1;
 
   /// No description provided for @onbBody1.
   ///
@@ -1354,6 +1444,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Order without waiting'**
   String get onbTitle2;
+
+  /// No description provided for @onbSubtitle2.
+  ///
+  /// In en, this message translates to:
+  /// **'Shop directly from sellers—no need to wait for travelers.'**
+  String get onbSubtitle2;
 
   /// No description provided for @onbBody2.
   ///
@@ -1391,6 +1487,12 @@ abstract class AppLocalizations {
   /// **'Stay in the loop'**
   String get onbTitle5;
 
+  /// No description provided for @onbSubtitle3.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow stores, get updates, and request hard-to-find items.'**
+  String get onbSubtitle3;
+
   /// No description provided for @onbBody5.
   ///
   /// In en, this message translates to:
@@ -1414,6 +1516,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Start in minutes'**
   String get onbTitle7;
+
+  /// No description provided for @onbSubtitle4.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your account, add an address, and start shopping today.'**
+  String get onbSubtitle4;
 
   /// No description provided for @onbBody7.
   ///
@@ -1534,6 +1642,300 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{qty} × {price}'**
   String qtyAndPrice(num qty, String price);
+
+  /// No description provided for @navInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Info'**
+  String get navInfo;
+
+  /// No description provided for @infoTabTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Help & Info'**
+  String get infoTabTitle;
+
+  /// No description provided for @infoTabSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Get in touch or learn more about us'**
+  String get infoTabSubtitle;
+
+  /// No description provided for @contactUs.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Us'**
+  String get contactUs;
+
+  /// No description provided for @contactUsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Send us a message, we reply within 24 hours'**
+  String get contactUsSubtitle;
+
+  /// No description provided for @aboutUs.
+  ///
+  /// In en, this message translates to:
+  /// **'About Us'**
+  String get aboutUs;
+
+  /// No description provided for @aboutUsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Learn more about Sudan Goods'**
+  String get aboutUsSubtitle;
+
+  /// No description provided for @contactFormTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'d love to hear from you'**
+  String get contactFormTitle;
+
+  /// No description provided for @contactFormSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill in the form below and we\'ll get back to you shortly.'**
+  String get contactFormSubtitle;
+
+  /// No description provided for @contactFormEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Your email'**
+  String get contactFormEmailLabel;
+
+  /// No description provided for @contactFormSubjectLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Subject'**
+  String get contactFormSubjectLabel;
+
+  /// No description provided for @contactFormMessageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Your message'**
+  String get contactFormMessageLabel;
+
+  /// No description provided for @contactFormMessageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Describe your question or feedback...'**
+  String get contactFormMessageHint;
+
+  /// No description provided for @contactFormCharCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}/500'**
+  String contactFormCharCount(int count);
+
+  /// No description provided for @contactFormSendButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Message'**
+  String get contactFormSendButton;
+
+  /// No description provided for @contactFormSuccessTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Message sent!'**
+  String get contactFormSuccessTitle;
+
+  /// No description provided for @contactFormSuccessSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you for reaching out. We\'ll get back to you within 24 hours.'**
+  String get contactFormSuccessSubtitle;
+
+  /// No description provided for @contactFormSendAnother.
+  ///
+  /// In en, this message translates to:
+  /// **'Send another message'**
+  String get contactFormSendAnother;
+
+  /// No description provided for @contactFormError.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to send message. Please try again.'**
+  String get contactFormError;
+
+  /// No description provided for @contactFormValidationEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a message'**
+  String get contactFormValidationEmpty;
+
+  /// No description provided for @contactFormValidationTooShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Message must be at least 10 characters'**
+  String get contactFormValidationTooShort;
+
+  /// No description provided for @subjectGeneral.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get subjectGeneral;
+
+  /// No description provided for @subjectOrderIssue.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Issue'**
+  String get subjectOrderIssue;
+
+  /// No description provided for @subjectFeedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Feedback'**
+  String get subjectFeedback;
+
+  /// No description provided for @aboutUsLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load About Us content. Please try again.'**
+  String get aboutUsLoadError;
+
+  /// No description provided for @aboutUsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Content coming soon'**
+  String get aboutUsEmpty;
+
+  /// No description provided for @aboutUsPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get aboutUsPhone;
+
+  /// No description provided for @aboutUsEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get aboutUsEmail;
+
+  /// No description provided for @aboutUsWebsite.
+  ///
+  /// In en, this message translates to:
+  /// **'Website'**
+  String get aboutUsWebsite;
+
+  /// No description provided for @aboutUsInstagram.
+  ///
+  /// In en, this message translates to:
+  /// **'Instagram'**
+  String get aboutUsInstagram;
+
+  /// No description provided for @aboutUsTwitter.
+  ///
+  /// In en, this message translates to:
+  /// **'X (Twitter)'**
+  String get aboutUsTwitter;
+
+  /// No description provided for @aboutUsFacebook.
+  ///
+  /// In en, this message translates to:
+  /// **'Facebook'**
+  String get aboutUsFacebook;
+
+  /// No description provided for @aboutUsSocial.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow Us'**
+  String get aboutUsSocial;
+
+  /// No description provided for @contactUsTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Free'**
+  String get contactUsTag;
+
+  /// No description provided for @aboutUsTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Info'**
+  String get aboutUsTag;
+
+  /// No description provided for @addAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Address'**
+  String get addAddress;
+
+  /// No description provided for @saveAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Address'**
+  String get saveAddress;
+
+  /// No description provided for @deleteAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Address'**
+  String get deleteAddress;
+
+  /// No description provided for @deleteAddressConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this address?'**
+  String get deleteAddressConfirmation;
+
+  /// No description provided for @defaultAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get defaultAddress;
+
+  /// No description provided for @noAddressesYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No saved addresses'**
+  String get noAddressesYet;
+
+  /// No description provided for @addAddressPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Add an address to use for delivery.'**
+  String get addAddressPrompt;
+
+  /// No description provided for @addressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Label'**
+  String get addressLabel;
+
+  /// No description provided for @addressLabelHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Home, Work'**
+  String get addressLabelHint;
+
+  /// No description provided for @streetHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. 123 Main St'**
+  String get streetHint;
+
+  /// No description provided for @cityHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Khartoum'**
+  String get cityHint;
+
+  /// No description provided for @failedToDeleteAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete address. Please try again.'**
+  String get failedToDeleteAddress;
+
+  /// No description provided for @failedToSaveAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save address. Please try again.'**
+  String get failedToSaveAddress;
+
+  /// No description provided for @fieldRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'This field is required'**
+  String get fieldRequired;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

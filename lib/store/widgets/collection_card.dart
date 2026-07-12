@@ -35,25 +35,40 @@ class CollectionCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
+                    borderRadius: BorderRadius.circular(
+                      DesignTokens.radiusMedium,
+                    ),
                     child: Stack(
                       fit: StackFit.expand,
                       children: [
                         CachedNetworkImage(
-                          imageUrl: collection.imageUrl.isNotEmpty ? collection.imageUrl : '',
+                          imageUrl:
+                              collection.imageUrl.isNotEmpty
+                                  ? collection.imageUrl
+                                  : '',
                           fit: BoxFit.cover,
-                          placeholder: (context, url) => Shimmer.fromColors(
-                            baseColor: Colors.grey.shade300,
-                            highlightColor: Colors.grey.shade100,
-                            child: Container(width: 80, height: 80, color: Colors.white),
-                          ),
-                          errorWidget: (_, __, ___) => Container(
-                            width: 80,
-                            height: 80,
-                            color: Colors.grey.shade100,
-                            alignment: Alignment.center,
-                            child: const Icon(Icons.image_outlined, size: 28, color: Colors.grey),
-                          ),
+                          placeholder:
+                              (context, url) => Shimmer.fromColors(
+                                baseColor: Colors.grey.shade300,
+                                highlightColor: Colors.grey.shade100,
+                                child: Container(
+                                  width: 80,
+                                  height: 80,
+                                  color: Colors.white,
+                                ),
+                              ),
+                          errorWidget:
+                              (_, __, ___) => Container(
+                                width: 80,
+                                height: 80,
+                                color: Colors.grey.shade100,
+                                alignment: Alignment.center,
+                                child: const Icon(
+                                  Icons.image_outlined,
+                                  size: 28,
+                                  color: Colors.grey,
+                                ),
+                              ),
                         ),
                         // Soft bottom fade for a polished look
                         Positioned(
@@ -66,7 +81,10 @@ class CollectionCard extends StatelessWidget {
                               gradient: LinearGradient(
                                 begin: Alignment.topCenter,
                                 end: Alignment.bottomCenter,
-                                colors: [Colors.transparent, Colors.black.withOpacity(0.06)],
+                                colors: [
+                                  Colors.transparent,
+                                  Colors.black.withOpacity(0.06),
+                                ],
                               ),
                             ),
                           ),

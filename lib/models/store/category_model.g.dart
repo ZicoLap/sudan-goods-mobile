@@ -15,6 +15,7 @@ Category _$CategoryFromJson(Map<String, dynamic> json) => Category(
     json['createdAt'] as Timestamp,
   ),
   imageUrl: json['imageUrl'] as String?,
+  imageThumbUrl: json['imageThumbUrl'] as String?,
   updatedAt: _$JsonConverterFromJson<Timestamp, DateTime>(
     json['updatedAt'],
     const TimestampConverter().fromJson,
@@ -25,6 +26,7 @@ Map<String, dynamic> _$CategoryToJson(Category instance) => <String, dynamic>{
   'id': instance.id,
   'name': instance.name,
   'imageUrl': instance.imageUrl,
+  'imageThumbUrl': instance.imageThumbUrl,
   'isActive': instance.isActive,
   'isFeatured': instance.isFeatured,
   'createdAt': const TimestampConverter().toJson(instance.createdAt),

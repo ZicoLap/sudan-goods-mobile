@@ -43,7 +43,7 @@ dependencies:
   google_fonts: ^6.2.1
   provider: ^6.1.4
   intl: ^0.19.0
-  cloud_functions: ^5.4.0
+  cloud_functions: ^5.6.2
   firebase_storage: ^12.4.5
   file_picker: ^10.1.2
   uuid: ^4.5.1
@@ -53,6 +53,9 @@ dependencies:
   package_info_plus: ^8.0.0
   shared_preferences: ^2.3.2
   cached_network_image: ^3.3.1
+  firebase_app_check: ^0.3.2+10
+  flutter_stripe: ^11.4.0
+  crypto: ^3.0.0
 
 dev_dependencies:
   flutter_test:
@@ -89,6 +92,7 @@ flutter:
   assets:
     - assets/images/
     - assets/app_icon/
+    - assets/onboarding/
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
