@@ -8,7 +8,7 @@ import 'package:sudan_goods/onboarding/onboarding_screen.dart';
 import 'package:sudan_goods/onboarding/onboarding_style.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 
-/// First-run language selection with premium illustration hero.
+/// First-run language selection with staggered entry animation.
 class LanguagePickerScreen extends StatefulWidget {
   const LanguagePickerScreen({super.key});
 
@@ -16,14 +16,31 @@ class LanguagePickerScreen extends StatefulWidget {
   State<LanguagePickerScreen> createState() => _LanguagePickerScreenState();
 }
 
-class _LanguagePickerScreenState extends State<LanguagePickerScreen> {
+class _LanguagePickerScreenState extends State<LanguagePickerScreen>
+    with SingleTickerProviderStateMixin {
   String? _selectedCode;
   bool _isContinuing = false;
+  late final AnimationController _entryController;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _preselectDeviceLanguage());
+    _entryController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 900),
+    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _preselectDeviceLanguage();
+      if (!MediaQuery.disableAnimationsOf(context)) {
+        _entryController.forward();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _entryController.dispose();
+    super.dispose();
   }
 
   void _preselectDeviceLanguage() {
@@ -58,10 +75,28 @@ class _LanguagePickerScreenState extends State<LanguagePickerScreen> {
     }
   }
 
+  Animation<double> _stagger(int index, {int total = 3}) {
+    final start = (index / total) * 0.40;
+    final end = (start + 0.60).clamp(0.0, 1.0);
+    return CurvedAnimation(
+      parent: _entryController,
+      curve: Interval(start, end, curve: Curves.easeOutCubic),
+    );
+  }
+
+  /// Returns localizations for the currently selected language so the UI
+  /// reflects the chosen language before the user taps Continue.
+  AppLocalizations _l10nFor(BuildContext context) {
+    final code = _selectedCode;
+    if (code == null) return AppLocalizations.of(context) ?? lookupAppLocalizations(const Locale('en'));
+    return lookupAppLocalizations(Locale(code));
+  }
+
   @override
   Widget build(BuildContext context) {
     final compact = OnboardingStyle.isCompact(context);
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context);           // device locale (for illustration label)
+    final selectedL10n = _l10nFor(context);              // selected language (for UI text)
 
     return OnboardingShell(
       bottomBar: Padding(
@@ -71,7 +106,7 @@ class _LanguagePickerScreenState extends State<LanguagePickerScreen> {
           ),
         ),
         child: OnboardingPrimaryButton(
-          label: l10n?.actionContinue ?? 'Continue',
+          label: selectedL10n.actionContinue,
           onPressed: _selectedCode == null ? null : _continue,
           isLoading: _isContinuing,
           showTrailingIcon: true,
@@ -80,79 +115,123 @@ class _LanguagePickerScreenState extends State<LanguagePickerScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Padding(
-            padding: DesignTokens.paddingPageHorizontal.add(
-              EdgeInsets.only(
-                top: compact ? DesignTokens.space8 : DesignTokens.space12,
-              ),
-            ),
-            child: const Center(child: OnboardingBrandMark()),
-          ),
+          SizedBox(height: compact ? DesignTokens.space10 : DesignTokens.space16),
+
+          // ── Illustration ─────────────────────────────────────────
           Expanded(
             flex: compact ? 5 : 6,
-            child: Center(
-              child: OnboardingIllustration(
-                assetPath: OnboardingAssets.languageWelcome,
-                semanticsLabel:
-                    l10n?.onbIllustrationLanguage ?? 'Welcome illustration',
-                maxHeight: OnboardingStyle.illustrationMaxHeight(context),
-                enableFloat: true,
+            child: _FadeSlideIn(
+              animation: _stagger(0),
+              slideOffset: 20,
+              child: Center(
+                child: OnboardingIllustration(
+                  assetPath: OnboardingAssets.languageWelcome,
+                  semanticsLabel:
+                      l10n?.onbIllustrationLanguage ?? 'Welcome illustration',
+                  maxHeight: OnboardingStyle.illustrationMaxHeight(context),
+                  enableFloat: true,
+                ),
               ),
             ),
           ),
-          Padding(
-            padding: DesignTokens.paddingPageHorizontal,
-            child: _LanguagePickerHeader(),
-          ),
-          SizedBox(height: compact ? DesignTokens.space20 : DesignTokens.space24),
-          Padding(
-            padding: DesignTokens.paddingPageHorizontal,
-            child: _LanguageTileRow(
-              code: 'en',
-              isSelected: _selectedCode == 'en',
-              isDisabled: _isContinuing,
-              onTap: () => _selectLanguage('en'),
+
+          // ── Heading ──────────────────────────────────────────────
+          _FadeSlideIn(
+            animation: _stagger(1),
+            child: Padding(
+              padding: DesignTokens.paddingPageHorizontal,
+              child: _LanguagePickerHeader(l10n: selectedL10n),
             ),
           ),
-          const SizedBox(height: DesignTokens.space12),
-          Padding(
-            padding: DesignTokens.paddingPageHorizontal,
-            child: _LanguageTileRow(
-              code: 'ar',
-              isSelected: _selectedCode == 'ar',
-              isDisabled: _isContinuing,
-              onTap: () => _selectLanguage('ar'),
-            ),
-          ),
+
           SizedBox(height: compact ? DesignTokens.space16 : DesignTokens.space20),
+
+          // ── Language cards ────────────────────────────────────────
+          _FadeSlideIn(
+            animation: _stagger(2),
+            child: Padding(
+              padding: DesignTokens.paddingPageHorizontal,
+              child: Column(
+                children: [
+                  _LanguageTileRow(
+                    code: 'en',
+                    isSelected: _selectedCode == 'en',
+                    isDisabled: _isContinuing,
+                    uiL10n: selectedL10n,
+                    onTap: () => _selectLanguage('en'),
+                  ),
+                  const SizedBox(height: DesignTokens.space12),
+                  _LanguageTileRow(
+                    code: 'ar',
+                    isSelected: _selectedCode == 'ar',
+                    isDisabled: _isContinuing,
+                    uiL10n: selectedL10n,
+                    onTap: () => _selectLanguage('ar'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          SizedBox(height: compact ? DesignTokens.space12 : DesignTokens.space16),
         ],
       ),
     );
   }
 }
 
-class _LanguagePickerHeader extends StatelessWidget {
-  const _LanguagePickerHeader();
+/// Lightweight fade + upward-slide entry for staggered content.
+class _FadeSlideIn extends StatelessWidget {
+  const _FadeSlideIn({
+    required this.animation,
+    required this.child,
+    this.slideOffset = 28.0,
+  });
+
+  final Animation<double> animation;
+  final Widget child;
+  final double slideOffset;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
+    if (MediaQuery.disableAnimationsOf(context)) return child;
+
+    return FadeTransition(
+      opacity: animation,
+      child: AnimatedBuilder(
+        animation: animation,
+        builder: (context, inner) => Transform.translate(
+          offset: Offset(0, slideOffset * (1 - animation.value)),
+          child: inner,
+        ),
+        child: child,
+      ),
+    );
+  }
+}
+
+class _LanguagePickerHeader extends StatelessWidget {
+  const _LanguagePickerHeader({required this.l10n});
+
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    final compact = OnboardingStyle.isCompact(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          l10n?.appTitle ?? 'Sudan Goods',
+          'Sudan Goods',
           textAlign: TextAlign.center,
           style: OnboardingStyle.languagePickerTitleStyle(context),
         ),
-        const SizedBox(height: DesignTokens.space12),
+        SizedBox(height: compact ? DesignTokens.space8 : DesignTokens.space10),
         const Center(child: OnboardingAccentLine()),
-        const SizedBox(height: DesignTokens.space12),
+        SizedBox(height: compact ? DesignTokens.space8 : DesignTokens.space10),
         Text(
-          l10n?.languagePickerSectionTitle ??
-              l10n?.selectLanguage ??
-              'Choose your language',
+          l10n.languagePickerSectionTitle,
           textAlign: TextAlign.center,
           style: OnboardingStyle.languagePickerSubtitleStyle(context),
         ),
@@ -167,21 +246,21 @@ class _LanguageTileRow extends StatelessWidget {
     required this.isSelected,
     required this.onTap,
     required this.isDisabled,
+    required this.uiL10n,
   });
 
   final String code;
   final bool isSelected;
   final VoidCallback onTap;
   final bool isDisabled;
+  final AppLocalizations uiL10n;
 
   static const String _englishNative = 'English';
   static const String _arabicNative = 'العربية';
 
-  String? _secondaryLabel(AppLocalizations? uiL10n, String nativeLabel) {
+  String? _secondaryLabel(String nativeLabel) {
     final translated =
-        code == 'ar'
-            ? (uiL10n?.langArabic ?? 'Arabic')
-            : (uiL10n?.langEnglish ?? 'English');
+        code == 'ar' ? uiL10n.langArabic : uiL10n.langEnglish;
     if (nativeLabel.trim().toLowerCase() == translated.trim().toLowerCase()) {
       return null;
     }
@@ -190,13 +269,12 @@ class _LanguageTileRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final uiL10n = AppLocalizations.of(context);
     final nativeLabel = code == 'ar' ? _arabicNative : _englishNative;
 
     return OnboardingLanguageTile(
       code: code,
       nativeLabel: nativeLabel,
-      secondaryLabel: _secondaryLabel(uiL10n, nativeLabel),
+      secondaryLabel: _secondaryLabel(nativeLabel),
       isSelected: isSelected,
       isDisabled: isDisabled,
       onTap: onTap,

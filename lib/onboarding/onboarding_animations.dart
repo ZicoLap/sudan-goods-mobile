@@ -5,8 +5,8 @@ class OnboardingFloatAnimation extends StatelessWidget {
   const OnboardingFloatAnimation({
     super.key,
     required this.child,
-    this.amplitude = 8,
-    this.duration = const Duration(milliseconds: 2800),
+    this.amplitude = 6,
+    this.duration = const Duration(milliseconds: 3200),
   });
 
   final Widget child;
@@ -123,7 +123,7 @@ class OnboardingScaleIn extends StatelessWidget {
   Widget build(BuildContext context) {
     if (MediaQuery.disableAnimationsOf(context)) return child;
 
-    final scale = Tween<double>(begin: 0.92, end: 1.0).animate(
+    final scale = Tween<double>(begin: 0.86, end: 1.0).animate(
       CurvedAnimation(parent: animation, curve: Curves.easeOutBack),
     );
 

@@ -7,15 +7,12 @@ import 'package:sudan_goods/onboarding/onboarding_assets.dart';
 import 'package:sudan_goods/onboarding/onboarding_persistence_service.dart';
 import 'package:sudan_goods/onboarding/onboarding_style.dart';
 import 'package:sudan_goods/authentication/auth_gate_page.dart';
+import 'package:sudan_goods/theme/app_theme.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 
 /// Premium illustration-led onboarding walkthrough.
 class OnboardingScreen extends StatefulWidget {
-  const OnboardingScreen({
-    super.key,
-    this.persistenceService,
-    this.nextScreen,
-  });
+  const OnboardingScreen({super.key, this.persistenceService, this.nextScreen});
 
   final OnboardingPersistenceService? persistenceService;
   final Widget? nextScreen;
@@ -63,7 +60,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     if (_index < _pageCount - 1) {
       HapticFeedback.selectionClick();
       _controller.nextPage(
-        duration: const Duration(milliseconds: 420),
+        duration: const Duration(milliseconds: 440),
         curve: Curves.easeOutCubic,
       );
     } else {
@@ -155,28 +152,32 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               },
             ),
           ),
+          // ── Bottom controls ──────────────────────────────────────
           Padding(
             padding: DesignTokens.paddingPageHorizontal.add(
               EdgeInsets.only(
-                top: DesignTokens.space8,
+                top: compact ? DesignTokens.space8 : DesignTokens.space12,
                 bottom: compact ? DesignTokens.space16 : DesignTokens.space24,
               ),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                // Page dots
                 AnimatedSwitcher(
-                  duration:
-                      disableAnimations
-                          ? Duration.zero
-                          : const Duration(milliseconds: 280),
+                  duration: disableAnimations
+                      ? Duration.zero
+                      : const Duration(milliseconds: 300),
                   child: OnboardingPageDots(
                     key: ValueKey(_index),
                     count: _pageCount,
                     currentIndex: _index,
                   ),
                 ),
-                const SizedBox(height: DesignTokens.space20),
+                SizedBox(
+                  height: compact ? DesignTokens.space14 : DesignTokens.space20,
+                ),
+                // Primary CTA
                 OnboardingPrimaryButton(
                   label: _isLastPage ? l10n.actionGetStarted : l10n.actionNext,
                   onPressed: _next,
@@ -240,7 +241,7 @@ class _OnboardingPageViewState extends State<_OnboardingPageView>
     _entryController?.dispose();
     _entryController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 680),
+      duration: const Duration(milliseconds: 720),
     )..forward();
   }
 
@@ -255,29 +256,29 @@ class _OnboardingPageViewState extends State<_OnboardingPageView>
     final compact = OnboardingStyle.isCompact(context);
     final disableAnimations = MediaQuery.disableAnimationsOf(context);
     final controller = _entryController;
-    final alwaysVisible = AlwaysStoppedAnimation<double>(1);
+    const alwaysVisible = AlwaysStoppedAnimation<double>(1.0);
 
-    final illustrationAnim =
-        disableAnimations || controller == null
-            ? alwaysVisible
-            : onboardingPageAnimation(controller, 0);
-    final titleAnim =
-        disableAnimations || controller == null
-            ? alwaysVisible
-            : onboardingPageAnimation(controller, 1);
-    final subtitleAnim =
-        disableAnimations || controller == null
-            ? alwaysVisible
-            : onboardingPageAnimation(controller, 2);
+    final illustrationAnim = disableAnimations || controller == null
+        ? alwaysVisible
+        : onboardingPageAnimation(controller, 0, count: 4);
+    final eyebrowAnim = disableAnimations || controller == null
+        ? alwaysVisible
+        : onboardingPageAnimation(controller, 1, count: 4);
+    final titleAnim = disableAnimations || controller == null
+        ? alwaysVisible
+        : onboardingPageAnimation(controller, 2, count: 4);
+    final subtitleAnim = disableAnimations || controller == null
+        ? alwaysVisible
+        : onboardingPageAnimation(controller, 3, count: 4);
 
-    Widget content = Padding(
+    return Padding(
       padding: DesignTokens.paddingPageHorizontal,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          SizedBox(
-            height: compact ? DesignTokens.space4 : DesignTokens.space8,
-          ),
+          SizedBox(height: compact ? DesignTokens.space4 : DesignTokens.space8),
+
+          // ── Illustration ──────────────────────────────────────────
           Expanded(
             child: Center(
               child: OnboardingScaleIn(
@@ -291,8 +292,22 @@ class _OnboardingPageViewState extends State<_OnboardingPageView>
               ),
             ),
           ),
+
+          SizedBox(height: compact ? DesignTokens.space8 : DesignTokens.space12),
+
+          // ── Eyebrow label ─────────────────────────────────────────
+          OnboardingFadeSlide(
+            animation: eyebrowAnim,
+            offset: 16,
+            child: _EyebrowLabel(index: widget.pageIndex),
+          ),
+
+          SizedBox(height: compact ? DesignTokens.space4 : DesignTokens.space6),
+
+          // ── Title ─────────────────────────────────────────────────
           OnboardingFadeSlide(
             animation: titleAnim,
+            offset: 20,
             child: Text(
               widget.page.title,
               textAlign: TextAlign.center,
@@ -301,9 +316,13 @@ class _OnboardingPageViewState extends State<_OnboardingPageView>
               style: OnboardingStyle.pageTitleStyle(context),
             ),
           ),
-          const SizedBox(height: DesignTokens.space12),
+
+          SizedBox(height: compact ? DesignTokens.space8 : DesignTokens.space10),
+
+          // ── Subtitle ──────────────────────────────────────────────
           OnboardingFadeSlide(
             animation: subtitleAnim,
+            offset: 16,
             child: Text(
               widget.page.subtitle,
               textAlign: TextAlign.center,
@@ -312,15 +331,60 @@ class _OnboardingPageViewState extends State<_OnboardingPageView>
               style: OnboardingStyle.pageSubtitleStyle(context),
             ),
           ),
-          SizedBox(
-            height: compact ? DesignTokens.space8 : DesignTokens.space12,
-          ),
+
+          SizedBox(height: compact ? DesignTokens.space8 : DesignTokens.space12),
         ],
       ),
     );
+  }
+}
 
-    if (disableAnimations) return content;
+/// Small categorisation label rendered above the page title.
+class _EyebrowLabel extends StatelessWidget {
+  const _EyebrowLabel({required this.index});
 
-    return content;
+  final int index;
+
+  static const _labels = ['Discover', 'Shop', 'Connect', 'Start'];
+  static const _icons = [
+    Icons.explore_rounded,
+    Icons.shopping_bag_rounded,
+    Icons.notifications_rounded,
+    Icons.rocket_launch_rounded,
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final label = _labels[index % _labels.length];
+    final icon  = _icons[index % _icons.length];
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
+            gradient: LinearGradient(
+              colors: [
+                AppColors.primary.withValues(alpha: 0.12),
+                OnboardingStyle.gradientAccent.withValues(alpha: 0.08),
+              ],
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 12, color: AppColors.primary),
+              const SizedBox(width: 5),
+              Text(
+                label.toUpperCase(),
+                style: OnboardingStyle.pageEyebrowStyle(context),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 }

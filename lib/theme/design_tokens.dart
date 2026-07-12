@@ -4,9 +4,13 @@ import 'package:flutter/material.dart';
 class DesignTokens {
   // Spacing System (8pt grid)
   static const double space4 = 4.0;
+  static const double space6 = 6.0;
   static const double space8 = 8.0;
+  static const double space10 = 10.0;
   static const double space12 = 12.0;
+  static const double space14 = 14.0;
   static const double space16 = 16.0;
+  static const double space18 = 18.0;
   static const double space20 = 20.0;
   static const double space24 = 24.0;
   static const double space32 = 32.0;
@@ -41,7 +45,7 @@ class DesignTokens {
   // Elevation/Shadow
   static List<BoxShadow> get shadowSmall => [
     BoxShadow(
-      color: Colors.black.withOpacity(0.08),
+      color: Colors.black.withValues(alpha: 0.08),
       blurRadius: 4,
       offset: const Offset(0, 2),
     ),
@@ -49,7 +53,7 @@ class DesignTokens {
 
   static List<BoxShadow> get shadowMedium => [
     BoxShadow(
-      color: Colors.black.withOpacity(0.12),
+      color: Colors.black.withValues(alpha: 0.12),
       blurRadius: 8,
       offset: const Offset(0, 4),
     ),
@@ -57,7 +61,7 @@ class DesignTokens {
 
   static List<BoxShadow> get shadowLarge => [
     BoxShadow(
-      color: Colors.black.withOpacity(0.16),
+      color: Colors.black.withValues(alpha: 0.16),
       blurRadius: 16,
       offset: const Offset(0, 8),
     ),

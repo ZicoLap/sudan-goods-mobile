@@ -10,11 +10,20 @@ import 'package:sudan_goods/theme/design_tokens.dart';
 class OnboardingStyle {
   OnboardingStyle._();
 
-  static const Color gradientAccent = Color(0xFFFF8A3D);
-  static const Color surfaceWarm = Color(0xFFFFF9F5);
-  static const Color surfaceMuted = Color(0xFFFFF0E6);
+  static const Color gradientAccent = Color(0xFFFF7A20);
+  static const Color gradientDeep  = Color(0xFFE85500);
+  static const Color surfaceWarm   = Color(0xFFFFF8F3);
+  static const Color surfaceMuted  = Color(0xFFFFF0E5);
+  static const Color cardSurface   = Color(0xFFFFFFFF);
 
   static const LinearGradient brandGradient = LinearGradient(
+    colors: [gradientDeep, AppColors.primary, gradientAccent],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    stops: [0.0, 0.45, 1.0],
+  );
+
+  static const LinearGradient brandGradientSimple = LinearGradient(
     colors: [AppColors.primary, gradientAccent],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
@@ -22,13 +31,14 @@ class OnboardingStyle {
 
   static const LinearGradient meshGradient = LinearGradient(
     colors: [
-      Color(0xFFFFF9F5),
-      Color(0xFFFFF3EB),
+      Color(0xFFFFF9F4),
+      Color(0xFFFFF4EC),
+      Color(0xFFFFFBF8),
       Colors.white,
     ],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    stops: [0.0, 0.45, 1.0],
+    stops: [0.0, 0.30, 0.65, 1.0],
   );
 
   static bool isCompact(BuildContext context) =>
@@ -39,8 +49,8 @@ class OnboardingStyle {
 
   static double illustrationMaxHeight(BuildContext context) {
     final screenHeight = MediaQuery.sizeOf(context).height;
-    if (isVeryCompact(context)) return screenHeight * 0.32;
-    if (isCompact(context)) return screenHeight * 0.36;
+    if (isVeryCompact(context)) return screenHeight * 0.30;
+    if (isCompact(context))     return screenHeight * 0.34;
     return screenHeight * 0.40;
   }
 
@@ -48,9 +58,9 @@ class OnboardingStyle {
     final base =
         isCompact(context) ? AppTypography.body : AppTypography.bodyLarge;
     return base.copyWith(
-      color: AppColors.text.withValues(alpha: 0.68),
+      color: AppColors.text.withValues(alpha: 0.60),
       fontWeight: FontWeight.w500,
-      height: 1.5,
+      height: 1.6,
     );
   }
 
@@ -62,8 +72,8 @@ class OnboardingStyle {
     return base.copyWith(
       color: AppColors.text,
       fontWeight: FontWeight.w800,
-      letterSpacing: -0.6,
-      height: 1.15,
+      letterSpacing: -0.8,
+      height: 1.12,
     );
   }
 
@@ -75,16 +85,16 @@ class OnboardingStyle {
     return base.copyWith(
       color: AppColors.text,
       fontWeight: FontWeight.w800,
-      letterSpacing: -0.6,
-      height: 1.12,
+      letterSpacing: -0.8,
+      height: 1.10,
     );
   }
 
   static TextStyle languagePickerSubtitleStyle(BuildContext context) {
     return AppTypography.bodyLarge.copyWith(
-      color: AppColors.text.withValues(alpha: 0.65),
-      fontWeight: FontWeight.w600,
-      height: 1.45,
+      color: AppColors.text.withValues(alpha: 0.58),
+      fontWeight: FontWeight.w500,
+      height: 1.55,
     );
   }
 
@@ -93,12 +103,13 @@ class OnboardingStyle {
       color: AppColors.text,
       fontWeight: FontWeight.w700,
       height: 1.2,
+      letterSpacing: -0.2,
     );
   }
 
   static TextStyle languageTileSubtitleStyle(BuildContext context) {
     return AppTypography.body.copyWith(
-      color: AppColors.text.withValues(alpha: 0.55),
+      color: AppColors.text.withValues(alpha: 0.48),
       fontWeight: FontWeight.w500,
       height: 1.3,
     );
@@ -107,7 +118,7 @@ class OnboardingStyle {
   static TextStyle pageEyebrowStyle(BuildContext context) {
     return AppTypography.smallBold.copyWith(
       color: AppColors.primary,
-      letterSpacing: 1.2,
+      letterSpacing: 1.4,
     );
   }
 
@@ -115,27 +126,51 @@ class OnboardingStyle {
     return const BoxDecoration(gradient: meshGradient);
   }
 
-  static List<BoxShadow> brandShadow({double opacity = 0.24}) => [
+  static List<BoxShadow> brandShadow({double opacity = 0.28}) => [
     BoxShadow(
       color: AppColors.primary.withValues(alpha: opacity),
-      blurRadius: 24,
-      offset: const Offset(0, 10),
+      blurRadius: 28,
+      spreadRadius: -4,
+      offset: const Offset(0, 12),
     ),
   ];
 
   static List<BoxShadow> cardShadow({bool selected = false}) => [
-    BoxShadow(
-      color:
-          selected
-              ? AppColors.primary.withValues(alpha: 0.18)
-              : Colors.black.withValues(alpha: 0.06),
-      blurRadius: selected ? 20 : 12,
-      offset: Offset(0, selected ? 8 : 4),
-    ),
+    if (selected) ...[
+      BoxShadow(
+        color: AppColors.primary.withValues(alpha: 0.20),
+        blurRadius: 24,
+        spreadRadius: -2,
+        offset: const Offset(0, 8),
+      ),
+    ] else ...[
+      BoxShadow(
+        color: Colors.black.withValues(alpha: 0.05),
+        blurRadius: 16,
+        spreadRadius: -2,
+        offset: const Offset(0, 4),
+      ),
+      BoxShadow(
+        color: Colors.black.withValues(alpha: 0.03),
+        blurRadius: 4,
+        offset: const Offset(0, 1),
+      ),
+    ],
   ];
+
+  static List<BoxShadow> buttonShadow({bool enabled = true}) => enabled
+      ? [
+          BoxShadow(
+            color: AppColors.primary.withValues(alpha: 0.30),
+            blurRadius: 20,
+            spreadRadius: -4,
+            offset: const Offset(0, 8),
+          ),
+        ]
+      : const [];
 }
 
-/// Gradient-backed scaffold with ambient decorative orbs.
+/// Gradient-backed scaffold with ambient decorative blobs.
 class OnboardingShell extends StatelessWidget {
   const OnboardingShell({
     super.key,
@@ -185,28 +220,41 @@ class _AmbientOrbs extends StatelessWidget {
     return IgnorePointer(
       child: Stack(
         children: [
+          // Top-right warm orb
           Positioned(
-            top: -size.width * 0.18,
-            right: -size.width * 0.12,
-            child: _Orb(
+            top: -size.width * 0.20,
+            right: -size.width * 0.15,
+            child: _GradientOrb(
+              diameter: size.width * 0.70,
+              colors: [
+                AppColors.primary.withValues(alpha: 0.12),
+                OnboardingStyle.gradientAccent.withValues(alpha: 0.06),
+                Colors.transparent,
+              ],
+            ),
+          ),
+          // Mid-left accent orb
+          Positioned(
+            top: size.height * 0.28,
+            left: -size.width * 0.25,
+            child: _GradientOrb(
               diameter: size.width * 0.55,
-              color: AppColors.primary.withValues(alpha: 0.10),
+              colors: [
+                OnboardingStyle.gradientAccent.withValues(alpha: 0.09),
+                Colors.transparent,
+              ],
             ),
           ),
+          // Bottom-right soft glow
           Positioned(
-            top: size.height * 0.22,
-            left: -size.width * 0.22,
-            child: _Orb(
-              diameter: size.width * 0.48,
-              color: OnboardingStyle.gradientAccent.withValues(alpha: 0.08),
-            ),
-          ),
-          Positioned(
-            bottom: size.height * 0.08,
-            right: -size.width * 0.08,
-            child: _Orb(
-              diameter: size.width * 0.36,
-              color: OnboardingStyle.surfaceMuted.withValues(alpha: 0.65),
+            bottom: size.height * 0.04,
+            right: -size.width * 0.10,
+            child: _GradientOrb(
+              diameter: size.width * 0.42,
+              colors: [
+                AppColors.primary.withValues(alpha: 0.05),
+                Colors.transparent,
+              ],
             ),
           ),
         ],
@@ -215,11 +263,11 @@ class _AmbientOrbs extends StatelessWidget {
   }
 }
 
-class _Orb extends StatelessWidget {
-  const _Orb({required this.diameter, required this.color});
+class _GradientOrb extends StatelessWidget {
+  const _GradientOrb({required this.diameter, required this.colors});
 
   final double diameter;
-  final Color color;
+  final List<Color> colors;
 
   @override
   Widget build(BuildContext context) {
@@ -228,42 +276,84 @@ class _Orb extends StatelessWidget {
       height: diameter,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: color,
+        gradient: RadialGradient(
+          colors: colors.length == 1
+              ? [...colors, Colors.transparent]
+              : colors,
+          stops: colors.length == 3
+              ? const [0.0, 0.55, 1.0]
+              : const [0.0, 1.0],
+        ),
       ),
     );
   }
 }
 
-/// Compact brand mark for the language picker header.
+/// Premium brand mark — gradient pill with icon + wordmark.
 class OnboardingBrandMark extends StatelessWidget {
   const OnboardingBrandMark({super.key});
 
   @override
   Widget build(BuildContext context) {
     final compact = OnboardingStyle.isCompact(context);
-    final size = compact ? 44.0 : 52.0;
+    final iconSize = compact ? 40.0 : 48.0;
 
     return Semantics(
       label: 'Sudan Goods',
-      child: Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: OnboardingStyle.brandGradient,
-          boxShadow: OnboardingStyle.brandShadow(opacity: 0.20),
-        ),
-        child: const Icon(
-          Icons.shopping_bag_rounded,
-          color: Colors.white,
-          size: 24,
-        ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: iconSize,
+            height: iconSize,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(14),
+              gradient: OnboardingStyle.brandGradient,
+              boxShadow: OnboardingStyle.brandShadow(opacity: 0.22),
+            ),
+            child: Icon(
+              Icons.shopping_bag_rounded,
+              color: Colors.white,
+              size: compact ? 20 : 24,
+            ),
+          ),
+          const SizedBox(width: DesignTokens.space10),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Sudan',
+                style: AppTypography.heading6.copyWith(
+                  color: AppColors.text,
+                  fontWeight: FontWeight.w800,
+                  height: 1.0,
+                  letterSpacing: -0.3,
+                  fontSize: compact ? 15 : 17,
+                ),
+              ),
+              Text(
+                'Goods',
+                style: AppTypography.heading6.copyWith(
+                  foreground: Paint()
+                    ..shader = OnboardingStyle.brandGradientSimple.createShader(
+                      const Rect.fromLTWH(0, 0, 60, 20),
+                    ),
+                  fontWeight: FontWeight.w800,
+                  height: 1.0,
+                  letterSpacing: -0.3,
+                  fontSize: compact ? 15 : 17,
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
 }
 
-/// Animated step progress bar for onboarding.
+/// Segmented step-pill progress indicator for onboarding.
 class OnboardingLinearProgress extends StatelessWidget {
   const OnboardingLinearProgress({
     super.key,
@@ -283,35 +373,28 @@ class OnboardingLinearProgress extends StatelessWidget {
     return Semantics(
       label: label,
       value: '${(progress * 100).round()}%',
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      child: Row(
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
-                  child: LinearProgressIndicator(
-                    value: progress,
-                    minHeight: 4,
-                    backgroundColor: AppColors.text.withValues(alpha: 0.08),
-                    color: AppColors.primary,
-                  ),
-                ),
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
+              child: LinearProgressIndicator(
+                value: progress,
+                minHeight: 3,
+                backgroundColor: AppColors.text.withValues(alpha: 0.07),
+                valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
               ),
-              const SizedBox(width: DesignTokens.space12),
-              Flexible(
-                child: Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: AppTypography.small.copyWith(
-                    color: AppColors.text.withValues(alpha: 0.50),
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ],
+            ),
+          ),
+          const SizedBox(width: DesignTokens.space10),
+          Text(
+            '$current/$total',
+            maxLines: 1,
+            style: AppTypography.small.copyWith(
+              color: AppColors.text.withValues(alpha: 0.42),
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.2,
+            ),
           ),
         ],
       ),
@@ -319,7 +402,7 @@ class OnboardingLinearProgress extends StatelessWidget {
   }
 }
 
-/// Modern pill-style page indicators.
+/// Elongated pill page-indicator dots.
 class OnboardingPageDots extends StatelessWidget {
   const OnboardingPageDots({
     super.key,
@@ -339,21 +422,15 @@ class OnboardingPageDots extends StatelessWidget {
         children: List.generate(count, (index) {
           final active = index == currentIndex;
           return AnimatedContainer(
-            duration: const Duration(milliseconds: 320),
+            duration: const Duration(milliseconds: 350),
             curve: Curves.easeOutCubic,
-            margin: const EdgeInsets.symmetric(horizontal: 4),
-            height: 8,
-            width: active ? 28 : 8,
+            margin: const EdgeInsets.symmetric(horizontal: 3.5),
+            height: 7,
+            width: active ? 32 : 7,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
-              gradient:
-                  active
-                      ? OnboardingStyle.brandGradient
-                      : null,
-              color:
-                  active
-                      ? null
-                      : AppColors.text.withValues(alpha: 0.14),
+              gradient: active ? OnboardingStyle.brandGradientSimple : null,
+              color: active ? null : AppColors.text.withValues(alpha: 0.12),
             ),
           );
         }),
@@ -362,7 +439,7 @@ class OnboardingPageDots extends StatelessWidget {
   }
 }
 
-/// Primary CTA used across onboarding flows.
+/// Primary gradient CTA button.
 class OnboardingPrimaryButton extends StatelessWidget {
   const OnboardingPrimaryButton({
     super.key,
@@ -382,76 +459,95 @@ class OnboardingPrimaryButton extends StatelessWidget {
     final isRtl = Directionality.of(context) == TextDirection.rtl;
     final enabled = onPressed != null && !isLoading;
 
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 220),
-      curve: Curves.easeOutCubic,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
-        boxShadow:
-            enabled
-                ? OnboardingStyle.brandShadow(opacity: 0.22)
-                : const [],
-      ),
-      child: SizedBox(
-        width: double.infinity,
-        height: 56,
-        child: FilledButton(
-          onPressed: enabled ? onPressed : null,
-          style: FilledButton.styleFrom(
-            backgroundColor: AppColors.primary,
-            foregroundColor: Colors.white,
-            disabledBackgroundColor: AppColors.text.withValues(alpha: 0.10),
-            disabledForegroundColor: AppColors.text.withValues(alpha: 0.35),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
+    return SizedBox(
+      width: double.infinity,
+      height: 58,
+      child: Stack(
+        children: [
+          // Gradient container (always rendered for smooth disable animation)
+          AnimatedOpacity(
+            duration: const Duration(milliseconds: 200),
+            opacity: enabled ? 1.0 : 0.0,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
+                gradient: OnboardingStyle.brandGradient,
+                boxShadow: OnboardingStyle.buttonShadow(enabled: enabled),
+              ),
             ),
-            elevation: 0,
           ),
-          child:
-              isLoading
-                  ? const SizedBox(
-                    width: 22,
-                    height: 22,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2.2,
-                      color: Colors.white,
-                    ),
-                  )
-                  : Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Flexible(
-                        child: Text(
-                          label,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: AppTypography.bodyBold.copyWith(
-                            color:
-                                enabled
+          // Disabled surface
+          AnimatedOpacity(
+            duration: const Duration(milliseconds: 200),
+            opacity: enabled ? 0.0 : 1.0,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
+                color: AppColors.text.withValues(alpha: 0.09),
+              ),
+            ),
+          ),
+          // Ink + content
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: enabled ? onPressed : null,
+              borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
+              splashColor: Colors.white.withValues(alpha: 0.15),
+              highlightColor: Colors.white.withValues(alpha: 0.08),
+              child: Center(
+                child: isLoading
+                    ? const SizedBox(
+                        width: 22,
+                        height: 22,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              label,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTypography.bodyBold.copyWith(
+                                color: enabled
                                     ? Colors.white
                                     : AppColors.text.withValues(alpha: 0.35),
-                            fontSize: DesignTokens.fontSizeBodyLarge,
-                            fontWeight: FontWeight.w700,
+                                fontSize: DesignTokens.fontSizeBodyLarge,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 0.1,
+                              ),
+                            ),
                           ),
-                        ),
+                          if (showTrailingIcon) ...[
+                            const SizedBox(width: DesignTokens.space8),
+                            Icon(
+                              isRtl
+                                  ? Icons.arrow_back_rounded
+                                  : Icons.arrow_forward_rounded,
+                              size: 20,
+                              color: enabled
+                                  ? Colors.white
+                                  : AppColors.text.withValues(alpha: 0.35),
+                            ),
+                          ],
+                        ],
                       ),
-                      if (showTrailingIcon) ...[
-                        const SizedBox(width: DesignTokens.space8),
-                        Icon(
-                          isRtl ? Icons.arrow_back_rounded : Icons.arrow_forward_rounded,
-                          size: 20,
-                        ),
-                      ],
-                    ],
-                  ),
-        ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 }
 
-/// Text-style skip action for onboarding top bar.
+/// Refined skip button with pill background on hover.
 class OnboardingSkipButton extends StatelessWidget {
   const OnboardingSkipButton({
     super.key,
@@ -467,17 +563,22 @@ class OnboardingSkipButton extends StatelessWidget {
     return TextButton(
       onPressed: onPressed,
       style: TextButton.styleFrom(
-        foregroundColor: AppColors.text.withValues(alpha: 0.55),
+        foregroundColor: AppColors.text.withValues(alpha: 0.48),
+        overlayColor: AppColors.text.withValues(alpha: 0.06),
         padding: const EdgeInsets.symmetric(
           horizontal: DesignTokens.space12,
           vertical: DesignTokens.space8,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
         ),
       ),
       child: Text(
         label,
         style: AppTypography.bodyBold.copyWith(
-          color: AppColors.text.withValues(alpha: 0.55),
+          color: AppColors.text.withValues(alpha: 0.48),
           fontWeight: FontWeight.w600,
+          fontSize: 14,
         ),
       ),
     );
@@ -496,7 +597,7 @@ class OnboardingLoadingView extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(
-              height: OnboardingStyle.illustrationMaxHeight(context) * 0.55,
+              height: OnboardingStyle.illustrationMaxHeight(context) * 0.60,
               child: OnboardingFloatAnimation(
                 child: OnboardingIllustration(
                   assetPath: OnboardingAssets.languageWelcome,
@@ -504,13 +605,13 @@ class OnboardingLoadingView extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: DesignTokens.space24),
+            const SizedBox(height: DesignTokens.space32),
             SizedBox(
-              width: 32,
-              height: 32,
+              width: 28,
+              height: 28,
               child: CircularProgressIndicator(
-                strokeWidth: 2.6,
-                color: AppColors.primary.withValues(alpha: 0.85),
+                strokeWidth: 2.4,
+                color: AppColors.primary.withValues(alpha: 0.80),
               ),
             ),
           ],
@@ -520,25 +621,30 @@ class OnboardingLoadingView extends StatelessWidget {
   }
 }
 
-/// Soft gradient blob rendered behind onboarding illustrations.
+/// Layered radial-gradient blob rendered behind onboarding illustrations.
 class IllustrationBackdropBlob extends StatelessWidget {
-  const IllustrationBackdropBlob({
-    super.key,
-    this.variant = 0,
-  });
+  const IllustrationBackdropBlob({super.key, this.variant = 0});
 
   final int variant;
+
+  static const List<List<Color>> _variantPalettes = [
+    [Color(0x1AF36805), Color(0x0DFF8A3D)],
+    [Color(0x14FF7020), Color(0x0AE85500)],
+    [Color(0x18F36805), Color(0x0CFF9A50)],
+    [Color(0x12E85500), Color(0x0EFF7A20)],
+  ];
 
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
-    final blobSize = width * 0.82;
+    final blobSize = width * 0.80;
+    final palette = _variantPalettes[variant % _variantPalettes.length];
     final secondaryOffset =
         switch (variant % 4) {
-          0 => const Offset(-0.08, -0.04),
-          1 => const Offset(0.06, -0.02),
-          2 => const Offset(-0.04, 0.05),
-          _ => const Offset(0.05, 0.04),
+          0 => const Offset(-0.07, -0.03),
+          1 => const Offset(0.07, -0.03),
+          2 => const Offset(-0.05, 0.06),
+          _ => const Offset(0.06, 0.04),
         };
 
     return IgnorePointer(
@@ -550,11 +656,8 @@ class IllustrationBackdropBlob extends StatelessWidget {
           clipBehavior: Clip.none,
           children: [
             _BlobCircle(
-              diameter: blobSize * 0.94,
-              colors: [
-                AppColors.primary.withValues(alpha: 0.14),
-                AppColors.primary.withValues(alpha: 0.0),
-              ],
+              diameter: blobSize * 0.90,
+              colors: [palette[0], Colors.transparent],
             ),
             Transform.translate(
               offset: Offset(
@@ -562,18 +665,15 @@ class IllustrationBackdropBlob extends StatelessWidget {
                 secondaryOffset.dy * blobSize,
               ),
               child: _BlobCircle(
-                diameter: blobSize * 0.64,
-                colors: [
-                  OnboardingStyle.gradientAccent.withValues(alpha: 0.10),
-                  OnboardingStyle.gradientAccent.withValues(alpha: 0.0),
-                ],
+                diameter: blobSize * 0.62,
+                colors: [palette[1], Colors.transparent],
               ),
             ),
             _BlobCircle(
-              diameter: blobSize * 0.50,
+              diameter: blobSize * 0.45,
               colors: [
-                OnboardingStyle.surfaceMuted.withValues(alpha: 0.70),
-                OnboardingStyle.surfaceMuted.withValues(alpha: 0.0),
+                OnboardingStyle.surfaceMuted.withValues(alpha: 0.65),
+                Colors.transparent,
               ],
             ),
           ],
@@ -584,10 +684,7 @@ class IllustrationBackdropBlob extends StatelessWidget {
 }
 
 class _BlobCircle extends StatelessWidget {
-  const _BlobCircle({
-    required this.diameter,
-    required this.colors,
-  });
+  const _BlobCircle({required this.diameter, required this.colors});
 
   final double diameter;
   final List<Color> colors;
@@ -643,7 +740,7 @@ class OnboardingIllustration extends StatelessWidget {
             Center(
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: DesignTokens.space16,
+                  horizontal: DesignTokens.space12,
                 ),
                 child: Image.asset(
                   assetPath,
@@ -654,7 +751,7 @@ class OnboardingIllustration extends StatelessWidget {
                     return Icon(
                       Icons.image_outlined,
                       size: 48,
-                      color: AppColors.primary.withValues(alpha: 0.45),
+                      color: AppColors.primary.withValues(alpha: 0.40),
                     );
                   },
                 ),
@@ -673,7 +770,7 @@ class OnboardingIllustration extends StatelessWidget {
   }
 }
 
-/// Selectable language tile for the first-run language picker.
+/// Premium selectable language card for the first-run language picker.
 class OnboardingLanguageTile extends StatelessWidget {
   const OnboardingLanguageTile({
     super.key,
@@ -692,9 +789,15 @@ class OnboardingLanguageTile extends StatelessWidget {
   final VoidCallback onTap;
   final bool isDisabled;
 
+  static const _flagEmoji = {'en': '🇬🇧', 'ar': '🇸🇩'};
+  static const _languageTag = {'en': 'EN', 'ar': 'عر'};
+
   @override
   Widget build(BuildContext context) {
-    final isArabic = code == 'ar';
+    final flag = _flagEmoji[code] ?? '🌐';
+    final tag  = _languageTag[code] ?? code.toUpperCase();
+    final compact = OnboardingStyle.isCompact(context);
+    final avatarSize = compact ? 52.0 : 58.0;
 
     return Semantics(
       button: true,
@@ -702,28 +805,26 @@ class OnboardingLanguageTile extends StatelessWidget {
       enabled: !isDisabled,
       label: nativeLabel,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 240),
+        duration: const Duration(milliseconds: 260),
         curve: Curves.easeOutCubic,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(DesignTokens.radiusXLarge),
-          gradient:
-              isSelected
-                  ? LinearGradient(
-                    colors: [
-                      AppColors.primary.withValues(alpha: 0.08),
-                      OnboardingStyle.gradientAccent.withValues(alpha: 0.06),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  )
-                  : null,
-          color: isSelected ? null : Colors.white,
+          color: isSelected ? null : OnboardingStyle.cardSurface,
+          gradient: isSelected
+              ? LinearGradient(
+                  colors: [
+                    AppColors.primary.withValues(alpha: 0.07),
+                    OnboardingStyle.gradientAccent.withValues(alpha: 0.05),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
+              : null,
           border: Border.all(
-            color:
-                isSelected
-                    ? AppColors.primary
-                    : AppColors.text.withValues(alpha: 0.08),
-            width: isSelected ? 2 : 1,
+            color: isSelected
+                ? AppColors.primary
+                : Colors.black.withValues(alpha: 0.07),
+            width: isSelected ? 2.0 : 1.0,
           ),
           boxShadow: OnboardingStyle.cardShadow(selected: isSelected),
         ),
@@ -732,86 +833,154 @@ class OnboardingLanguageTile extends StatelessWidget {
           child: InkWell(
             onTap: isDisabled ? null : onTap,
             borderRadius: BorderRadius.circular(DesignTokens.radiusXLarge),
-            child: Padding(
+            splashColor: AppColors.primary.withValues(alpha: 0.06),
+            highlightColor: AppColors.primary.withValues(alpha: 0.03),
+            child: Directionality(
+              textDirection: code == 'ar'
+                  ? TextDirection.rtl
+                  : TextDirection.ltr,
+              child: Padding(
               padding: EdgeInsets.symmetric(
-                horizontal:
-                    OnboardingStyle.isCompact(context)
-                        ? DesignTokens.space12
-                        : DesignTokens.space16,
-                vertical: DesignTokens.space16,
+                horizontal: compact ? DesignTokens.space14 : DesignTokens.space16,
+                vertical: compact ? DesignTokens.space14 : DesignTokens.space18,
               ),
               child: Row(
                 children: [
-                  Container(
-                    width: OnboardingStyle.isCompact(context) ? 44 : 48,
-                    height: OnboardingStyle.isCompact(context) ? 44 : 48,
+                  // Flag avatar
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 260),
+                    curve: Curves.easeOutCubic,
+                    width: avatarSize,
+                    height: avatarSize,
                     decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient:
-                          isSelected
-                              ? OnboardingStyle.brandGradient
-                              : LinearGradient(
-                                colors: [
-                                  AppColors.text.withValues(alpha: 0.06),
-                                  AppColors.text.withValues(alpha: 0.04),
-                                ],
-                              ),
+                      borderRadius: BorderRadius.circular(14),
+                      gradient: isSelected
+                          ? OnboardingStyle.brandGradient
+                          : null,
+                      color: isSelected
+                          ? null
+                          : Colors.black.withValues(alpha: 0.04),
                     ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      isArabic ? 'ع' : 'EN',
-                      style: AppTypography.bodyBold.copyWith(
-                        color:
-                            isSelected
-                                ? Colors.white
-                                : AppColors.text.withValues(alpha: 0.65),
-                        fontSize: 17,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: DesignTokens.space12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Stack(
+                      alignment: Alignment.center,
                       children: [
                         Text(
-                          nativeLabel,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: OnboardingStyle.languageTileTitleStyle(context),
+                          flag,
+                          style: TextStyle(
+                            fontSize: compact ? 22 : 26,
+                            height: 1,
+                          ),
                         ),
-                        if (secondaryLabel != null) ...[
-                          const SizedBox(height: DesignTokens.space4),
-                          Text(
-                            secondaryLabel!,
-                            style: OnboardingStyle.languageTileSubtitleStyle(
-                              context,
+                        // Language tag badge in bottom-right
+                        Positioned(
+                          bottom: -1,
+                          right: -1,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 5,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: isSelected
+                                  ? Colors.white.withValues(alpha: 0.92)
+                                  : AppColors.primary.withValues(alpha: 0.10),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              tag,
+                              style: AppTypography.captionBold.copyWith(
+                                color: isSelected
+                                    ? AppColors.primary
+                                    : AppColors.text.withValues(alpha: 0.60),
+                                fontSize: 9,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: 0.5,
+                              ),
                             ),
                           ),
-                        ],
+                        ),
                       ],
                     ),
                   ),
-                  AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 200),
-                    child:
-                        isSelected
-                            ? Icon(
-                              Icons.check_circle_rounded,
-                              key: const ValueKey('selected'),
-                              color: AppColors.primary,
-                              size: 24,
-                            )
-                            : Icon(
-                              Icons.circle_outlined,
-                              key: const ValueKey('unselected'),
-                              color: AppColors.text.withValues(alpha: 0.20),
-                              size: 24,
+                  const SizedBox(width: DesignTokens.space14),
+                  // Labels
+                  Expanded(
+                    child: Directionality(
+                      textDirection: code == 'ar'
+                          ? TextDirection.rtl
+                          : TextDirection.ltr,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            nativeLabel,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: OnboardingStyle.languageTileTitleStyle(context),
+                          ),
+                          if (secondaryLabel != null) ...[
+                            const SizedBox(height: 3),
+                            Text(
+                              secondaryLabel!,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: OnboardingStyle.languageTileSubtitleStyle(
+                                context,
+                              ),
                             ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: DesignTokens.space8),
+                  // Selection indicator
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 220),
+                    transitionBuilder: (child, anim) => ScaleTransition(
+                      scale: anim,
+                      child: FadeTransition(opacity: anim, child: child),
+                    ),
+                    child: isSelected
+                        ? Container(
+                            key: const ValueKey('selected'),
+                            width: 26,
+                            height: 26,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: OnboardingStyle.brandGradientSimple,
+                              boxShadow: [
+                                BoxShadow(
+                                  color:
+                                      AppColors.primary.withValues(alpha: 0.30),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: const Icon(
+                              Icons.check_rounded,
+                              color: Colors.white,
+                              size: 16,
+                            ),
+                          )
+                        : Container(
+                            key: const ValueKey('unselected'),
+                            width: 26,
+                            height: 26,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Colors.black.withValues(alpha: 0.14),
+                                width: 1.5,
+                              ),
+                            ),
+                          ),
                   ),
                 ],
               ),
+            ),
             ),
           ),
         ),
@@ -820,9 +989,9 @@ class OnboardingLanguageTile extends StatelessWidget {
   }
 }
 
-/// Decorative accent line under headings.
+/// Decorative gradient accent pill under headings.
 class OnboardingAccentLine extends StatelessWidget {
-  const OnboardingAccentLine({super.key, this.width = 40});
+  const OnboardingAccentLine({super.key, this.width = 36});
 
   final double width;
 
@@ -833,7 +1002,7 @@ class OnboardingAccentLine extends StatelessWidget {
       height: 4,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
-        gradient: OnboardingStyle.brandGradient,
+        gradient: OnboardingStyle.brandGradientSimple,
       ),
     );
   }
@@ -852,14 +1021,14 @@ Route<T> onboardingFadeRoute<T>(Widget page) {
         opacity: curved,
         child: SlideTransition(
           position: Tween<Offset>(
-            begin: const Offset(0, 0.03),
+            begin: const Offset(0, 0.025),
             end: Offset.zero,
           ).animate(curved),
           child: child,
         ),
       );
     },
-    transitionDuration: const Duration(milliseconds: 380),
+    transitionDuration: const Duration(milliseconds: 400),
   );
 }
 
@@ -869,8 +1038,8 @@ Animation<double> onboardingPageAnimation(
   int index, {
   int count = 3,
 }) {
-  final start = (index / count) * 0.35;
-  final end = math.min(start + 0.65, 1.0);
+  final start = (index / count) * 0.30;
+  final end = math.min(start + 0.70, 1.0);
   return CurvedAnimation(
     parent: parent,
     curve: Interval(start, end, curve: Curves.easeOutCubic),
