@@ -8,8 +8,11 @@ import 'package:sudan_goods/authentication/pages/widgets/register_form_user.dart
 import 'package:sudan_goods/core/utils/snackbar_utils.dart';
 import 'package:sudan_goods/models/shared_models/address.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
+import 'package:sudan_goods/authentication/pages/widgets/auth_illustrations.dart';
+import 'package:sudan_goods/onboarding/onboarding_animations.dart';
+import 'package:sudan_goods/onboarding/onboarding_style.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
-import 'package:sudan_goods/theme/app_theme.dart';
+import 'package:sudan_goods/theme/app_theme.dart'; // AppColors used in _AuthEyebrow / _AuthFormCard
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -18,7 +21,8 @@ class RegisterPage extends StatefulWidget {
   State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _RegisterPageState extends State<RegisterPage>
+    with SingleTickerProviderStateMixin {
   final _formKeyUser = GlobalKey<FormState>();
   final _formKeyAddress = GlobalKey<FormState>();
 
@@ -31,8 +35,33 @@ class _RegisterPageState extends State<RegisterPage> {
   String _gender = 'male';
   DateTime _birthday = DateTime(2000, 1, 1);
 
+  late final AnimationController _stagger;
+  static const _kDuration = Duration(milliseconds: 900);
+  late final Animation<double> _animIllustration;
+  late final Animation<double> _animEyebrow;
+  late final Animation<double> _animHeading;
+  late final Animation<double> _animForm;
+
+  Animation<double> _interval(double begin, double end) =>
+      CurvedAnimation(
+        parent: _stagger,
+        curve: Interval(begin, end, curve: Curves.easeOutCubic),
+      );
+
+  @override
+  void initState() {
+    super.initState();
+    _stagger = AnimationController(vsync: this, duration: _kDuration)
+      ..forward();
+    _animIllustration = _interval(0.00, 0.55);
+    _animEyebrow      = _interval(0.18, 0.65);
+    _animHeading      = _interval(0.32, 0.78);
+    _animForm         = _interval(0.48, 1.00);
+  }
+
   @override
   void dispose() {
+    _stagger.dispose();
     _formData.dispose();
     super.dispose();
   }
@@ -152,158 +181,172 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return Scaffold(
-      body: Stack(
-        children: [
-          // ── Background gradient (matches login page) ─────────────
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    AppColors.primary.withValues(alpha: 0.10),
-                    AppColors.primary.withValues(alpha: 0.03),
-                    Colors.white,
-                  ],
-                  stops: const [0.0, 0.35, 1.0],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
-              ),
-            ),
+    final compact = OnboardingStyle.isCompact(context);
+
+    final eyebrowIcon =
+        _showAddressForm ? Icons.home_rounded : Icons.person_add_alt_1_rounded;
+    final eyebrowLabel = _showAddressForm ? 'STEP 2 OF 2' : 'STEP 1 OF 2';
+    final heading =
+        _showAddressForm ? l10n.addressTitle : l10n.register;
+    final subtitle = _showAddressForm
+        ? 'Almost there — set your delivery address'
+        : 'Create your account to start shopping';
+
+    return OnboardingShell(
+      body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        padding: DesignTokens.paddingPageHorizontal.add(
+          EdgeInsets.only(
+            top: compact ? DesignTokens.space20 : DesignTokens.space32,
+            bottom: DesignTokens.space40,
           ),
-          SafeArea(
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              padding: DesignTokens.paddingPageHorizontal.add(
-                const EdgeInsets.only(
-                  top: DesignTokens.space48,
-                  bottom: DesignTokens.space32,
+        ),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 560),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // ── Illustration ──────────────────────────────────────
+                OnboardingScaleIn(
+                  animation: _animIllustration,
+                  child: OnboardingFloatAnimation(
+                    child: SignUpIllustration(
+                      size: authIllustrationHeight(context),
+                    ),
+                  ),
                 ),
-              ),
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 560),
+                SizedBox(
+                  height: compact
+                      ? DesignTokens.space12
+                      : DesignTokens.space16,
+                ),
+                // ── Eyebrow pill ──────────────────────────────────────
+                OnboardingFadeSlide(
+                  animation: _animEyebrow,
+                  child: _AuthEyebrow(
+                    icon: eyebrowIcon,
+                    label: eyebrowLabel,
+                  ),
+                ),
+                const SizedBox(height: DesignTokens.space12),
+                // ── Heading + subtitle ────────────────────────────────
+                OnboardingFadeSlide(
+                  animation: _animHeading,
                   child: Column(
-                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      // ── Icon bubble ─────────────────────────────
-                      _iconBubble(
-                        _showAddressForm
-                            ? Icons.home_rounded
-                            : Icons.person_add_alt_1_rounded,
-                      ),
-                      const SizedBox(height: DesignTokens.space20),
-                      // ── App title ───────────────────────────────
                       Text(
-                        l10n.appTitle,
-                        style: AppTypography.heading5.copyWith(
-                          color: AppColors.primary,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 0.5,
-                        ),
+                        heading,
+                        style: OnboardingStyle.pageTitleStyle(context),
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: DesignTokens.space8),
-                      // ── Page title ──────────────────────────────
                       Text(
-                        _showAddressForm ? l10n.addressTitle : l10n.register,
-                        style: AppTypography.heading4.copyWith(
-                          color: Colors.black87,
-                        ),
+                        subtitle,
+                        style: OnboardingStyle.pageSubtitleStyle(context),
                         textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: DesignTokens.space8),
-                      // ── Subtitle ────────────────────────────────
-                      Text(
-                        _showAddressForm
-                            ? 'Almost there — just your delivery address'
-                            : 'Create your account to start shopping',
-                        style: AppTypography.body.copyWith(
-                          color: Colors.black45,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: DesignTokens.space12),
-                      // ── Step indicator ──────────────────────────
-                      _StepIndicator(step: _showAddressForm ? 2 : 1, total: 2),
-                      const SizedBox(height: DesignTokens.space24),
-                      // ── Form card ───────────────────────────────
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(
-                            DesignTokens.radiusXLarge,
-                          ),
-                          border: Border.all(
-                            color: Colors.black.withValues(alpha: 0.06),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.primary.withValues(alpha: 0.06),
-                              blurRadius: 24,
-                              offset: const Offset(0, 8),
-                            ),
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.05),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        padding: const EdgeInsets.all(DesignTokens.space24),
-                        child: AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 400),
-                          transitionBuilder:
-                              (child, animation) => FadeTransition(
-                                opacity: animation,
-                                child: child,
-                              ),
-                          child:
-                              _showAddressForm
-                                  ? RegisterFormAddress(
-                                    key: const ValueKey('address_form'),
-                                    formData: _formData,
-                                    formKey: _formKeyAddress,
-                                    isLoading: _isLoading,
-                                    onSubmit: _submitRegistration,
-                                    onBack:
-                                        () => setState(
-                                          () => _showAddressForm = false,
-                                        ),
-                                  )
-                                  : RegisterFormUser(
-                                    key: const ValueKey('user_form'),
-                                    formData: _formData,
-                                    formKey: _formKeyUser,
-                                    gender: _gender,
-                                    birthday: _birthday,
-                                    onGenderChanged:
-                                        (val) => setState(() => _gender = val),
-                                    onBirthdayChanged:
-                                        (val) =>
-                                            setState(() => _birthday = val),
-                                    onNext: () {
-                                      if (_formKeyUser.currentState!
-                                          .validate()) {
-                                        if (_formData.password.text !=
-                                            _formData.confirmPassword.text) {
-                                          AppSnackbar.warning(
-                                            context,
-                                            l10n.passwordsDoNotMatch,
-                                          );
-                                          return;
-                                        }
-                                        setState(() => _showAddressForm = true);
-                                      }
-                                    },
-                                  ),
-                        ),
                       ),
                     ],
                   ),
                 ),
-              ),
+                const SizedBox(height: DesignTokens.space16),
+                // ── Step progress ─────────────────────────────────────
+                OnboardingFadeSlide(
+                  animation: _animHeading,
+                  child: OnboardingLinearProgress(
+                    current: _showAddressForm ? 2 : 1,
+                    total: 2,
+                    label: eyebrowLabel,
+                  ),
+                ),
+                SizedBox(
+                  height: compact
+                      ? DesignTokens.space16
+                      : DesignTokens.space20,
+                ),
+                // ── Form card ─────────────────────────────────────────
+                OnboardingFadeSlide(
+                  animation: _animForm,
+                  child: _AuthFormCard(
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 400),
+                      transitionBuilder: (child, animation) => FadeTransition(
+                        opacity: animation,
+                        child: child,
+                      ),
+                      child: _showAddressForm
+                          ? RegisterFormAddress(
+                              key: const ValueKey('address_form'),
+                              formData: _formData,
+                              formKey: _formKeyAddress,
+                              isLoading: _isLoading,
+                              onSubmit: _submitRegistration,
+                              onBack: () =>
+                                  setState(() => _showAddressForm = false),
+                            )
+                          : RegisterFormUser(
+                              key: const ValueKey('user_form'),
+                              formData: _formData,
+                              formKey: _formKeyUser,
+                              gender: _gender,
+                              birthday: _birthday,
+                              onGenderChanged: (val) =>
+                                  setState(() => _gender = val),
+                              onBirthdayChanged: (val) =>
+                                  setState(() => _birthday = val),
+                              onNext: () {
+                                if (_formKeyUser.currentState!.validate()) {
+                                  if (_formData.password.text !=
+                                      _formData.confirmPassword.text) {
+                                    AppSnackbar.warning(
+                                      context,
+                                      l10n.passwordsDoNotMatch,
+                                    );
+                                    return;
+                                  }
+                                  setState(() => _showAddressForm = true);
+                                }
+                              },
+                            ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Eyebrow pill label — icon + uppercase category tag.
+class _AuthEyebrow extends StatelessWidget {
+  const _AuthEyebrow({required this.icon, required this.label});
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: DesignTokens.space12,
+        vertical: DesignTokens.space6,
+      ),
+      decoration: BoxDecoration(
+        color: AppColors.primary.withValues(alpha: 0.09),
+        borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 13, color: AppColors.primary),
+          const SizedBox(width: DesignTokens.space6),
+          Text(
+            label,
+            style: OnboardingStyle.pageEyebrowStyle(context).copyWith(
+              fontSize: 11,
             ),
           ),
         ],
@@ -312,55 +355,35 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 }
 
-Widget _iconBubble(IconData icon) {
-  return Container(
-    width: 80,
-    height: 80,
-    decoration: BoxDecoration(
-      shape: BoxShape.circle,
-      gradient: const LinearGradient(
-        colors: [AppColors.primary, Color(0xFFFF8C3A)],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ),
-      boxShadow: [
-        BoxShadow(
-          color: AppColors.primary.withValues(alpha: 0.35),
-          blurRadius: 16,
-          offset: const Offset(0, 6),
-        ),
-      ],
-    ),
-    child: Icon(icon, color: Colors.white, size: 38),
-  );
-}
+/// Elevated white card container used to wrap auth forms.
+class _AuthFormCard extends StatelessWidget {
+  const _AuthFormCard({required this.child});
 
-class _StepIndicator extends StatelessWidget {
-  final int step;
-  final int total;
-  const _StepIndicator({required this.step, required this.total});
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: List.generate(total, (i) {
-        final active = i + 1 == step;
-        return AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-          margin: const EdgeInsets.symmetric(horizontal: 4),
-          width: active ? 28 : 8,
-          height: 8,
-          decoration: BoxDecoration(
-            color:
-                active
-                    ? AppColors.primary
-                    : AppColors.primary.withValues(alpha: 0.22),
-            borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(DesignTokens.radiusXLarge),
+        border: Border.all(color: Colors.black.withValues(alpha: 0.06)),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withValues(alpha: 0.07),
+            blurRadius: 32,
+            spreadRadius: -4,
+            offset: const Offset(0, 12),
           ),
-        );
-      }),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.all(DesignTokens.space24),
+      child: child,
     );
   }
 }

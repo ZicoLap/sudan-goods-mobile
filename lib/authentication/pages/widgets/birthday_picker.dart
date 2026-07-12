@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
+import 'package:sudan_goods/theme/design_tokens.dart';
 
 class BirthdayPicker extends StatefulWidget {
   final DateTime birthday;
@@ -68,23 +69,50 @@ class _BirthdayPickerState extends State<BirthdayPicker> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return TextFormField(
-      readOnly: true,
-      controller: _controller,
-      decoration: InputDecoration(
-        labelText: l10n.birthdayLabel,
-        prefixIcon: const Icon(Icons.cake_rounded),
-        suffixIcon: IconButton(
-          icon: const Icon(Icons.calendar_today_rounded),
-          onPressed: _pickDate,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          height: 20,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 4),
+            child: Text(
+              l10n.birthdayLabel,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: Colors.black.withValues(alpha: 0.55),
+              ),
+            ),
+          ),
         ),
-      ),
-      onTap: _pickDate,
-      validator: (_) {
-        final age = DateTime.now().difference(widget.birthday).inDays ~/ 365;
-        if (age < 13) return l10n.birthdayAgeError;
-        return null;
-      },
+        const SizedBox(height: DesignTokens.space8),
+        SizedBox(
+          height: 52,
+          child: TextFormField(
+            readOnly: true,
+            controller: _controller,
+            decoration: InputDecoration(
+              prefixIcon: const Icon(Icons.cake_rounded, size: 20),
+              suffixIcon: IconButton(
+                icon: const Icon(Icons.calendar_today_rounded, size: 18),
+                onPressed: _pickDate,
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 0,
+              ),
+            ),
+            onTap: _pickDate,
+            validator: (_) {
+              final age =
+                  DateTime.now().difference(widget.birthday).inDays ~/ 365;
+              if (age < 13) return l10n.birthdayAgeError;
+              return null;
+            },
+          ),
+        ),
+      ],
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sudan_goods/authentication/data/register_form_data.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
+import 'package:sudan_goods/onboarding/onboarding_style.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 
@@ -89,80 +90,19 @@ class RegisterFormAddress extends StatelessWidget {
         ),
         const SizedBox(height: DesignTokens.space24),
         // ── Gradient submit ───────────────────────────────────────
-        SizedBox(
-          height: 54,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              gradient:
-                  isLoading
-                      ? null
-                      : LinearGradient(
-                        colors: [
-                          AppColors.primary,
-                          AppColors.primary.withValues(alpha: 0.82),
-                        ],
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                      ),
-              color: isLoading ? Colors.grey.shade300 : null,
-              borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
-              boxShadow:
-                  isLoading
-                      ? null
-                      : [
-                        BoxShadow(
-                          color: AppColors.primary.withValues(alpha: 0.30),
-                          blurRadius: 12,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-            ),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.transparent,
-                shadowColor: Colors.transparent,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
-                ),
-              ),
-              onPressed: isLoading ? null : onSubmit,
-              child:
-                  isLoading
-                      ? const SizedBox(
-                        width: 22,
-                        height: 22,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2.5,
-                          color: Colors.white,
-                        ),
-                      )
-                      : Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            l10n.register,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            ),
-                          ),
-                          const SizedBox(width: DesignTokens.space8),
-                          const Icon(
-                            Icons.check_rounded,
-                            size: 18,
-                            color: Colors.white,
-                          ),
-                        ],
-                      ),
-            ),
-          ),
+        OnboardingPrimaryButton(
+          label: l10n.register,
+          isLoading: isLoading,
+          onPressed: isLoading ? null : onSubmit,
         ),
         const SizedBox(height: DesignTokens.space12),
         // ── Back link ─────────────────────────────────────────────
         Center(
           child: TextButton.icon(
             onPressed: isLoading ? null : onBack,
+            style: TextButton.styleFrom(
+              overlayColor: AppColors.primary.withValues(alpha: 0.06),
+            ),
             icon: Icon(
               Icons.arrow_back_rounded,
               size: 16,
@@ -170,10 +110,9 @@ class RegisterFormAddress extends StatelessWidget {
             ),
             label: Text(
               l10n.back,
-              style: TextStyle(
-                color: AppColors.primary,
-                fontWeight: FontWeight.w600,
-                fontSize: 14,
+              style: OnboardingStyle.pageEyebrowStyle(context).copyWith(
+                fontSize: 13,
+                letterSpacing: 0.3,
               ),
             ),
           ),

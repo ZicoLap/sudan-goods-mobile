@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sudan_goods/authentication/data/login_form_data.dart';
 import 'package:sudan_goods/authentication/pages/widgets/login_form.dart';
-import 'package:sudan_goods/l10n/app_localizations.dart';
+import 'package:sudan_goods/authentication/pages/widgets/auth_illustrations.dart';
+import 'package:sudan_goods/onboarding/onboarding_animations.dart';
+import 'package:sudan_goods/onboarding/onboarding_style.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
 
@@ -12,115 +14,144 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends State<LoginPage>
+    with SingleTickerProviderStateMixin {
   final _formData = LoginFormData();
+  late final AnimationController _stagger;
+
+  static const _kDuration = Duration(milliseconds: 900);
+
+  late final Animation<double> _animIllustration;
+  late final Animation<double> _animEyebrow;
+  late final Animation<double> _animHeading;
+  late final Animation<double> _animForm;
 
   @override
   void initState() {
     super.initState();
+    _stagger = AnimationController(vsync: this, duration: _kDuration)
+      ..forward();
+
+    _animIllustration = _interval(0.00, 0.55);
+    _animEyebrow      = _interval(0.18, 0.65);
+    _animHeading      = _interval(0.32, 0.78);
+    _animForm         = _interval(0.48, 1.00);
   }
+
+  Animation<double> _interval(double begin, double end) =>
+      CurvedAnimation(
+        parent: _stagger,
+        curve: Interval(begin, end, curve: Curves.easeOutCubic),
+      );
 
   @override
   void dispose() {
+    _stagger.dispose();
     _formData.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    return Scaffold(
-      body: Stack(
-        children: [
-          // Background gradient
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    AppColors.primary.withValues(alpha: 0.10),
-                    AppColors.primary.withValues(alpha: 0.03),
-                    Colors.white,
-                  ],
-                  stops: const [0.0, 0.35, 1.0],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
-              ),
-            ),
+    final compact = OnboardingStyle.isCompact(context);
+
+    return OnboardingShell(
+      body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        padding: DesignTokens.paddingPageHorizontal.add(
+          EdgeInsets.only(
+            top: compact ? DesignTokens.space24 : DesignTokens.space32,
+            bottom: DesignTokens.space40,
           ),
-          SafeArea(
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              padding: DesignTokens.paddingPageHorizontal.add(
-                const EdgeInsets.only(
-                  top: DesignTokens.space48,
-                  bottom: DesignTokens.space32,
+        ),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 560),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // ── Illustration ──────────────────────────────────────
+                OnboardingScaleIn(
+                  animation: _animIllustration,
+                  child: OnboardingFloatAnimation(
+                    child: SignInIllustration(
+                      size: authIllustrationHeight(context),
+                    ),
+                  ),
                 ),
-              ),
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 560),
+                SizedBox(height: compact ? DesignTokens.space12 : DesignTokens.space16),
+                // ── Eyebrow pill ──────────────────────────────────────
+                OnboardingFadeSlide(
+                  animation: _animEyebrow,
+                  child: _AuthEyebrow(
+                    icon: Icons.lock_open_rounded,
+                    label: 'SIGN IN',
+                  ),
+                ),
+                const SizedBox(height: DesignTokens.space12),
+                // ── Heading + subtitle ────────────────────────────────
+                OnboardingFadeSlide(
+                  animation: _animHeading,
                   child: Column(
-                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      _iconBubble(Icons.storefront_rounded),
-                      const SizedBox(height: DesignTokens.space20),
-                      Text(
-                        l10n.appTitle,
-                        style: AppTypography.heading5.copyWith(
-                          color: AppColors.primary,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 0.5,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: DesignTokens.space8),
                       Text(
                         'Welcome back',
-                        style: AppTypography.heading4.copyWith(
-                          color: Colors.black87,
-                        ),
+                        style: OnboardingStyle.pageTitleStyle(context),
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: DesignTokens.space8),
                       Text(
-                        'Sign in to continue shopping',
-                        style: AppTypography.body.copyWith(
-                          color: Colors.black45,
-                        ),
+                        'Sign in to continue your\nshopping journey',
+                        style: OnboardingStyle.pageSubtitleStyle(context),
                         textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: DesignTokens.space32),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(
-                            DesignTokens.radiusXLarge,
-                          ),
-                          border: Border.all(
-                            color: Colors.black.withValues(alpha: 0.06),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.primary.withValues(alpha: 0.06),
-                              blurRadius: 24,
-                              offset: const Offset(0, 8),
-                            ),
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.05),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        padding: const EdgeInsets.all(DesignTokens.space24),
-                        child: LoginForm(formData: _formData),
                       ),
                     ],
                   ),
                 ),
-              ),
+                SizedBox(height: compact ? DesignTokens.space20 : DesignTokens.space32),
+                // ── Form card ─────────────────────────────────────────
+                OnboardingFadeSlide(
+                  animation: _animForm,
+                  child: _AuthFormCard(
+                    child: LoginForm(formData: _formData),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Eyebrow pill label — icon + uppercase category tag.
+class _AuthEyebrow extends StatelessWidget {
+  const _AuthEyebrow({required this.icon, required this.label});
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: DesignTokens.space12,
+        vertical: DesignTokens.space6,
+      ),
+      decoration: BoxDecoration(
+        color: AppColors.primary.withValues(alpha: 0.09),
+        borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 13, color: AppColors.primary),
+          const SizedBox(width: DesignTokens.space6),
+          Text(
+            label,
+            style: OnboardingStyle.pageEyebrowStyle(context).copyWith(
+              fontSize: 11,
             ),
           ),
         ],
@@ -129,25 +160,35 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
-Widget _iconBubble(IconData icon) {
-  return Container(
-    width: 80,
-    height: 80,
-    decoration: BoxDecoration(
-      shape: BoxShape.circle,
-      gradient: const LinearGradient(
-        colors: [AppColors.primary, Color(0xFFFF8C3A)],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
+/// Elevated white card container used to wrap auth forms.
+class _AuthFormCard extends StatelessWidget {
+  const _AuthFormCard({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(DesignTokens.radiusXLarge),
+        border: Border.all(color: Colors.black.withValues(alpha: 0.06)),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withValues(alpha: 0.07),
+            blurRadius: 32,
+            spreadRadius: -4,
+            offset: const Offset(0, 12),
+          ),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
-      boxShadow: [
-        BoxShadow(
-          color: AppColors.primary.withValues(alpha: 0.35),
-          blurRadius: 16,
-          offset: const Offset(0, 6),
-        ),
-      ],
-    ),
-    child: Icon(icon, color: Colors.white, size: 38),
-  );
+      padding: const EdgeInsets.all(DesignTokens.space24),
+      child: child,
+    );
+  }
 }

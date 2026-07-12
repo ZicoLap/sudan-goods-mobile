@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:sudan_goods/authentication/data/register_form_data.dart';
 import 'package:sudan_goods/authentication/pages/login_page.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
+import 'package:sudan_goods/onboarding/onboarding_style.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 import 'gender_picker.dart';
@@ -194,80 +195,34 @@ class _RegisterFormUserState extends State<RegisterFormUser> {
         ),
         const SizedBox(height: DesignTokens.space24),
         // ── Gradient CTA ──────────────────────────────────────────
-        SizedBox(
-          height: 54,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  AppColors.primary,
-                  AppColors.primary.withValues(alpha: 0.82),
-                ],
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-              ),
-              borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.primary.withValues(alpha: 0.30),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.transparent,
-                shadowColor: Colors.transparent,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
-                ),
-              ),
-              onPressed: widget.onNext,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    l10n.next,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(width: DesignTokens.space8),
-                  const Icon(
-                    Icons.arrow_forward_rounded,
-                    size: 18,
-                    color: Colors.white,
-                  ),
-                ],
-              ),
-            ),
-          ),
+        OnboardingPrimaryButton(
+          label: l10n.next,
+          showTrailingIcon: true,
+          onPressed: widget.onNext,
         ),
         const SizedBox(height: DesignTokens.space16),
         // ── Already have an account? ───────────────────────────────
         Center(
           child: TextButton(
-            onPressed:
-                () => Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (_) => const LoginPage()),
-                ),
+            style: TextButton.styleFrom(
+              overlayColor: AppColors.primary.withValues(alpha: 0.06),
+            ),
+            onPressed: () => Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const LoginPage()),
+            ),
             child: RichText(
               text: TextSpan(
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.black.withValues(alpha: 0.50),
+                style: AppTypography.body.copyWith(
+                  color: AppColors.text.withValues(alpha: 0.50),
                 ),
                 children: [
-                  TextSpan(text: '${l10n.cancel}  '),
+                  const TextSpan(text: 'Already have an account?  '),
                   TextSpan(
                     text: l10n.login,
-                    style: TextStyle(
-                      color: AppColors.primary,
-                      fontWeight: FontWeight.w600,
+                    style: OnboardingStyle.pageEyebrowStyle(context).copyWith(
+                      fontSize: 14,
+                      letterSpacing: 0.2,
                     ),
                   ),
                 ],

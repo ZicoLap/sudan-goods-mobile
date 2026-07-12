@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
+import 'package:sudan_goods/onboarding/onboarding_style.dart';
+import 'package:sudan_goods/theme/app_theme.dart';
+import 'package:sudan_goods/theme/design_tokens.dart';
 
 class PasswordResetDialog extends StatefulWidget {
   const PasswordResetDialog({super.key});
@@ -52,38 +55,89 @@ class _PasswordResetDialogState extends State<PasswordResetDialog> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return AlertDialog(
-      title: Text(l10n.resetPassword),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(l10n.resetPasswordInstructions, textAlign: TextAlign.center),
-          const SizedBox(height: 12),
-          TextField(
-            controller: _emailController,
-            decoration: InputDecoration(
-              labelText: l10n.email,
-              border: const OutlineInputBorder(),
-            ),
-          ),
-        ],
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(DesignTokens.radiusXLarge),
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text(l10n.cancel),
+      backgroundColor: Colors.white,
+      child: Padding(
+        padding: const EdgeInsets.all(DesignTokens.space24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // ── Icon header ───────────────────────────────────────
+            Container(
+              width: 56,
+              height: 56,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                gradient: OnboardingStyle.brandGradient,
+                boxShadow: OnboardingStyle.brandShadow(opacity: 0.20),
+              ),
+              child: const Icon(
+                Icons.lock_reset_rounded,
+                color: Colors.white,
+                size: 26,
+              ),
+            ),
+            const SizedBox(height: DesignTokens.space16),
+            // ── Title ─────────────────────────────────────────────
+            Text(
+              l10n.resetPassword,
+              style: OnboardingStyle.pageTitleStyle(context).copyWith(
+                fontSize: 20,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: DesignTokens.space8),
+            // ── Description ───────────────────────────────────────
+            Text(
+              l10n.resetPasswordInstructions,
+              style: OnboardingStyle.pageSubtitleStyle(context).copyWith(
+                fontSize: 13,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: DesignTokens.space20),
+            // ── Email field ───────────────────────────────────────
+            TextField(
+              controller: _emailController,
+              keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.done,
+              onSubmitted: (_) => _resetPassword(),
+              decoration: InputDecoration(
+                labelText: l10n.email,
+                prefixIcon: const Icon(Icons.email_outlined),
+              ),
+            ),
+            const SizedBox(height: DesignTokens.space20),
+            // ── Primary CTA ───────────────────────────────────────
+            OnboardingPrimaryButton(
+              label: l10n.send,
+              isLoading: _isLoading,
+              onPressed: _isLoading ? null : _resetPassword,
+            ),
+            const SizedBox(height: DesignTokens.space12),
+            // ── Cancel ────────────────────────────────────────────
+            SizedBox(
+              width: double.infinity,
+              child: TextButton(
+                style: TextButton.styleFrom(
+                  overlayColor: AppColors.primary.withValues(alpha: 0.06),
+                ),
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(
+                  l10n.cancel,
+                  style: AppTypography.bodyBold.copyWith(
+                    color: AppColors.text.withValues(alpha: 0.45),
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
-        ElevatedButton(
-          onPressed: _isLoading ? null : _resetPassword,
-          child: _isLoading
-              ? const SizedBox(
-                  width: 16,
-                  height: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : Text(l10n.send),
-        ),
-      ],
+      ),
     );
   }
 

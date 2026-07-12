@@ -30,17 +30,21 @@ class GenderPicker extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 4, bottom: DesignTokens.space8),
-          child: Text(
-            l10n.genderLabel,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-              color: Colors.black.withValues(alpha: 0.55),
+        SizedBox(
+          height: 20,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 4),
+            child: Text(
+              l10n.genderLabel,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: Colors.black.withValues(alpha: 0.55),
+              ),
             ),
           ),
         ),
+        const SizedBox(height: DesignTokens.space8),
         LayoutBuilder(
           builder: (context, constraints) {
             final thumbWidth = (constraints.maxWidth - thumbPadding * 2) / 2;

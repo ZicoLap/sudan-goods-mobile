@@ -6,6 +6,7 @@ import 'package:sudan_goods/authentication/services/login_service.dart';
 import 'package:sudan_goods/authentication/pages/widgets/password_reset_dialog.dart';
 import 'package:sudan_goods/core/utils/snackbar_utils.dart';
 import 'package:sudan_goods/Home/pages/main_shell.dart';
+import 'package:sudan_goods/onboarding/onboarding_style.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
@@ -125,85 +126,93 @@ class _LoginFormState extends State<LoginForm> {
               ),
               minimumSize: Size.zero,
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              overlayColor: AppColors.primary.withValues(alpha: 0.06),
             ),
             onPressed: _showResetDialog,
             child: Text(
               l10n.forgotPassword,
-              style: AppTypography.small.copyWith(
-                color: AppColors.primary,
-                fontWeight: FontWeight.w600,
+              style: OnboardingStyle.pageEyebrowStyle(context).copyWith(
+                fontSize: 12,
+                letterSpacing: 0.2,
               ),
             ),
           ),
         ),
         const SizedBox(height: DesignTokens.space8),
         // ── Primary CTA — gradient sign-in button ─────────────────────
-        _GradientButton(
+        OnboardingPrimaryButton(
           label: l10n.login,
           isLoading: _isLoading,
           onPressed: _isLoading ? null : _login,
         ),
-        const SizedBox(height: DesignTokens.space24),
-        // ── OR divider (disabled: social login coming in next phase) ───
-        // Row(
-        //   children: [
-        //     Expanded(
-        //       child: Divider(
-        //         color: Colors.black.withValues(alpha: 0.10),
-        //         thickness: 1,
-        //       ),
-        //     ),
-        //     Padding(
-        //       padding: const EdgeInsets.symmetric(
-        //         horizontal: DesignTokens.space12,
-        //       ),
-        //       child: Text(
-        //         l10n.or,
-        //         style: AppTypography.small.copyWith(
-        //           color: Colors.black38,
-        //           fontWeight: FontWeight.w600,
-        //           letterSpacing: 1.2,
-        //         ),
-        //       ),
-        //     ),
-        //     Expanded(
-        //       child: Divider(
-        //         color: Colors.black.withValues(alpha: 0.10),
-        //         thickness: 1,
-        //       ),
-        //     ),
-        //   ],
-        // ),
-        // const SizedBox(height: DesignTokens.space20),
-        // ── Social buttons (TODO: Implement Google/Apple Sign-In) ─────
-        // Row(
-        //   mainAxisAlignment: MainAxisAlignment.center,
-        //   children: [
-        //     _socialCircleButton("assets/images/google_logo.png", () {}),
-        //     const SizedBox(width: DesignTokens.space20),
-        //     _socialCircleButton(null, () {}, icon: Icons.apple),
-        //   ],
-        // ),
-        // const SizedBox(height: DesignTokens.space24),
+        const SizedBox(height: DesignTokens.space20),
+        // ── Divider ───────────────────────────────────────────────────
+        Row(
+          children: [
+            Expanded(
+              child: Divider(
+                color: Colors.black.withValues(alpha: 0.08),
+                thickness: 1,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: DesignTokens.space12,
+              ),
+              child: Text(
+                'New here?',
+                style: AppTypography.small.copyWith(
+                  color: AppColors.text.withValues(alpha: 0.38),
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+            Expanded(
+              child: Divider(
+                color: Colors.black.withValues(alpha: 0.08),
+                thickness: 1,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: DesignTokens.space16),
         // ── Register link ─────────────────────────────────────────────
         SizedBox(
           height: 52,
           child: OutlinedButton(
             style: OutlinedButton.styleFrom(
-              side: const BorderSide(color: AppColors.primary, width: 1.5),
+              side: BorderSide(
+                color: AppColors.primary.withValues(alpha: 0.55),
+                width: 1.5,
+              ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
               ),
               foregroundColor: AppColors.primary,
+              overlayColor: AppColors.primary.withValues(alpha: 0.06),
             ),
             onPressed:
                 () => Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (_) => const RegisterPage()),
                 ),
-            child: Text(
-              l10n.register,
-              style: AppTypography.bodyBold.copyWith(color: AppColors.primary),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  l10n.register,
+                  style: AppTypography.bodyBold.copyWith(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(width: DesignTokens.space6),
+                const Icon(
+                  Icons.arrow_forward_rounded,
+                  size: 16,
+                  color: AppColors.primary,
+                ),
+              ],
             ),
           ),
         ),
@@ -274,76 +283,3 @@ class _LoginFormState extends State<LoginForm> {
   // }
 }
 
-class _GradientButton extends StatelessWidget {
-  final String label;
-  final bool isLoading;
-  final VoidCallback? onPressed;
-
-  const _GradientButton({
-    required this.label,
-    required this.isLoading,
-    required this.onPressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 56,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onPressed,
-          borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
-          child: Ink(
-            decoration: BoxDecoration(
-              gradient:
-                  onPressed == null
-                      ? LinearGradient(
-                        colors: [
-                          AppColors.primary.withValues(alpha: 0.4),
-                          const Color(0xFFFF8C3A).withValues(alpha: 0.4),
-                        ],
-                      )
-                      : const LinearGradient(
-                        colors: [AppColors.primary, Color(0xFFFF8C3A)],
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                      ),
-              borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
-              boxShadow:
-                  onPressed == null
-                      ? null
-                      : [
-                        BoxShadow(
-                          color: AppColors.primary.withValues(alpha: 0.30),
-                          blurRadius: 12,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-            ),
-            child: Center(
-              child:
-                  isLoading
-                      ? const SizedBox(
-                        width: 22,
-                        height: 22,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2.5,
-                        ),
-                      )
-                      : Text(
-                        label,
-                        style: AppTypography.bodyLarge.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 0.3,
-                        ),
-                      ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
