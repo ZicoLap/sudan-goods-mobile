@@ -498,12 +498,41 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get invalidEmail => 'Please enter a valid email address';
+
+  @override
+  String get passwordTooShort => 'Password must be at least 8 characters';
+
+  @override
   String loginFailedWithError(String error) {
     return 'Login failed: $error';
   }
 
   @override
   String get verifyEmailPrompt => 'Please verify your email.';
+
+  @override
+  String get verifyEmailTitle => 'Verify your email';
+
+  @override
+  String get verifyEmailSubtitle => 'We sent a verification link to';
+
+  @override
+  String get verifyEmailInstructions => 'Open the link in your inbox to continue. This page will update automatically.';
+
+  @override
+  String get verificationEmailSent => 'Verification email sent!';
+
+  @override
+  String get resendVerificationEmail => 'Resend verification email';
+
+  @override
+  String get verificationTimeoutMessage => 'Verification is taking longer than expected. Please check your inbox or sign out and try again.';
+
+  @override
+  String resendCooldown(int seconds) {
+    return 'Resend in ${seconds}s';
+  }
 
   @override
   String get send => 'Send';

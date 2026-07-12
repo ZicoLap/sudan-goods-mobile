@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sudan_goods/authentication/services/account_service.dart';
+import 'package:sudan_goods/authentication/utils/auth_validators.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
@@ -35,11 +36,11 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _isSaving = true);
     try {
-      await AccountService.reauthenticateWithEmailAndPassword(
+      await AccountService.instance.reauthenticateWithEmailAndPassword(
         FirebaseAuth.instance.currentUser?.email ?? '',
         _currentCtrl.text,
       );
-      await AccountService.changePassword(_newCtrl.text);
+      await AccountService.instance.changePassword(_newCtrl.text);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -107,7 +108,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
               borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: Colors.black.withValues(alpha: 0.05),
                   blurRadius: 12,
                   offset: const Offset(0, 2),
                 ),
@@ -135,15 +136,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                     label: '${l10n.changePassword} →',
                     show: _showNew,
                     onToggle: () => setState(() => _showNew = !_showNew),
-                    validator: (v) {
-                      if (v == null || v.isEmpty) {
-                        return l10n.pleaseEnterField(l10n.password);
-                      }
-                      if (v.length < 6) {
-                        return l10n.errorWithMessage('Minimum 6 characters');
-                      }
-                      return null;
-                    },
+                    validator: (v) => AuthValidators.password(l10n, v),
                   ),
                   const SizedBox(height: 16),
                   _passwordField(
@@ -152,13 +145,12 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                     show: _showConfirm,
                     onToggle:
                         () => setState(() => _showConfirm = !_showConfirm),
-                    validator: (v) {
-                      if (v == null || v.isEmpty) {
-                        return l10n.pleaseEnterField(l10n.confirmPassword);
-                      }
-                      if (v != _newCtrl.text) return l10n.passwordsDoNotMatch;
-                      return null;
-                    },
+                    validator:
+                        (v) => AuthValidators.confirmPassword(
+                          l10n,
+                          v,
+                          _newCtrl.text,
+                        ),
                   ),
                 ],
               ),
@@ -218,11 +210,11 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
         fillColor: const Color(0xFFF5F7FA),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
-          borderSide: BorderSide(color: Colors.black.withOpacity(0.1)),
+          borderSide: BorderSide(color: Colors.black.withValues(alpha: 0.1)),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
-          borderSide: BorderSide(color: Colors.black.withOpacity(0.1)),
+          borderSide: BorderSide(color: Colors.black.withValues(alpha: 0.1)),
         ),
         suffixIcon: IconButton(
           icon: Icon(

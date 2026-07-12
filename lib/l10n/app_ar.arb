@@ -242,6 +242,8 @@
   "or": "أو",
   "forgotPassword": "هل نسيت كلمة المرور؟",
   "pleaseEnterField": "يرجى إدخال {field}",
+  "invalidEmail": "يرجى إدخال عنوان بريد إلكتروني صحيح",
+  "passwordTooShort": "يجب أن تكون كلمة المرور 8 أحرف على الأقل",
   "@pleaseEnterField": {
     "description": "رسالة تحقق تطلب إدخال قيمة الحقل",
     "placeholders": {
@@ -256,6 +258,17 @@
     }
   },
   "verifyEmailPrompt": "يرجى التحقق من بريدك الإلكتروني.",
+  "verifyEmailTitle": "تحقق من بريدك الإلكتروني",
+  "verifyEmailSubtitle": "لقد أرسلنا رابط التحقق إلى",
+  "verifyEmailInstructions": "افتح الرابط في صندوق الوارد للمتابعة. ستتحدث هذه الصفحة تلقائياً.",
+  "verificationEmailSent": "تم إرسال بريد التحقق!",
+  "resendVerificationEmail": "إعادة إرسال بريد التحقق",
+  "verificationTimeoutMessage": "يستغرق التحقق وقتاً أطول من المتوقع. يرجى التحقق من صندوق الوارد أو تسجيل الخروج والمحاولة مرة أخرى.",
+  "resendCooldown": "إعادة الإرسال بعد {seconds}ث",
+  "@resendCooldown": {
+    "description": "تسمية عداد إعادة الإرسال بالثواني المتبقية",
+    "placeholders": { "seconds": { "type": "int" } }
+  },
   "send": "إرسال",
   "resetPassword": "إعادة تعيين كلمة المرور",
   "resetPasswordInstructions": "أدخل بريدك الإلكتروني المسجل. سنرسل لك رابط إعادة التعيين.",

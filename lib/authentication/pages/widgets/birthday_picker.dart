@@ -105,8 +105,14 @@ class _BirthdayPickerState extends State<BirthdayPicker> {
             ),
             onTap: _pickDate,
             validator: (_) {
-              final age =
-                  DateTime.now().difference(widget.birthday).inDays ~/ 365;
+              final today = DateTime.now();
+              final birthDate = widget.birthday;
+              var age = today.year - birthDate.year;
+              final monthDiff = today.month - birthDate.month;
+              if (monthDiff < 0 ||
+                  (monthDiff == 0 && today.day < birthDate.day)) {
+                age--;
+              }
               if (age < 13) return l10n.birthdayAgeError;
               return null;
             },

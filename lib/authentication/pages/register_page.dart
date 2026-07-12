@@ -1,8 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sudan_goods/authentication/controller/register_controller.dart';
 import 'package:sudan_goods/authentication/data/register_form_data.dart';
 import 'package:sudan_goods/authentication/pages/login_page.dart';
+import 'package:sudan_goods/authentication/pages/widgets/auth_card.dart';
+import 'package:sudan_goods/authentication/pages/widgets/auth_eyebrow.dart';
 import 'package:sudan_goods/authentication/pages/widgets/register_form_address.dart';
 import 'package:sudan_goods/authentication/pages/widgets/register_form_user.dart';
 import 'package:sudan_goods/core/utils/snackbar_utils.dart';
@@ -12,7 +13,6 @@ import 'package:sudan_goods/authentication/pages/widgets/auth_illustrations.dart
 import 'package:sudan_goods/onboarding/onboarding_animations.dart';
 import 'package:sudan_goods/onboarding/onboarding_style.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
-import 'package:sudan_goods/theme/app_theme.dart'; // AppColors used in _AuthEyebrow / _AuthFormCard
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -67,6 +67,8 @@ class _RegisterPageState extends State<RegisterPage>
   }
 
   Future<void> _submitRegistration() async {
+    final l10n = AppLocalizations.of(context)!;
+
     // Validate address form before submitting
     if (!_formKeyAddress.currentState!.validate()) {
       return;
@@ -96,35 +98,27 @@ class _RegisterPageState extends State<RegisterPage>
 
     // Handle structured registration result
     if (result.isSuccess) {
-      // Send verification email: sign in briefly, send email, sign out immediately.
-      // The user must verify before logging in; AuthGate enforces this.
-      try {
-        final credential = await FirebaseAuth.instance
-            .signInWithEmailAndPassword(
-              email: _formData.email.text.trim(),
-              password: _formData.password.text.trim(),
-            );
-        await credential.user?.sendEmailVerification();
-        await FirebaseAuth.instance.signOut();
-      } catch (_) {
-        // Non-fatal: user can request a new verification email on first login.
-      }
-
+      // Verification email is intentionally not sent here. The user must
+      // sign in first; AuthGate will route unverified users to the
+      // EmailVerificationPage where they can request the verification link.
       if (!mounted) return;
       AppSnackbar.success(
         context,
-        result.message ?? 'Registration successful! Please verify your email.',
+        result.message ?? l10n.registrationSuccessVerifyEmail,
       );
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const LoginPage()),
       );
+      return;
     } else {
       // Handle different error types with appropriate messages
       _handleRegistrationError(result);
     }
 
-    setState(() => _isLoading = false);
+    if (mounted) {
+      setState(() => _isLoading = false);
+    }
   }
 
   /// Handle registration errors with user-friendly messages
@@ -224,7 +218,7 @@ class _RegisterPageState extends State<RegisterPage>
                 // ── Eyebrow pill ──────────────────────────────────────
                 OnboardingFadeSlide(
                   animation: _animEyebrow,
-                  child: _AuthEyebrow(
+                  child: AuthEyebrow(
                     icon: eyebrowIcon,
                     label: eyebrowLabel,
                   ),
@@ -267,7 +261,7 @@ class _RegisterPageState extends State<RegisterPage>
                 // ── Form card ─────────────────────────────────────────
                 OnboardingFadeSlide(
                   animation: _animForm,
-                  child: _AuthFormCard(
+                  child: AuthFormCard(
                     child: AnimatedSwitcher(
                       duration: const Duration(milliseconds: 400),
                       transitionBuilder: (child, animation) => FadeTransition(
@@ -296,14 +290,6 @@ class _RegisterPageState extends State<RegisterPage>
                                   setState(() => _birthday = val),
                               onNext: () {
                                 if (_formKeyUser.currentState!.validate()) {
-                                  if (_formData.password.text !=
-                                      _formData.confirmPassword.text) {
-                                    AppSnackbar.warning(
-                                      context,
-                                      l10n.passwordsDoNotMatch,
-                                    );
-                                    return;
-                                  }
                                   setState(() => _showAddressForm = true);
                                 }
                               },
@@ -316,74 +302,6 @@ class _RegisterPageState extends State<RegisterPage>
           ),
         ),
       ),
-    );
-  }
-}
-
-/// Eyebrow pill label — icon + uppercase category tag.
-class _AuthEyebrow extends StatelessWidget {
-  const _AuthEyebrow({required this.icon, required this.label});
-
-  final IconData icon;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: DesignTokens.space12,
-        vertical: DesignTokens.space6,
-      ),
-      decoration: BoxDecoration(
-        color: AppColors.primary.withValues(alpha: 0.09),
-        borderRadius: BorderRadius.circular(DesignTokens.radiusRound),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 13, color: AppColors.primary),
-          const SizedBox(width: DesignTokens.space6),
-          Text(
-            label,
-            style: OnboardingStyle.pageEyebrowStyle(context).copyWith(
-              fontSize: 11,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Elevated white card container used to wrap auth forms.
-class _AuthFormCard extends StatelessWidget {
-  const _AuthFormCard({required this.child});
-
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(DesignTokens.radiusXLarge),
-        border: Border.all(color: Colors.black.withValues(alpha: 0.06)),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.07),
-            blurRadius: 32,
-            spreadRadius: -4,
-            offset: const Offset(0, 12),
-          ),
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.all(DesignTokens.space24),
-      child: child,
     );
   }
 }

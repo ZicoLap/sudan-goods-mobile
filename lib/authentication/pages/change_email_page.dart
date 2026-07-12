@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sudan_goods/authentication/services/account_service.dart';
+import 'package:sudan_goods/authentication/utils/auth_validators.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
@@ -28,10 +29,12 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
 
   Future<void> _submit() async {
     final l10n = AppLocalizations.of(context)!;
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
     final newEmail = _emailController.text.trim();
-    if (newEmail.isEmpty) {
+    final emailError = AuthValidators.email(l10n, newEmail);
+    if (emailError != null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.pleaseEnterField(l10n.email))),
+        SnackBar(content: Text(emailError)),
       );
       return;
     }
@@ -39,31 +42,23 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
     setState(() => _isSubmitting = true);
     try {
       if (_verifyBefore) {
-        await AccountService.changeEmail(newEmail, verifyBefore: true);
+        await AccountService.instance.changeEmail(newEmail, verifyBefore: true);
         if (!mounted) return;
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text(l10n.verifyEmailPrompt)));
       } else {
-        await AccountService.changeEmail(
+        await AccountService.instance.changeEmail(
           newEmail,
           verifyBefore: false,
           syncFirestore: true,
         );
         if (!mounted) return;
         // Update local provider state if available
-        try {
-          final userProvider = Provider.of<UserProvider>(
-            context,
-            listen: false,
+        if (userProvider.isUserLoaded) {
+          userProvider.updateUser(
+            userProvider.currentUser.copyWith(email: newEmail),
           );
-          if (userProvider.isUserLoaded) {
-            userProvider.updateUser(
-              userProvider.currentUser.copyWith(email: newEmail),
-            );
-          }
-        } catch (_) {
-          // no-op if provider not available
         }
         ScaffoldMessenger.of(
           context,
@@ -74,24 +69,18 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
       if (e.code == 'requires-recent-login') {
         await _promptReauthAndRetry(() async {
           if (_verifyBefore) {
-            await AccountService.changeEmail(newEmail, verifyBefore: true);
+            await AccountService.instance.changeEmail(newEmail, verifyBefore: true);
           } else {
-            await AccountService.changeEmail(
+            await AccountService.instance.changeEmail(
               newEmail,
               verifyBefore: false,
               syncFirestore: true,
             );
-            try {
-              final userProvider = Provider.of<UserProvider>(
-                context,
-                listen: false,
+            if (userProvider.isUserLoaded) {
+              userProvider.updateUser(
+                userProvider.currentUser.copyWith(email: newEmail),
               );
-              if (userProvider.isUserLoaded) {
-                userProvider.updateUser(
-                  userProvider.currentUser.copyWith(email: newEmail),
-                );
-              }
-            } catch (_) {}
+            }
           }
         });
       } else {
@@ -155,7 +144,7 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
     if (confirmed != true) return;
 
     try {
-      await AccountService.reauthenticateWithEmailAndPassword(
+      await AccountService.instance.reauthenticateWithEmailAndPassword(
         emailController.text.trim(),
         passwordController.text,
       );
@@ -183,25 +172,18 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
 
   Future<void> _syncAfterVerification() async {
     final l10n = AppLocalizations.of(context)!;
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
     setState(() => _isSyncing = true);
     try {
-      await AccountService.reloadUser();
-      await AccountService.syncEmailToFirestore();
+      await AccountService.instance.reloadUser();
+      await AccountService.instance.syncEmailToFirestore();
 
       // Update local provider to reflect the latest auth email
       final authEmail = FirebaseAuth.instance.currentUser?.email;
-      if (authEmail != null) {
-        try {
-          final userProvider = Provider.of<UserProvider>(
-            context,
-            listen: false,
-          );
-          if (userProvider.isUserLoaded) {
-            userProvider.updateUser(
-              userProvider.currentUser.copyWith(email: authEmail),
-            );
-          }
-        } catch (_) {}
+      if (authEmail != null && userProvider.isUserLoaded) {
+        userProvider.updateUser(
+          userProvider.currentUser.copyWith(email: authEmail),
+        );
       }
 
       if (!mounted) return;
@@ -248,9 +230,9 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
               margin: const EdgeInsets.only(bottom: 16),
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.07),
+                color: AppColors.primary.withValues(alpha: 0.07),
                 borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
-                border: Border.all(color: AppColors.primary.withOpacity(0.2)),
+                border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
               ),
               child: Row(
                 children: [
@@ -265,7 +247,7 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
                           style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
-                            color: AppColors.primary.withOpacity(0.7),
+                            color: AppColors.primary.withValues(alpha: 0.7),
                             letterSpacing: 0.3,
                           ),
                         ),
@@ -292,7 +274,7 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
               borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: Colors.black.withValues(alpha: 0.05),
                   blurRadius: 12,
                   offset: const Offset(0, 2),
                 ),
@@ -315,7 +297,7 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
                         DesignTokens.radiusMedium,
                       ),
                       borderSide: BorderSide(
-                        color: Colors.black.withOpacity(0.1),
+                        color: Colors.black.withValues(alpha: 0.1),
                       ),
                     ),
                     enabledBorder: OutlineInputBorder(
@@ -323,7 +305,7 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
                         DesignTokens.radiusMedium,
                       ),
                       borderSide: BorderSide(
-                        color: Colors.black.withOpacity(0.1),
+                        color: Colors.black.withValues(alpha: 0.1),
                       ),
                     ),
                   ),
@@ -414,7 +396,7 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
                 onPressed: _isSyncing ? null : _syncAfterVerification,
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.primary,
-                  side: BorderSide(color: AppColors.primary.withOpacity(0.5)),
+                  side: BorderSide(color: AppColors.primary.withValues(alpha: 0.5)),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(
                       DesignTokens.radiusLarge,

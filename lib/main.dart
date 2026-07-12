@@ -45,11 +45,12 @@ void main() async {
   }
 
   // Initialize Firebase App Check
+  // Use debug providers only in debug builds; production must use
+  // Play Integrity / App Attest to prevent abuse of backend resources.
   await FirebaseAppCheck.instance.activate(
-    // You can use this for Android and iOS
-    androidProvider: AndroidProvider.debug,
-    // For iOS, you can use:
-    appleProvider: AppleProvider.debug,
+    androidProvider:
+        kDebugMode ? AndroidProvider.debug : AndroidProvider.playIntegrity,
+    appleProvider: kDebugMode ? AppleProvider.debug : AppleProvider.appAttest,
   );
 
   runApp(

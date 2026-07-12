@@ -498,12 +498,41 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String get invalidEmail => 'يرجى إدخال عنوان بريد إلكتروني صحيح';
+
+  @override
+  String get passwordTooShort => 'يجب أن تكون كلمة المرور 8 أحرف على الأقل';
+
+  @override
   String loginFailedWithError(String error) {
     return 'فشل تسجيل الدخول: $error';
   }
 
   @override
   String get verifyEmailPrompt => 'يرجى التحقق من بريدك الإلكتروني.';
+
+  @override
+  String get verifyEmailTitle => 'تحقق من بريدك الإلكتروني';
+
+  @override
+  String get verifyEmailSubtitle => 'لقد أرسلنا رابط التحقق إلى';
+
+  @override
+  String get verifyEmailInstructions => 'افتح الرابط في صندوق الوارد للمتابعة. ستتحدث هذه الصفحة تلقائياً.';
+
+  @override
+  String get verificationEmailSent => 'تم إرسال بريد التحقق!';
+
+  @override
+  String get resendVerificationEmail => 'إعادة إرسال بريد التحقق';
+
+  @override
+  String get verificationTimeoutMessage => 'يستغرق التحقق وقتاً أطول من المتوقع. يرجى التحقق من صندوق الوارد أو تسجيل الخروج والمحاولة مرة أخرى.';
+
+  @override
+  String resendCooldown(int seconds) {
+    return 'إعادة الإرسال بعد $secondsث';
+  }
 
   @override
   String get send => 'إرسال';

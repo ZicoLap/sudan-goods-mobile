@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sudan_goods/authentication/data/register_form_data.dart';
 import 'package:sudan_goods/authentication/pages/login_page.dart';
+import 'package:sudan_goods/authentication/utils/auth_validators.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
 import 'package:sudan_goods/onboarding/onboarding_style.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
@@ -82,6 +83,7 @@ class _RegisterFormUserState extends State<RegisterFormUser> {
                 icon: Icons.email_outlined,
                 keyboard: TextInputType.emailAddress,
                 textInputAction: TextInputAction.next,
+                validator: (val) => AuthValidators.email(l10n, val),
               ),
               const SizedBox(height: DesignTokens.space16),
               _textField(
@@ -119,6 +121,7 @@ class _RegisterFormUserState extends State<RegisterFormUser> {
                 obscure: _obscurePassword,
                 icon: Icons.lock_outline_rounded,
                 textInputAction: TextInputAction.next,
+                validator: (val) => AuthValidators.password(l10n, val),
                 suffix: IconButton(
                   icon: Icon(
                     _obscurePassword
@@ -139,6 +142,12 @@ class _RegisterFormUserState extends State<RegisterFormUser> {
                 obscure: _obscureConfirm,
                 icon: Icons.lock_rounded,
                 textInputAction: TextInputAction.done,
+                validator:
+                    (val) => AuthValidators.confirmPassword(
+                      l10n,
+                      val,
+                      widget.formData.password.text,
+                    ),
                 suffix: IconButton(
                   icon: Icon(
                     _obscureConfirm
@@ -245,6 +254,7 @@ class _RegisterFormUserState extends State<RegisterFormUser> {
     TextInputAction? textInputAction,
     TextCapitalization capitalization = TextCapitalization.none,
     List<TextInputFormatter>? inputFormatters,
+    String? Function(String?)? validator,
   }) {
     return TextFormField(
       controller: controller,
@@ -259,6 +269,7 @@ class _RegisterFormUserState extends State<RegisterFormUser> {
         suffixIcon: suffix,
       ),
       validator:
+          validator ??
           (val) =>
               val == null || val.isEmpty
                   ? AppLocalizations.of(context)!.pleaseEnterField(label)

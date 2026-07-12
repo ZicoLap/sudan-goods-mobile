@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:sudan_goods/authentication/controller/login_controller.dart';
 import 'package:sudan_goods/authentication/data/login_form_data.dart';
+import 'package:sudan_goods/authentication/data/login_result.dart';
 import 'package:sudan_goods/authentication/pages/register_page.dart';
 import 'package:sudan_goods/authentication/services/login_service.dart';
 import 'package:sudan_goods/authentication/pages/widgets/password_reset_dialog.dart';
+import 'package:sudan_goods/authentication/utils/auth_validators.dart';
 import 'package:sudan_goods/core/utils/snackbar_utils.dart';
-import 'package:sudan_goods/Home/pages/main_shell.dart';
 import 'package:sudan_goods/onboarding/onboarding_style.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
@@ -30,42 +31,56 @@ class _LoginFormState extends State<LoginForm> {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _isLoading = true);
 
+    final l10n = AppLocalizations.of(context)!;
+    final messenger = ScaffoldMessenger.of(context);
+    final theme = Theme.of(context);
+
     try {
       final result = await _controller.login(
         widget.formData.email.text,
         widget.formData.password.text,
       );
 
-      if (result == "unverified") {
-        AppSnackbar.warning(
-          context,
-          AppLocalizations.of(context)!.verifyEmailPrompt,
-        );
-        return;
+      switch (result) {
+        case LoginSuccess():
+          // AuthGate listens to authStateChanges and will route the user
+          // to MainShell automatically. No explicit navigation needed here.
+          return;
+        case LoginUnverified():
+          AppSnackbar.showWith(
+            messenger,
+            theme,
+            l10n.verifyEmailPrompt,
+            type: SnackbarType.warning,
+          );
+          return;
+        case LoginFailure(:final message):
+          AppSnackbar.showWith(
+            messenger,
+            theme,
+            message,
+            type: SnackbarType.error,
+          );
+          return;
       }
-      // Successful login: explicitly navigate to MainShell.
-      // AuthGate will also rebuild via authStateChanges, but explicit navigation
-      // ensures reliable transition even if stream events are delayed.
-      if (result == "success") {
-        if (!mounted) return;
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (_) => const MainShell()),
-          (route) => false, // Clear all previous routes
-        );
-        return;
-      }
+    } on LoginException catch (e) {
+      AppSnackbar.showWith(
+        messenger,
+        theme,
+        e.message,
+        type: SnackbarType.error,
+      );
     } catch (e) {
-      // Use user-friendly message from LoginException, fallback for other errors
-      final errorMessage =
-          e is LoginException
-              ? e.message
-              : AppLocalizations.of(
-                context,
-              )!.loginFailedWithError(e.toString());
-      AppSnackbar.error(context, errorMessage);
+      AppSnackbar.showWith(
+        messenger,
+        theme,
+        l10n.loginFailedWithError(e.toString()),
+        type: SnackbarType.error,
+      );
     } finally {
-      if (!mounted) return;
-      setState(() => _isLoading = false);
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
@@ -242,10 +257,12 @@ class _LoginFormState extends State<LoginForm> {
         suffixIcon: suffix,
       ),
       validator:
-          (val) =>
-              val == null || val.isEmpty
-                  ? AppLocalizations.of(context)!.pleaseEnterField(label)
-                  : null,
+          (val) {
+            final l10n = AppLocalizations.of(context)!;
+            return label == l10n.email
+                ? AuthValidators.email(l10n, val)
+                : AuthValidators.password(l10n, val);
+          },
     );
   }
 

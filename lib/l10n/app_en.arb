@@ -241,6 +241,8 @@
   "or": "OR",
   "forgotPassword": "Forgot password?",
   "pleaseEnterField": "Please enter {field}",
+  "invalidEmail": "Please enter a valid email address",
+  "passwordTooShort": "Password must be at least 8 characters",
   "@pleaseEnterField": {
     "description": "Validation message asking user to enter a field value",
     "placeholders": {
@@ -255,6 +257,17 @@
     }
   },
   "verifyEmailPrompt": "Please verify your email.",
+  "verifyEmailTitle": "Verify your email",
+  "verifyEmailSubtitle": "We sent a verification link to",
+  "verifyEmailInstructions": "Open the link in your inbox to continue. This page will update automatically.",
+  "verificationEmailSent": "Verification email sent!",
+  "resendVerificationEmail": "Resend verification email",
+  "verificationTimeoutMessage": "Verification is taking longer than expected. Please check your inbox or sign out and try again.",
+  "resendCooldown": "Resend in {seconds}s",
+  "@resendCooldown": {
+    "description": "Resend cooldown label with remaining seconds",
+    "placeholders": { "seconds": { "type": "int" } }
+  },
   "send": "Send",
   "resetPassword": "Reset Password",
   "resetPasswordInstructions": "Enter your registered email. We will send you a reset link.",

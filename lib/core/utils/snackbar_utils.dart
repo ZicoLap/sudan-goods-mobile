@@ -105,10 +105,30 @@ class AppSnackbar {
     VoidCallback? onAction,
     String? actionLabel,
   }) {
-    final theme = Theme.of(context);
+    showWith(
+      ScaffoldMessenger.of(context),
+      Theme.of(context),
+      message,
+      type: type,
+      duration: duration,
+      onAction: onAction,
+      actionLabel: actionLabel,
+    );
+  }
+
+  /// Context-free show for use after async gaps.
+  static void showWith(
+    ScaffoldMessengerState messenger,
+    ThemeData theme,
+    String message, {
+    SnackbarType type = SnackbarType.info,
+    Duration? duration,
+    VoidCallback? onAction,
+    String? actionLabel,
+  }) {
     final colorScheme = _getColorScheme(type, theme);
 
-    ScaffoldMessenger.of(context).showSnackBar(
+    messenger.showSnackBar(
       SnackBar(
         content: Row(
           children: [

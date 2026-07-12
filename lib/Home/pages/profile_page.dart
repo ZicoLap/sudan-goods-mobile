@@ -716,7 +716,7 @@ class _ProfilePageState extends State<ProfilePage> {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     await _withProgress(() async {
       try {
-        await AccountService.logout();
+        await AccountService.instance.logout();
         userProvider.clear();
         navigator.pushAndRemoveUntil(
           MaterialPageRoute(builder: (_) => const AuthGate()),
@@ -736,7 +736,7 @@ class _ProfilePageState extends State<ProfilePage> {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     await _withProgress(() async {
       try {
-        await AccountService.deleteAccount();
+        await AccountService.instance.deleteAccount();
         userProvider.clear();
         navigator.pushAndRemoveUntil(
           MaterialPageRoute(builder: (_) => const AuthGate()),

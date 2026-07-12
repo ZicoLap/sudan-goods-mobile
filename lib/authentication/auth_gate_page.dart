@@ -1,10 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sudan_goods/authentication/pages/email_verification_page.dart';
 import 'package:sudan_goods/authentication/pages/login_page.dart';
 import 'package:sudan_goods/authentication/pages/role_redirect_page.dart';
+import 'package:sudan_goods/authentication/services/role_resolver.dart';
 import 'package:sudan_goods/Home/pages/main_shell.dart';
 import 'package:sudan_goods/authentication/user/user_provider.dart';
 
@@ -15,22 +17,40 @@ import 'package:sudan_goods/authentication/user/user_provider.dart';
 ///
 /// Uses Custom Claims first (fast path), then falls back to Firestore check
 /// for backward compatibility with legacy users.
-class AuthGate extends StatelessWidget {
+class AuthGate extends StatefulWidget {
   const AuthGate({super.key});
 
-  /// Get role from Firebase Auth Custom Claims (JWT token)
-  /// Returns null if claims not set yet (legacy users)
-  Future<String?> _getRoleFromToken(User user) async {
-    try {
-      final tokenResult = await user.getIdTokenResult(true);
-      return tokenResult.claims?['role'] as String?;
-    } catch (e) {
-      return null;
-    }
+  @override
+  State<AuthGate> createState() => _AuthGateState();
+}
+
+class _AuthGateState extends State<AuthGate> {
+  StreamSubscription<User?>? _authSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    // Capture the provider outside the async listener so the closure does not
+    // hold a BuildContext across async gaps.
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    _authSubscription = FirebaseAuth.instance.authStateChanges().listen((user) {
+      if (user == null) {
+        // User signed out: clear cached profile so stale data is not shown
+        // on the next sign-in.
+        userProvider.clear();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _authSubscription?.cancel();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final roleResolver = RoleResolver();
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
@@ -49,47 +69,29 @@ class AuthGate extends StatelessWidget {
           return const EmailVerificationPage();
         }
 
-        final uid = user.uid;
-
-        // Check Custom Claims first (fast path - no Firestore read needed)
-        // This is the primary RBAC mechanism
         return FutureBuilder<String?>(
-          future: _getRoleFromToken(user),
-          builder: (context, tokenSnapshot) {
-            // If we have custom claims, use them immediately
-            if (tokenSnapshot.hasData && tokenSnapshot.data != null) {
-              final role = tokenSnapshot.data!;
-              return _buildForRole(context, uid, role, useFirestore: false);
+          future: roleResolver.resolve(user),
+          builder: (context, roleSnapshot) {
+            if (roleSnapshot.connectionState == ConnectionState.waiting) {
+              return const Scaffold(
+                body: Center(child: CircularProgressIndicator()),
+              );
             }
 
-            // If token check failed or no claims, fall back to Firestore
-            // This handles legacy users registered before Custom Claims were implemented
-            return StreamBuilder<DocumentSnapshot>(
-              stream:
-                  FirebaseFirestore.instance
-                      .collection('users')
-                      .doc(uid)
-                      .snapshots(),
-              builder: (context, userSnapshot) {
-                if (!userSnapshot.hasData) {
-                  return const Scaffold(
-                    body: Center(child: CircularProgressIndicator()),
-                  );
-                }
+            if (roleSnapshot.hasError) {
+              return _buildErrorState(context, roleSnapshot.error.toString());
+            }
 
-                final data = userSnapshot.data!.data() as Map<String, dynamic>?;
-                final role = data?['role'];
+            final role = roleSnapshot.data;
 
-                // Doc not yet written - Cloud Function still processing
-                if (role == null) {
-                  return const Scaffold(
-                    body: Center(child: CircularProgressIndicator()),
-                  );
-                }
+            // Doc not yet written - Cloud Function still processing
+            if (role == null) {
+              return const Scaffold(
+                body: Center(child: CircularProgressIndicator()),
+              );
+            }
 
-                return _buildForRole(context, uid, role, useFirestore: true);
-              },
-            );
+            return _buildForRole(context, user.uid, role);
           },
         );
       },
@@ -97,17 +99,12 @@ class AuthGate extends StatelessWidget {
   }
 
   /// Build the appropriate page based on user role
-  Widget _buildForRole(
-    BuildContext context,
-    String uid,
-    String role, {
-    required bool useFirestore,
-  }) {
+  Widget _buildForRole(BuildContext context, String uid, String role) {
     switch (role) {
       case 'customer':
         return _buildCustomerShell(context, uid);
-      case 'storeOwner':
-        return const RoleRedirectPage(role: 'storeOwner');
+      case 'vendor':
+        return const RoleRedirectPage(role: 'vendor');
       case 'admin':
         return const RoleRedirectPage(role: 'admin');
       default:

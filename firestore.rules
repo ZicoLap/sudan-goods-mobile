@@ -23,12 +23,31 @@ service cloud.firestore {
       allow get:    if isOwner(userId) || isAdmin();
       allow list:   if isAdmin();
       allow create: if false;  // Cloud Function is the sole creator
-      allow update: if (isOwner(userId) && onlyProfileFields()) || isAdmin();
+      allow update: if (isOwner(userId)
+          && onlyProfileFields()
+          && (!addressesChanged() || validAddressesList()))
+          || isAdmin();
       allow delete: if false;  // Admin SDK only
 
       function onlyProfileFields() {
+        // Email must be updated through Firebase Auth (server-trusted flow),
+        // not written directly by the client.
         return request.resource.data.diff(resource.data).affectedKeys()
-            .hasOnly(['firstName', 'lastName', 'phoneNumber', 'email']);
+            .hasOnly(['firstName', 'lastName', 'phoneNumber', 'addresses']);
+      }
+
+      function validAddressesList() {
+        // Addresses is an array of objects with a constrained key set.
+        return request.resource.data.addresses is list
+            && request.resource.data.addresses.size() <= 10
+            && request.resource.data.addresses.size() >= 0
+            && request.resource.data.addresses.removeAll([]).every(
+                 a => a.keys().hasOnly(['street', 'city', 'country', 'postalCode', 'label'])
+               );
+      }
+
+      function addressesChanged() {
+        return request.resource.data.diff(resource.data).affectedKeys().hasAny(['addresses']);
       }
 
       // ── Inbox (messaging conversation summaries) ────────────────────────────

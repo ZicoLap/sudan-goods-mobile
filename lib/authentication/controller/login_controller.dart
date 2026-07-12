@@ -1,32 +1,34 @@
+import 'package:sudan_goods/authentication/data/login_result.dart';
 import 'package:sudan_goods/authentication/services/login_service.dart';
 
 class LoginController {
-  final LoginService _service = LoginService();
+  final LoginService _service;
+
+  LoginController({LoginService? service}) : _service = service ?? LoginService();
 
   /// Attempts to log in with email and password.
   ///
-  /// Returns:
-  /// - "success" if login succeeded and email is verified
-  /// - "unverified" if login succeeded but email is not verified
-  /// - throws on login failure (see LoginException for user-friendly errors)
-  Future<String?> login(String email, String password) async {
+  /// Returns a [LoginResult] indicating success, unverified email, or failure.
+  Future<LoginResult> login(String email, String password) async {
     try {
       final user = await _service.loginWithEmail(email, password);
 
-      if (user != null) {
-        final refreshedUser = await _service.refreshUser();
-
-        if (refreshedUser != null && !refreshedUser.emailVerified) {
-          // Return unverified status - do NOT send verification email here.
-          // Verification emails should only be sent at registration time.
-          return "unverified";
-        }
-        return "success";
+      if (user == null) {
+        return const LoginFailure('Unexpected login error. Please try again.');
       }
 
-      return "error"; // unexpected case
+      final refreshedUser = await _service.refreshUser();
+
+      if (refreshedUser != null && !refreshedUser.emailVerified) {
+        // Return unverified status - do NOT send verification email here.
+        // Verification emails are requested on EmailVerificationPage.
+        return const LoginUnverified();
+      }
+      return const LoginSuccess();
+    } on LoginException catch (e) {
+      return LoginFailure(e.message, code: e.code);
     } catch (e) {
-      rethrow; // bubble up to UI for error message
+      return LoginFailure('Login failed. Please try again.');
     }
   }
 }

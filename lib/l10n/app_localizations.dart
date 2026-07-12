@@ -1007,6 +1007,18 @@ abstract class AppLocalizations {
   /// **'Please enter {field}'**
   String pleaseEnterField(String field);
 
+  /// No description provided for @invalidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email address'**
+  String get invalidEmail;
+
+  /// No description provided for @passwordTooShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 8 characters'**
+  String get passwordTooShort;
+
   /// Login failure message with error details
   ///
   /// In en, this message translates to:
@@ -1018,6 +1030,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please verify your email.'**
   String get verifyEmailPrompt;
+
+  /// No description provided for @verifyEmailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify your email'**
+  String get verifyEmailTitle;
+
+  /// No description provided for @verifyEmailSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We sent a verification link to'**
+  String get verifyEmailSubtitle;
+
+  /// No description provided for @verifyEmailInstructions.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the link in your inbox to continue. This page will update automatically.'**
+  String get verifyEmailInstructions;
+
+  /// No description provided for @verificationEmailSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification email sent!'**
+  String get verificationEmailSent;
+
+  /// No description provided for @resendVerificationEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend verification email'**
+  String get resendVerificationEmail;
+
+  /// No description provided for @verificationTimeoutMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification is taking longer than expected. Please check your inbox or sign out and try again.'**
+  String get verificationTimeoutMessage;
+
+  /// Resend cooldown label with remaining seconds
+  ///
+  /// In en, this message translates to:
+  /// **'Resend in {seconds}s'**
+  String resendCooldown(int seconds);
 
   /// No description provided for @send.
   ///

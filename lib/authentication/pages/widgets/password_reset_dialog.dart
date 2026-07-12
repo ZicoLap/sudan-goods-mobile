@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:sudan_goods/authentication/utils/auth_validators.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
 import 'package:sudan_goods/onboarding/onboarding_style.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
@@ -13,42 +14,59 @@ class PasswordResetDialog extends StatefulWidget {
 }
 
 class _PasswordResetDialogState extends State<PasswordResetDialog> {
+  final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   bool _isLoading = false;
 
   Future<void> _resetPassword() async {
+    if (!_formKey.currentState!.validate()) return;
+
     final email = _emailController.text.trim();
-
-    if (email.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            AppLocalizations.of(context)!
-                .pleaseEnterField(AppLocalizations.of(context)!.email),
-          ),
-        ),
-      );
-      return;
-    }
-
     setState(() => _isLoading = true);
 
     try {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(AppLocalizations.of(context)!.resetLinkSent)),
       );
       Navigator.of(context).pop(); // close dialog
-    } catch (e) {
+    } on FirebaseAuthException catch (e) {
+      if (!mounted) return;
+      final message = _mapError(e.code);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            AppLocalizations.of(context)!.errorWithMessage(e.toString()),
+            AppLocalizations.of(context)!.errorWithMessage(message),
+          ),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context)!.errorWithMessage(
+              'An unexpected error occurred. Please try again.',
+            ),
           ),
         ),
       );
     } finally {
-      setState(() => _isLoading = false);
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  String _mapError(String code) {
+    switch (code) {
+      case 'invalid-email':
+        return 'Invalid email address.';
+      case 'user-not-found':
+        return 'No account found for this email.';
+      case 'too-many-requests':
+        return 'Too many attempts. Please try again later.';
+      default:
+        return 'Failed to send reset link. Please try again.';
     }
   }
 
@@ -100,14 +118,18 @@ class _PasswordResetDialogState extends State<PasswordResetDialog> {
             ),
             const SizedBox(height: DesignTokens.space20),
             // ── Email field ───────────────────────────────────────
-            TextField(
-              controller: _emailController,
-              keyboardType: TextInputType.emailAddress,
-              textInputAction: TextInputAction.done,
-              onSubmitted: (_) => _resetPassword(),
-              decoration: InputDecoration(
-                labelText: l10n.email,
-                prefixIcon: const Icon(Icons.email_outlined),
+            Form(
+              key: _formKey,
+              child: TextFormField(
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+                textInputAction: TextInputAction.done,
+                onFieldSubmitted: (_) => _resetPassword(),
+                decoration: InputDecoration(
+                  labelText: l10n.email,
+                  prefixIcon: const Icon(Icons.email_outlined),
+                ),
+                validator: (val) => AuthValidators.email(l10n, val),
               ),
             ),
             const SizedBox(height: DesignTokens.space20),

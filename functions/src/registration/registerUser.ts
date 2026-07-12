@@ -18,6 +18,15 @@ export const registerUser = functions.https.onCall(async (request) => {
   const requestId = `req_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
   logger.info('Registration attempt', { requestId });
 
+  // Enforce App Check to prevent abuse by non-app clients.
+  if (!request.app) {
+    logger.warn('App Check verification failed', { requestId });
+    throw new functions.https.HttpsError(
+      'unauthenticated',
+      'Request did not pass App Check verification.'
+    );
+  }
+
   try {
     // 1. Validate input
     const validatedData = validateRegistrationInput(data);
@@ -97,7 +106,7 @@ export const registerUser = functions.https.onCall(async (request) => {
       success: true,
       uid: userRecord.uid,
       email: validatedData.email,
-      message: 'Registration successful. Please check your email to verify your account.',
+      message: 'Registration successful. Please sign in and verify your email to continue.',
     };
 
     return response;
