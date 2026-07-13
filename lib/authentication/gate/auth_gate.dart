@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sudan_goods/authentication/pages/email_verification_page.dart';
-import 'package:sudan_goods/authentication/pages/login_page.dart';
-import 'package:sudan_goods/authentication/pages/role_redirect_page.dart';
-import 'package:sudan_goods/authentication/services/role_resolver.dart';
+import 'package:sudan_goods/authentication/account/email_verification_page.dart';
+import 'package:sudan_goods/authentication/login/login_page.dart';
+import 'package:sudan_goods/authentication/role/role_redirect_page.dart';
+import 'package:sudan_goods/authentication/role/role_resolver.dart';
 import 'package:sudan_goods/Home/pages/main_shell.dart';
 import 'package:sudan_goods/authentication/user/user_provider.dart';
 

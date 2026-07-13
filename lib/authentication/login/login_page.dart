@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:sudan_goods/authentication/data/login_form_data.dart';
-import 'package:sudan_goods/authentication/pages/widgets/auth_card.dart';
-import 'package:sudan_goods/authentication/pages/widgets/auth_eyebrow.dart';
-import 'package:sudan_goods/authentication/pages/widgets/login_form.dart';
-import 'package:sudan_goods/authentication/pages/widgets/auth_illustrations.dart';
+import 'package:sudan_goods/authentication/login/login_form_data.dart';
+import 'package:sudan_goods/authentication/widgets/auth_card.dart';
+import 'package:sudan_goods/authentication/widgets/auth_eyebrow.dart';
+import 'package:sudan_goods/authentication/login/login_form.dart';
+import 'package:sudan_goods/authentication/widgets/auth_illustrations.dart';
 import 'package:sudan_goods/onboarding/onboarding_animations.dart';
 import 'package:sudan_goods/onboarding/onboarding_style.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';

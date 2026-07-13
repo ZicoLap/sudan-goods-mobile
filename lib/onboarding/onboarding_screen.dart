@@ -6,7 +6,7 @@ import 'package:sudan_goods/onboarding/onboarding_animations.dart';
 import 'package:sudan_goods/onboarding/onboarding_assets.dart';
 import 'package:sudan_goods/onboarding/onboarding_persistence_service.dart';
 import 'package:sudan_goods/onboarding/onboarding_style.dart';
-import 'package:sudan_goods/authentication/auth_gate_page.dart';
+import 'package:sudan_goods/authentication/gate/auth_gate.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 

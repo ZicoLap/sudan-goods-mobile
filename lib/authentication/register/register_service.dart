@@ -1,5 +1,5 @@
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:sudan_goods/authentication/data/registration_result.dart';
+import 'package:sudan_goods/authentication/register/registration_result.dart';
 import 'package:sudan_goods/models/shared_models/address.dart';
 
 /// Server-side registration service.

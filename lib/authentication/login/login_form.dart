@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:sudan_goods/authentication/controller/login_controller.dart';
-import 'package:sudan_goods/authentication/data/login_form_data.dart';
-import 'package:sudan_goods/authentication/data/login_result.dart';
-import 'package:sudan_goods/authentication/pages/register_page.dart';
-import 'package:sudan_goods/authentication/services/login_service.dart';
-import 'package:sudan_goods/authentication/pages/widgets/password_reset_dialog.dart';
+import 'package:sudan_goods/authentication/login/login_controller.dart';
+import 'package:sudan_goods/authentication/login/login_form_data.dart';
+import 'package:sudan_goods/authentication/login/login_result.dart';
+import 'package:sudan_goods/authentication/register/register_page.dart';
+import 'package:sudan_goods/authentication/login/login_service.dart';
+import 'package:sudan_goods/authentication/widgets/password_reset_dialog.dart';
 import 'package:sudan_goods/authentication/utils/auth_validators.dart';
 import 'package:sudan_goods/core/utils/snackbar_utils.dart';
 import 'package:sudan_goods/onboarding/onboarding_style.dart';

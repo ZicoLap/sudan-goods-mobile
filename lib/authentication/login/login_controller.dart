@@ -1,5 +1,5 @@
-import 'package:sudan_goods/authentication/data/login_result.dart';
-import 'package:sudan_goods/authentication/services/login_service.dart';
+import 'package:sudan_goods/authentication/login/login_result.dart';
+import 'package:sudan_goods/authentication/login/login_service.dart';
 
 class LoginController {
   final LoginService _service;

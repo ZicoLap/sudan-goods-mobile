@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sudan_goods/authentication/data/register_form_data.dart';
-import 'package:sudan_goods/authentication/pages/login_page.dart';
+import 'package:sudan_goods/authentication/register/register_form_data.dart';
+import 'package:sudan_goods/authentication/login/login_page.dart';
 import 'package:sudan_goods/authentication/utils/auth_validators.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
 import 'package:sudan_goods/onboarding/onboarding_style.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
-import 'gender_picker.dart';
-import 'birthday_picker.dart';
+import 'package:sudan_goods/authentication/widgets/gender_picker.dart';
+import 'package:sudan_goods/authentication/widgets/birthday_picker.dart';
 
 class RegisterFormUser extends StatefulWidget {
   final RegisterFormData formData;

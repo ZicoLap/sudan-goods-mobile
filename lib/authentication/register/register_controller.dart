@@ -1,8 +1,8 @@
-import 'package:sudan_goods/authentication/data/registration_result.dart';
-import 'package:sudan_goods/authentication/services/server_register_service.dart';
+import 'package:sudan_goods/authentication/register/registration_result.dart';
+import 'package:sudan_goods/authentication/register/register_service.dart';
 import 'package:sudan_goods/models/shared_models/address.dart';
 
-export 'package:sudan_goods/authentication/data/registration_result.dart';
+export 'package:sudan_goods/authentication/register/registration_result.dart';
 
 /// Controller for user registration via secure Cloud Function.
 ///
