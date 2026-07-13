@@ -42,11 +42,10 @@ class _RegisterPageState extends State<RegisterPage>
   late final Animation<double> _animHeading;
   late final Animation<double> _animForm;
 
-  Animation<double> _interval(double begin, double end) =>
-      CurvedAnimation(
-        parent: _stagger,
-        curve: Interval(begin, end, curve: Curves.easeOutCubic),
-      );
+  Animation<double> _interval(double begin, double end) => CurvedAnimation(
+    parent: _stagger,
+    curve: Interval(begin, end, curve: Curves.easeOutCubic),
+  );
 
   @override
   void initState() {
@@ -54,9 +53,9 @@ class _RegisterPageState extends State<RegisterPage>
     _stagger = AnimationController(vsync: this, duration: _kDuration)
       ..forward();
     _animIllustration = _interval(0.00, 0.55);
-    _animEyebrow      = _interval(0.18, 0.65);
-    _animHeading      = _interval(0.32, 0.78);
-    _animForm         = _interval(0.48, 1.00);
+    _animEyebrow = _interval(0.18, 0.65);
+    _animHeading = _interval(0.32, 0.78);
+    _animForm = _interval(0.48, 1.00);
   }
 
   @override
@@ -98,9 +97,6 @@ class _RegisterPageState extends State<RegisterPage>
 
     // Handle structured registration result
     if (result.isSuccess) {
-      // Verification email is intentionally not sent here. The user must
-      // sign in first; AuthGate will route unverified users to the
-      // EmailVerificationPage where they can request the verification link.
       if (!mounted) return;
       AppSnackbar.success(
         context,
@@ -180,11 +176,11 @@ class _RegisterPageState extends State<RegisterPage>
     final eyebrowIcon =
         _showAddressForm ? Icons.home_rounded : Icons.person_add_alt_1_rounded;
     final eyebrowLabel = _showAddressForm ? 'STEP 2 OF 2' : 'STEP 1 OF 2';
-    final heading =
-        _showAddressForm ? l10n.addressTitle : l10n.register;
-    final subtitle = _showAddressForm
-        ? 'Almost there — set your delivery address'
-        : 'Create your account to start shopping';
+    final heading = _showAddressForm ? l10n.addressTitle : l10n.register;
+    final subtitle =
+        _showAddressForm
+            ? 'Almost there — set your delivery address'
+            : 'Create your account to start shopping';
 
     return OnboardingShell(
       body: SingleChildScrollView(
@@ -211,17 +207,12 @@ class _RegisterPageState extends State<RegisterPage>
                   ),
                 ),
                 SizedBox(
-                  height: compact
-                      ? DesignTokens.space12
-                      : DesignTokens.space16,
+                  height: compact ? DesignTokens.space12 : DesignTokens.space16,
                 ),
                 // ── Eyebrow pill ──────────────────────────────────────
                 OnboardingFadeSlide(
                   animation: _animEyebrow,
-                  child: AuthEyebrow(
-                    icon: eyebrowIcon,
-                    label: eyebrowLabel,
-                  ),
+                  child: AuthEyebrow(icon: eyebrowIcon, label: eyebrowLabel),
                 ),
                 const SizedBox(height: DesignTokens.space12),
                 // ── Heading + subtitle ────────────────────────────────
@@ -254,9 +245,7 @@ class _RegisterPageState extends State<RegisterPage>
                   ),
                 ),
                 SizedBox(
-                  height: compact
-                      ? DesignTokens.space16
-                      : DesignTokens.space20,
+                  height: compact ? DesignTokens.space16 : DesignTokens.space20,
                 ),
                 // ── Form card ─────────────────────────────────────────
                 OnboardingFadeSlide(
@@ -264,36 +253,38 @@ class _RegisterPageState extends State<RegisterPage>
                   child: AuthFormCard(
                     child: AnimatedSwitcher(
                       duration: const Duration(milliseconds: 400),
-                      transitionBuilder: (child, animation) => FadeTransition(
-                        opacity: animation,
-                        child: child,
-                      ),
-                      child: _showAddressForm
-                          ? RegisterFormAddress(
-                              key: const ValueKey('address_form'),
-                              formData: _formData,
-                              formKey: _formKeyAddress,
-                              isLoading: _isLoading,
-                              onSubmit: _submitRegistration,
-                              onBack: () =>
-                                  setState(() => _showAddressForm = false),
-                            )
-                          : RegisterFormUser(
-                              key: const ValueKey('user_form'),
-                              formData: _formData,
-                              formKey: _formKeyUser,
-                              gender: _gender,
-                              birthday: _birthday,
-                              onGenderChanged: (val) =>
-                                  setState(() => _gender = val),
-                              onBirthdayChanged: (val) =>
-                                  setState(() => _birthday = val),
-                              onNext: () {
-                                if (_formKeyUser.currentState!.validate()) {
-                                  setState(() => _showAddressForm = true);
-                                }
-                              },
-                            ),
+                      transitionBuilder:
+                          (child, animation) =>
+                              FadeTransition(opacity: animation, child: child),
+                      child:
+                          _showAddressForm
+                              ? RegisterFormAddress(
+                                key: const ValueKey('address_form'),
+                                formData: _formData,
+                                formKey: _formKeyAddress,
+                                isLoading: _isLoading,
+                                onSubmit: _submitRegistration,
+                                onBack:
+                                    () => setState(
+                                      () => _showAddressForm = false,
+                                    ),
+                              )
+                              : RegisterFormUser(
+                                key: const ValueKey('user_form'),
+                                formData: _formData,
+                                formKey: _formKeyUser,
+                                gender: _gender,
+                                birthday: _birthday,
+                                onGenderChanged:
+                                    (val) => setState(() => _gender = val),
+                                onBirthdayChanged:
+                                    (val) => setState(() => _birthday = val),
+                                onNext: () {
+                                  if (_formKeyUser.currentState!.validate()) {
+                                    setState(() => _showAddressForm = true);
+                                  }
+                                },
+                              ),
                     ),
                   ),
                 ),

@@ -6,6 +6,7 @@ import { createAuthUser, checkExistingUser, deleteAuthUser } from '../services/a
 import { createUserDocument } from '../services/userService';
 import { RegistrationError } from '../utils/errors';
 import { RegisterUserResponse, RegisterUserError } from './types';
+import { sendVerificationEmail } from '../services/emailService';
 
 /**
  * Cloud Callable Function: Register a new user
@@ -92,6 +93,18 @@ export const registerUser = functions.https.onCall(async (request) => {
         requestId,
         uid: userRecord.uid,
         error: claimsError,
+      });
+    }
+
+    // 7. Send verification email via Gmail SMTP (non-fatal)
+    try {
+      const verificationLink = await admin.auth().generateEmailVerificationLink(validatedData.email);
+      await sendVerificationEmail(validatedData.email, validatedData.firstName, verificationLink);
+    } catch (emailError) {
+      logger.warn('Failed to send verification email', {
+        requestId,
+        uid: userRecord.uid,
+        error: emailError,
       });
     }
 

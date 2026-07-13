@@ -129,8 +129,11 @@ class ServerRegisterService {
       case 'deadline-exceeded':
       case 'resource-exhausted':
         return RegistrationOutcome.networkError;
-      default:
+      case 'unauthenticated':
+      case 'permission-denied':
         return RegistrationOutcome.serverError;
+      default:
+        return RegistrationOutcome.unknownError;
     }
   }
 }

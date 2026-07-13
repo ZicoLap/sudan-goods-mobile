@@ -47,12 +47,8 @@ class _LoginFormState extends State<LoginForm> {
           // to MainShell automatically. No explicit navigation needed here.
           return;
         case LoginUnverified():
-          AppSnackbar.showWith(
-            messenger,
-            theme,
-            l10n.verifyEmailPrompt,
-            type: SnackbarType.warning,
-          );
+          // AuthGate detects emailVerified=false and routes to
+          // EmailVerificationPage automatically — no snackbar needed.
           return;
         case LoginFailure(:final message):
           AppSnackbar.showWith(
@@ -146,10 +142,9 @@ class _LoginFormState extends State<LoginForm> {
             onPressed: _showResetDialog,
             child: Text(
               l10n.forgotPassword,
-              style: OnboardingStyle.pageEyebrowStyle(context).copyWith(
-                fontSize: 12,
-                letterSpacing: 0.2,
-              ),
+              style: OnboardingStyle.pageEyebrowStyle(
+                context,
+              ).copyWith(fontSize: 12, letterSpacing: 0.2),
             ),
           ),
         ),
@@ -256,13 +251,12 @@ class _LoginFormState extends State<LoginForm> {
         prefixIcon: icon != null ? Icon(icon) : null,
         suffixIcon: suffix,
       ),
-      validator:
-          (val) {
-            final l10n = AppLocalizations.of(context)!;
-            return label == l10n.email
-                ? AuthValidators.email(l10n, val)
-                : AuthValidators.password(l10n, val);
-          },
+      validator: (val) {
+        final l10n = AppLocalizations.of(context)!;
+        return label == l10n.email
+            ? AuthValidators.email(l10n, val)
+            : AuthValidators.password(l10n, val);
+      },
     );
   }
 
@@ -299,4 +293,3 @@ class _LoginFormState extends State<LoginForm> {
   //   );
   // }
 }
-

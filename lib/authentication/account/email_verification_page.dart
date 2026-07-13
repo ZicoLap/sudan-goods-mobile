@@ -37,6 +37,19 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
   void initState() {
     super.initState();
     _startPolling();
+    _sendInitial();
+  }
+
+  Future<void> _sendInitial() async {
+    try {
+      await FirebaseAuth.instance.currentUser?.sendEmailVerification();
+      if (mounted) {
+        setState(() => _resentSuccessfully = true);
+        _startCooldown();
+      }
+    } catch (_) {
+      // Silently ignore — user can tap Resend manually.
+    }
   }
 
   @override
@@ -47,24 +60,23 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
   }
 
   void _startPolling() {
-    _pollTimer = Timer.periodic(
-      const Duration(seconds: _pollIntervalSeconds),
-      (_) async {
-        if (!mounted) return;
-        _pollAttempts++;
-        if (_pollAttempts >= _maxPollAttempts) {
-          _pollTimer?.cancel();
-          setState(() => _timedOut = true);
-          return;
-        }
+    _pollTimer = Timer.periodic(const Duration(seconds: _pollIntervalSeconds), (
+      _,
+    ) async {
+      if (!mounted) return;
+      _pollAttempts++;
+      if (_pollAttempts >= _maxPollAttempts) {
+        _pollTimer?.cancel();
+        setState(() => _timedOut = true);
+        return;
+      }
 
-        await FirebaseAuth.instance.currentUser?.reload();
-        if (FirebaseAuth.instance.currentUser?.emailVerified == true) {
-          _pollTimer?.cancel();
-          // authStateChanges will fire and AuthGate will rebuild automatically.
-        }
-      },
-    );
+      await FirebaseAuth.instance.currentUser?.reload();
+      if (FirebaseAuth.instance.currentUser?.emailVerified == true) {
+        _pollTimer?.cancel();
+        // authStateChanges will fire and AuthGate will rebuild automatically.
+      }
+    });
   }
 
   void _startCooldown() {
@@ -100,9 +112,7 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              AppLocalizations.of(
-                context,
-              )!.errorWithMessage(
+              AppLocalizations.of(context)!.errorWithMessage(
                 'Failed to resend verification email. Please try again.',
               ),
             ),
