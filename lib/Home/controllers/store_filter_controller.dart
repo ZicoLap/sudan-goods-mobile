@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:sudan_goods/Home/models/store_filter.dart';
+import 'package:sudan_goods/home/models/store_filter.dart';
 import 'package:sudan_goods/models/store/store_model.dart';
 
 /// Central state controller for store browsing filters.

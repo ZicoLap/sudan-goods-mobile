@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sudan_goods/Home/widgets/category_chip.dart';
-import 'package:sudan_goods/Home/widgets/shimmer_components.dart';
+import 'package:sudan_goods/home/widgets/category_chip.dart';
+import 'package:sudan_goods/home/widgets/shimmer_components.dart';
 import 'package:sudan_goods/models/store/category_model.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 import 'package:sudan_goods/theme/app_theme.dart';

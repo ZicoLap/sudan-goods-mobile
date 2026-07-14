@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:sudan_goods/Home/services/store_service.dart';
-import 'package:sudan_goods/Home/widgets/shimmer_components.dart';
-import 'package:sudan_goods/Home/widgets/store_card.dart';
+import 'package:sudan_goods/home/services/store_service.dart';
+import 'package:sudan_goods/home/widgets/shimmer_components.dart';
+import 'package:sudan_goods/home/widgets/store_card.dart';
 import 'package:sudan_goods/models/store/store_model.dart';
 import 'package:sudan_goods/store/pages/store_details_page.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';

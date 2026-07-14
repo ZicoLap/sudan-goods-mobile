@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:sudan_goods/cart/cart_controller.dart';
-import 'package:sudan_goods/order/order_service.dart';
+import 'package:sudan_goods/order/services/order_service.dart';
 import 'package:uuid/uuid.dart';
 
 /// Lightweight domain error for checkout failures.

@@ -1,10 +1,10 @@
 /* import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sudan_goods/Home/services/category_service.dart';
-import 'package:sudan_goods/Home/widgets/all_stores_section.dart';
-import 'package:sudan_goods/Home/widgets/categories_section.dart';
-import 'package:sudan_goods/Home/widgets/featured_stores_section.dart';
-import 'package:sudan_goods/Home/widgets/hero.carousel.dart';
+import 'package:sudan_goods/home/services/category_service.dart';
+import 'package:sudan_goods/home/widgets/all_stores_section.dart';
+import 'package:sudan_goods/home/widgets/categories_section.dart';
+import 'package:sudan_goods/home/widgets/featured_stores_section.dart';
+import 'package:sudan_goods/home/widgets/hero.carousel.dart';
 import 'package:sudan_goods/cart/cart_controller.dart';
 import 'package:sudan_goods/models/store/category_model.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';

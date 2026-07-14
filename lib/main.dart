@@ -11,7 +11,7 @@ import 'package:sudan_goods/l10n/app_localizations.dart';
 import 'package:sudan_goods/l10n/locale_controller.dart';
 import 'package:sudan_goods/l10n/locale_persistence_service.dart';
 import 'package:sudan_goods/onboarding/app_start_gate.dart';
-import 'package:sudan_goods/Home/controller/store_filter_controller.dart';
+import 'package:sudan_goods/home/controllers/store_filter_controller.dart';
 import 'package:sudan_goods/follow/presentation/controllers/follow_controller.dart';
 import 'package:sudan_goods/follow/presentation/wiring/follow_wiring_example.dart';
 

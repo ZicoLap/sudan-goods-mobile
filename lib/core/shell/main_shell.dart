@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sudan_goods/cart/cart_controller.dart';
-import 'package:sudan_goods/Home/pages/home_page_new.dart';
-import 'package:sudan_goods/Home/pages/orders_page.dart';
-import 'package:sudan_goods/Home/pages/info_tab_page.dart';
-import 'package:sudan_goods/Home/pages/profile_page.dart';
-import 'package:sudan_goods/Home/pages/search_page.dart';
-import 'package:sudan_goods/Home/widgets/modern_bottom_navigation_bar.dart';
+import 'package:sudan_goods/home/screens/home_page_new.dart';
+import 'package:sudan_goods/order/screens/orders_page.dart';
+import 'package:sudan_goods/profile/screens/info_tab_page.dart';
+import 'package:sudan_goods/profile/screens/profile_page.dart';
+import 'package:sudan_goods/search/screens/search_page.dart';
+import 'package:sudan_goods/home/widgets/modern_bottom_navigation_bar.dart';
 
 class MainShell extends StatefulWidget {
   const MainShell({super.key});

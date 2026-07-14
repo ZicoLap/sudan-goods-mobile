@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:sudan_goods/Home/widgets/shimmer_components.dart';
+import 'package:sudan_goods/home/widgets/shimmer_components.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
 

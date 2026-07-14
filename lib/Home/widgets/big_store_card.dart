@@ -1,5 +1,5 @@
 /* import 'package:flutter/material.dart';
-import 'package:sudan_goods/Home/widgets/shimmer_components.dart';
+import 'package:sudan_goods/home/widgets/shimmer_components.dart';
 import 'package:sudan_goods/models/store/store_model.dart';
 import 'package:sudan_goods/store/pages/store_details_page.dart';
 import 'package:sudan_goods/theme/app_theme.dart';

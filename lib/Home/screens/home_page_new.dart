@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sudan_goods/Home/services/category_service.dart';
-import 'package:sudan_goods/Home/widgets/all_stores_section.dart';
-import 'package:sudan_goods/Home/widgets/categories_section.dart';
-import 'package:sudan_goods/Home/widgets/featured_stores_section.dart';
-import 'package:sudan_goods/Home/widgets/hero.carousel.dart';
+import 'package:sudan_goods/home/services/category_service.dart';
+import 'package:sudan_goods/home/widgets/all_stores_section.dart';
+import 'package:sudan_goods/home/widgets/categories_section.dart';
+import 'package:sudan_goods/home/widgets/featured_stores_section.dart';
+import 'package:sudan_goods/home/widgets/hero.carousel.dart';
 import 'package:sudan_goods/authentication/user/user_provider.dart';
 import 'package:sudan_goods/cart/cart_controller.dart';
 import 'package:sudan_goods/cart/pages/cart_overview_page.dart';
@@ -12,9 +12,9 @@ import 'package:sudan_goods/models/store/category_model.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
-import 'package:sudan_goods/Home/controller/store_filter_controller.dart';
-import 'package:sudan_goods/Home/widgets/store_filter_bar.dart';
-import 'package:sudan_goods/Home/widgets/store_filter_sheet.dart';
+import 'package:sudan_goods/home/controllers/store_filter_controller.dart';
+import 'package:sudan_goods/home/widgets/store_filter_bar.dart';
+import 'package:sudan_goods/home/widgets/store_filter_sheet.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

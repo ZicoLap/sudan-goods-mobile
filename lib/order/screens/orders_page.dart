@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
-import 'package:sudan_goods/order/order_details_page.dart';
+import 'package:sudan_goods/order/screens/order_details_page.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
 import 'package:sudan_goods/theme/app_theme.dart';

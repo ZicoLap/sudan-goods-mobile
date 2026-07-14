@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:sudan_goods/Home/services/store_service.dart';
-import 'package:sudan_goods/Home/widgets/big_store_card_enhanced.dart';
-import 'package:sudan_goods/Home/widgets/shimmer_components.dart';
+import 'package:sudan_goods/home/services/store_service.dart';
+import 'package:sudan_goods/home/widgets/big_store_card_enhanced.dart';
+import 'package:sudan_goods/home/widgets/shimmer_components.dart';
 import 'package:sudan_goods/models/store/store_model.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:sudan_goods/Home/controller/store_filter_controller.dart';
+import 'package:sudan_goods/home/controllers/store_filter_controller.dart';
 
 class AllStoresSection extends StatefulWidget {
   const AllStoresSection({super.key});

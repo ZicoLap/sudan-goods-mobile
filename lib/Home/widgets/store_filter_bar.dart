@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sudan_goods/Home/controller/store_filter_controller.dart';
-import 'package:sudan_goods/Home/widgets/filter_chip_group.dart';
+import 'package:sudan_goods/home/controllers/store_filter_controller.dart';
+import 'package:sudan_goods/home/widgets/filter_chip_group.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
 
