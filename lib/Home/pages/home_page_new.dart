@@ -13,7 +13,6 @@ import 'package:sudan_goods/theme/design_tokens.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
 import 'package:sudan_goods/Home/controller/store_filter_controller.dart';
-import 'package:sudan_goods/Home/pages/search_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -55,18 +54,8 @@ class _HomePageState extends State<HomePage> {
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
-          // ── Gradient hero header + search bar ────────────────────────
-          SliverToBoxAdapter(
-            child: _HomeHeroBanner(
-              userName: userName,
-              l10n: l10n,
-              onSearchTap: () {
-                Navigator.of(
-                  context,
-                ).push(MaterialPageRoute(builder: (_) => const SearchPage()));
-              },
-            ),
-          ),
+          // ── Gradient hero header ───────────────────────────────────
+          SliverToBoxAdapter(child: _HomeHeroBanner(userName: userName)),
 
           // ── Filter chips row ──────────────────────────────────────────
           SliverToBoxAdapter(
@@ -264,13 +253,7 @@ class _WaveClipper extends CustomClipper<Path> {
 
 class _HomeHeroBanner extends StatelessWidget {
   final String userName;
-  final AppLocalizations l10n;
-  final VoidCallback onSearchTap;
-  const _HomeHeroBanner({
-    required this.userName,
-    required this.l10n,
-    required this.onSearchTap,
-  });
+  const _HomeHeroBanner({required this.userName});
 
   String _greeting() {
     final h = DateTime.now().hour;
@@ -473,169 +456,12 @@ class _HomeHeroBanner extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
-                    // ── Location row ──────────────────────────────────────
-                    GestureDetector(
-                      onTap: () {},
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 5,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.12),
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(
-                            color: Colors.white.withOpacity(0.2),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(
-                              Icons.location_on_rounded,
-                              size: 13,
-                              color: Colors.white,
-                            ),
-                            const SizedBox(width: 5),
-                            Text(
-                              l10n.deliveringTo('Gießen'),
-                              style: TextStyle(
-                                color: Colors.white.withOpacity(0.9),
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const SizedBox(width: 3),
-                            Icon(
-                              Icons.keyboard_arrow_down_rounded,
-                              size: 15,
-                              color: Colors.white.withOpacity(0.7),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    // ── Search bar ────────────────────────────────────────
-                    GestureDetector(
-                      onTap: onSearchTap,
-                      behavior: HitTestBehavior.opaque,
-                      child: Container(
-                        height: 50,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.18),
-                              blurRadius: 20,
-                              offset: const Offset(0, 6),
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          children: [
-                            const SizedBox(width: 16),
-                            Container(
-                              width: 32,
-                              height: 32,
-                              decoration: BoxDecoration(
-                                color: AppColors.primary.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(9),
-                              ),
-                              child: const Icon(
-                                Icons.search_rounded,
-                                color: AppColors.primary,
-                                size: 18,
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Text(
-                                l10n.searchHint,
-                                style: const TextStyle(
-                                  color: Colors.black38,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                            ),
-                            Container(
-                              width: 1,
-                              height: 22,
-                              color: Colors.black.withOpacity(0.08),
-                            ),
-                            const SizedBox(width: 12),
-                            Icon(
-                              Icons.mic_none_rounded,
-                              color: AppColors.primary.withOpacity(0.7),
-                              size: 20,
-                            ),
-                            const SizedBox(width: 14),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    // ── Quick stats row ───────────────────────────────────
-                    Row(
-                      children: [
-                        _statBadge(
-                          icon: Icons.store_rounded,
-                          label: '200+ Stores',
-                          color: Colors.white.withOpacity(0.18),
-                        ),
-                        const SizedBox(width: 8),
-                        _statBadge(
-                          icon: Icons.local_offer_rounded,
-                          label: 'New Deals',
-                          color: Colors.white.withOpacity(0.18),
-                        ),
-                        const SizedBox(width: 8),
-                        _statBadge(
-                          icon: Icons.rocket_launch_rounded,
-                          label: 'Fast Delivery',
-                          color: Colors.white.withOpacity(0.18),
-                        ),
-                      ],
-                    ),
                   ],
                 ),
               ),
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _statBadge({
-    required IconData icon,
-    required String label,
-    required Color color,
-  }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withOpacity(0.2)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 12, color: Colors.white),
-          const SizedBox(width: 5),
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              color: Colors.white,
-            ),
-          ),
-        ],
       ),
     );
   }
