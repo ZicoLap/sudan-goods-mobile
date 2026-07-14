@@ -265,6 +265,13 @@
   "orderFilterSortHighestAmount": "أعلى مبلغ",
   "orderFilterSortLowestAmount": "أقل مبلغ",
   "noOrdersMatchFilters": "لا توجد طلبات تطابق الفلاتر",
+  "orderDateSheetTitle": "تاريخ الطلب",
+  "orderFiltersActive": "{count} فلاتر نشطة",
+  "@orderFiltersActive": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "failedToLoadProfile": "فشل تحميل الملف الشخصي. يرجى المحاولة مرة أخرى.",
   "recentActivity": "النشاط الأخير",
   "addShortBioPrompt": "أضف نبذة قصيرة لتخصيص ملفك الشخصي",

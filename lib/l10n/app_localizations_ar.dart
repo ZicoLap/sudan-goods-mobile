@@ -565,6 +565,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String get noOrdersMatchFilters => 'لا توجد طلبات تطابق الفلاتر';
 
   @override
+  String get orderDateSheetTitle => 'تاريخ الطلب';
+
+  @override
+  String orderFiltersActive(int count) {
+    return '$count فلاتر نشطة';
+  }
+
+  @override
   String get failedToLoadProfile => 'فشل تحميل الملف الشخصي. يرجى المحاولة مرة أخرى.';
 
   @override

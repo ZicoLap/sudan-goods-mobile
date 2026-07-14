@@ -565,6 +565,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noOrdersMatchFilters => 'No orders match your filters';
 
   @override
+  String get orderDateSheetTitle => 'Date placed';
+
+  @override
+  String orderFiltersActive(int count) {
+    return '$count filters active';
+  }
+
+  @override
   String get failedToLoadProfile => 'Failed to load profile. Please try again.';
 
   @override

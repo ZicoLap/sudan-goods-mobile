@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:sudan_goods/order/models/order_filter.dart';
 import 'package:sudan_goods/order/pages/order_details_page.dart';
 import 'package:sudan_goods/order/utils/order_filter_utils.dart';
+import 'package:sudan_goods/order/widgets/order_date_sheet.dart';
+import 'package:sudan_goods/order/widgets/order_filter_bar.dart';
 import 'package:sudan_goods/order/widgets/order_filter_sheet.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
@@ -54,7 +56,18 @@ class _OrdersPageState extends State<OrdersPage> {
     }
   }
 
-  void _updateFilter(OrderFilter updated) => setState(() => _filter = updated);
+  Future<void> _openDateSheet() async {
+    final result = await OrderDateSheet.show(
+      context,
+      selected: _filter.datePreset,
+    );
+    if (result != null && mounted) {
+      setState(() => _filter = _filter.copyWith(datePreset: result));
+    }
+  }
+
+  void _clearFilterCriteria() =>
+      setState(() => _filter = _filter.clearFilterCriteria());
 
   void _scheduleStoreNameLoad(
     List<QueryDocumentSnapshot<Map<String, dynamic>>> docs,
@@ -68,95 +81,16 @@ class _OrdersPageState extends State<OrdersPage> {
   }
 
   Widget _buildFilterBar(
-    AppLocalizations l10n,
     List<QueryDocumentSnapshot<Map<String, dynamic>>> docs, {
     required bool loading,
   }) {
-    final activeChips = buildActiveFilterChips(
+    return OrderFilterBar(
       filter: _filter,
-      l10n: l10n,
-      storeNames: _storeNames,
-      onUpdate: _updateFilter,
-    );
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            children: [
-              OutlinedButton.icon(
-                onPressed: loading ? null : () => _openFilterSheet(docs),
-                icon: const Icon(Icons.tune_rounded, size: 18),
-                label: Text(l10n.filterButtonLabel),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.primary,
-                  side: BorderSide(
-                    color: AppColors.primary.withValues(alpha: 0.35),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 10,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-              ),
-              if (_filter.activeCount > 0) ...[
-                const SizedBox(width: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 9,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    '${_filter.activeCount}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-              ],
-            ],
-          ),
-          if (activeChips.isNotEmpty) ...[
-            const SizedBox(height: 10),
-            SizedBox(
-              height: 34,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                physics: const BouncingScrollPhysics(),
-                itemCount: activeChips.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 8),
-                itemBuilder: (context, index) {
-                  final chip = activeChips[index];
-                  return InputChip(
-                    label: Text(chip.label, style: const TextStyle(fontSize: 12)),
-                    deleteIcon: const Icon(Icons.close, size: 16),
-                    onDeleted: chip.onRemove,
-                    backgroundColor: AppColors.primary.withValues(alpha: 0.08),
-                    side: BorderSide(
-                      color: AppColors.primary.withValues(alpha: 0.25),
-                    ),
-                    labelStyle: const TextStyle(
-                      color: AppColors.primary,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
-        ],
-      ),
+      loading: loading,
+      onOpenFilters: () => _openFilterSheet(docs),
+      onOpenDate: _openDateSheet,
+      onSortChanged:
+          (sort) => setState(() => _filter = _filter.copyWith(sortBy: sort)),
     );
   }
 
@@ -201,8 +135,7 @@ class _OrdersPageState extends State<OrdersPage> {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    _buildFilterBar(l10n, docs, loading: loading),
-                    const SizedBox(height: 8),
+                    _buildFilterBar(docs, loading: loading),
                     Expanded(
                       child:
                           loading
@@ -234,9 +167,7 @@ class _OrdersPageState extends State<OrdersPage> {
     sortOrders(filtered, _filter.sortBy);
 
     if (filtered.isEmpty) {
-      return _NoMatchingOrdersState(
-        onClear: () => _updateFilter(OrderFilter.defaults()),
-      );
+      return _NoMatchingOrdersState(onClear: _clearFilterCriteria);
     }
 
     return ListView.separated(

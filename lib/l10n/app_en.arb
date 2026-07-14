@@ -264,6 +264,13 @@
   "orderFilterSortHighestAmount": "Highest amount",
   "orderFilterSortLowestAmount": "Lowest amount",
   "noOrdersMatchFilters": "No orders match your filters",
+  "orderDateSheetTitle": "Date placed",
+  "orderFiltersActive": "{count} filters active",
+  "@orderFiltersActive": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "failedToLoadProfile": "Failed to load profile. Please try again.",
   "recentActivity": "Recent activity",
   "addShortBioPrompt": "Add a short bio to personalize your profile",

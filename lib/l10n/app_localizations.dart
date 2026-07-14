@@ -1145,6 +1145,18 @@ abstract class AppLocalizations {
   /// **'No orders match your filters'**
   String get noOrdersMatchFilters;
 
+  /// No description provided for @orderDateSheetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Date placed'**
+  String get orderDateSheetTitle;
+
+  /// No description provided for @orderFiltersActive.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} filters active'**
+  String orderFiltersActive(int count);
+
   /// No description provided for @failedToLoadProfile.
   ///
   /// In en, this message translates to:

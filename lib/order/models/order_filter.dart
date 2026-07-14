@@ -42,23 +42,40 @@ class OrderFilter {
 
   factory OrderFilter.defaults() => const OrderFilter();
 
-  bool get isDefault =>
-      statuses.isEmpty &&
-      storeId == null &&
-      amountPreset == AmountRangePreset.any &&
-      datePreset == DateRangePreset.allTime &&
-      paymentStatus == null &&
-      sortBy == OrderSortOption.newestFirst;
+  bool get hasFilterCriteria =>
+      statuses.isNotEmpty ||
+      storeId != null ||
+      amountPreset != AmountRangePreset.any ||
+      paymentStatus != null;
 
-  int get activeCount {
+  bool get hasDateFilter => datePreset != DateRangePreset.allTime;
+
+  bool get hasCustomSort => sortBy != OrderSortOption.newestFirst;
+
+  bool get isDefault =>
+      !hasFilterCriteria && !hasDateFilter && !hasCustomSort;
+
+  /// Count of filter criteria only (excludes date and sort).
+  int get filterActiveCount {
     var count = 0;
     if (statuses.isNotEmpty) count++;
     if (storeId != null) count++;
     if (amountPreset != AmountRangePreset.any) count++;
-    if (datePreset != DateRangePreset.allTime) count++;
     if (paymentStatus != null) count++;
-    if (sortBy != OrderSortOption.newestFirst) count++;
     return count;
+  }
+
+  /// Alias for [filterActiveCount].
+  int get activeCount => filterActiveCount;
+
+  /// Clears filter criteria while preserving date and sort.
+  OrderFilter clearFilterCriteria() {
+    return copyWith(
+      statuses: {},
+      clearStoreId: true,
+      amountPreset: AmountRangePreset.any,
+      clearPaymentStatus: true,
+    );
   }
 
   OrderFilter copyWith({
