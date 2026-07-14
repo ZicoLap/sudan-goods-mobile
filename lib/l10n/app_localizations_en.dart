@@ -272,6 +272,39 @@ class AppLocalizationsEn extends AppLocalizations {
   String get browseCategories => 'Browse Categories';
 
   @override
+  String get filterButtonLabel => 'Filter';
+
+  @override
+  String get filterSheetTitle => 'Filter Stores';
+
+  @override
+  String get filterReset => 'Reset';
+
+  @override
+  String get filterApply => 'Apply Filters';
+
+  @override
+  String get filterOpenNow => 'Open Now';
+
+  @override
+  String get filterOpenNowSubtitle => 'Only show currently open stores';
+
+  @override
+  String get filterFeatured => 'Featured';
+
+  @override
+  String get filterFeaturedSubtitle => 'Only show featured stores';
+
+  @override
+  String get filterFreeDelivery => 'Free Delivery';
+
+  @override
+  String get filterFreeDeliverySubtitle => 'Only show stores with free delivery offers';
+
+  @override
+  String get filterMinOrder => 'Minimum Order';
+
+  @override
   String get featuredStores => 'Featured Stores';
 
   @override

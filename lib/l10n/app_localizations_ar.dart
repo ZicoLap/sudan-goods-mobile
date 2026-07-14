@@ -272,6 +272,39 @@ class AppLocalizationsAr extends AppLocalizations {
   String get browseCategories => 'تصفح الفئات';
 
   @override
+  String get filterButtonLabel => 'فلتر';
+
+  @override
+  String get filterSheetTitle => 'تصفية المتاجر';
+
+  @override
+  String get filterReset => 'إعادة تعيين';
+
+  @override
+  String get filterApply => 'تطبيق الفلاتر';
+
+  @override
+  String get filterOpenNow => 'مفتوح الآن';
+
+  @override
+  String get filterOpenNowSubtitle => 'عرض المتاجر المفتوحة فقط';
+
+  @override
+  String get filterFeatured => 'مميز';
+
+  @override
+  String get filterFeaturedSubtitle => 'عرض المتاجر المميزة فقط';
+
+  @override
+  String get filterFreeDelivery => 'توصيل مجاني';
+
+  @override
+  String get filterFreeDeliverySubtitle => 'عرض المتاجر التي تقدم توصيلاً مجانياً';
+
+  @override
+  String get filterMinOrder => 'الحد الأدنى للطلب';
+
+  @override
   String get featuredStores => 'متاجر مميزة';
 
   @override

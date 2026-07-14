@@ -83,14 +83,9 @@ class _AllStoresSectionState extends State<AllStoresSection> {
         ),
         SizedBox(height: DesignTokens.space16),
 
-        // Real-time store list
+        // Real-time store list — streamed once, filtered client-side.
         StreamBuilder<List<Store>>(
-          stream:
-              filter.isAll
-                  ? StoreServices().streamAllApprovedStores()
-                  : StoreServices().streamApprovedStoresByCategory(
-                    filter.selectedCategoryId,
-                  ),
+          stream: StoreServices().streamAllApprovedStores(),
           builder: (context, snapshot) {
             // Cache last non-empty data for smoother transitions
             if (snapshot.hasData) {
@@ -100,7 +95,8 @@ class _AllStoresSectionState extends State<AllStoresSection> {
             final isWaiting =
                 snapshot.connectionState == ConnectionState.waiting;
             final hasError = snapshot.hasError && !isWaiting;
-            final stores = snapshot.data ?? _lastStores ?? [];
+            final rawStores = snapshot.data ?? _lastStores ?? [];
+            final stores = filter.apply(rawStores);
 
             if (hasError) {
               return Padding(

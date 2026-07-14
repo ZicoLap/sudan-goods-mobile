@@ -575,6 +575,72 @@ abstract class AppLocalizations {
   /// **'Browse Categories'**
   String get browseCategories;
 
+  /// No description provided for @filterButtonLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter'**
+  String get filterButtonLabel;
+
+  /// No description provided for @filterSheetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter Stores'**
+  String get filterSheetTitle;
+
+  /// No description provided for @filterReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get filterReset;
+
+  /// No description provided for @filterApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply Filters'**
+  String get filterApply;
+
+  /// No description provided for @filterOpenNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Now'**
+  String get filterOpenNow;
+
+  /// No description provided for @filterOpenNowSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Only show currently open stores'**
+  String get filterOpenNowSubtitle;
+
+  /// No description provided for @filterFeatured.
+  ///
+  /// In en, this message translates to:
+  /// **'Featured'**
+  String get filterFeatured;
+
+  /// No description provided for @filterFeaturedSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Only show featured stores'**
+  String get filterFeaturedSubtitle;
+
+  /// No description provided for @filterFreeDelivery.
+  ///
+  /// In en, this message translates to:
+  /// **'Free Delivery'**
+  String get filterFreeDelivery;
+
+  /// No description provided for @filterFreeDeliverySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Only show stores with free delivery offers'**
+  String get filterFreeDeliverySubtitle;
+
+  /// No description provided for @filterMinOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum Order'**
+  String get filterMinOrder;
+
   /// No description provided for @featuredStores.
   ///
   /// In en, this message translates to:
