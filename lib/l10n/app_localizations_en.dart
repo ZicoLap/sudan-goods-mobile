@@ -254,6 +254,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noStoresAvailable => 'No stores available';
 
   @override
+  String get noStoresMatchFilters => 'No stores match your filters';
+
+  @override
+  String get clearFilters => 'Clear filters';
+
+  @override
   String get storeDetailsTitle => 'Store Details';
 
   @override
@@ -303,6 +309,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get filterMinOrder => 'Minimum Order';
+
+  @override
+  String get filterCountry => 'Country';
+
+  @override
+  String get filterCountryAny => 'All Countries';
 
   @override
   String get featuredStores => 'Featured Stores';

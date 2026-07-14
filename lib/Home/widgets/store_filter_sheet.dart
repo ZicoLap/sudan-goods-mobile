@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sudan_goods/Home/controller/store_filter_controller.dart';
 import 'package:sudan_goods/Home/models/store_filter.dart';
+import 'package:sudan_goods/Home/services/store_service.dart';
 import 'package:sudan_goods/Home/widgets/filter_chip_group.dart';
 import 'package:sudan_goods/Home/widgets/filter_section.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
+import 'package:sudan_goods/models/store/store_model.dart';
 import 'package:sudan_goods/theme/app_theme.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 
@@ -41,6 +43,9 @@ class _StoreFilterSheetState extends State<StoreFilterSheet> {
 
     // Sync numeric criterion.
     controller.setMaxMinOrder(_draft.maxMinOrder);
+
+    // Sync country selection.
+    controller.selectCountry(_draft.selectedCountry);
 
     // Sync boolean criteria. The controller's toggle methods flip the current
     // value, so we call them only when the draft differs from the controller.
@@ -160,6 +165,47 @@ class _StoreFilterSheetState extends State<StoreFilterSheet> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Country.
+                  FilterSection(
+                    icon: Icons.public_rounded,
+                    title: l10n.filterCountry,
+                    iconColor: Colors.blue,
+                    child: StreamBuilder<List<Store>>(
+                      stream: StoreServices().streamAllApprovedStores(),
+                      builder: (context, snapshot) {
+                        final stores = snapshot.data ?? [];
+                        final countries =
+                            <String>{
+                                ...stores.map((s) => s.address.country),
+                              }.where((c) => c.isNotEmpty).toList()
+                              ..sort();
+
+                        final countryChips = [
+                          FilterChipData(
+                            key: 'all',
+                            label: l10n.filterCountryAny,
+                          ),
+                          ...countries.map(
+                            (c) => FilterChipData(key: c, label: c),
+                          ),
+                        ];
+
+                        return FilterChipGroup(
+                          chips: countryChips,
+                          selectedKeys: {_draft.selectedCountry ?? 'all'},
+                          onSelected: (key) {
+                            setState(() {
+                              _draft = _draft.copyWith(
+                                selectedCountry: key == 'all' ? null : key,
+                                clearSelectedCountry: key == 'all',
+                              );
+                            });
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 20),
                   // Open Now.
                   FilterSection(
                     icon: Icons.access_time_rounded,

@@ -125,6 +125,60 @@ class StoreFilterBar extends StatelessWidget {
               ),
             ),
           ),
+          // Country chip.
+          GestureDetector(
+            onTap: onMoreFilters,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              margin: const EdgeInsets.only(right: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+              decoration: BoxDecoration(
+                color:
+                    filter.selectedCountry != null
+                        ? AppColors.primary
+                        : Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color:
+                      filter.selectedCountry != null
+                          ? AppColors.primary
+                          : Colors.black.withValues(alpha: 0.1),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.public_rounded,
+                    size: 15,
+                    color:
+                        filter.selectedCountry != null
+                            ? Colors.white
+                            : Colors.black54,
+                  ),
+                  const SizedBox(width: 5),
+                  Text(
+                    filter.selectedCountry ?? l10n.filterCountry,
+                    style: TextStyle(
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.w700,
+                      color:
+                          filter.selectedCountry != null
+                              ? Colors.white
+                              : Colors.black54,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
           // Quick toggle chips.
           FilterChipGroup(
             chips: quickChips,

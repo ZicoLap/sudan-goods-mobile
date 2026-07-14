@@ -539,6 +539,18 @@ abstract class AppLocalizations {
   /// **'No stores available'**
   String get noStoresAvailable;
 
+  /// No description provided for @noStoresMatchFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'No stores match your filters'**
+  String get noStoresMatchFilters;
+
+  /// No description provided for @clearFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear filters'**
+  String get clearFilters;
+
   /// No description provided for @storeDetailsTitle.
   ///
   /// In en, this message translates to:
@@ -640,6 +652,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Minimum Order'**
   String get filterMinOrder;
+
+  /// No description provided for @filterCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'Country'**
+  String get filterCountry;
+
+  /// No description provided for @filterCountryAny.
+  ///
+  /// In en, this message translates to:
+  /// **'All Countries'**
+  String get filterCountryAny;
 
   /// No description provided for @featuredStores.
   ///

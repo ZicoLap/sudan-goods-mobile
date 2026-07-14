@@ -26,6 +26,16 @@ class StoreFilterController extends ChangeNotifier {
     notifyListeners();
   }
 
+  void selectCountry(String? country) {
+    if (_filter.selectedCountry == country) return;
+    if (country == null || country.isEmpty) {
+      _filter = _filter.copyWith(clearSelectedCountry: true);
+    } else {
+      _filter = _filter.copyWith(selectedCountry: country);
+    }
+    notifyListeners();
+  }
+
   void toggleOpenNow() {
     _filter = _filter.copyWith(openNow: !_filter.openNow);
     notifyListeners();

@@ -7,6 +7,7 @@ import 'package:sudan_goods/models/store/store_model.dart';
 /// [StoreFilterController] and the UI widgets to expose them.
 class StoreFilter {
   final String selectedCategoryId;
+  final String? selectedCountry;
   final bool openNow;
   final bool featured;
   final bool freeDelivery;
@@ -14,6 +15,7 @@ class StoreFilter {
 
   const StoreFilter({
     this.selectedCategoryId = 'all',
+    this.selectedCountry,
     this.openNow = false,
     this.featured = false,
     this.freeDelivery = false,
@@ -23,6 +25,7 @@ class StoreFilter {
   /// Returns true when no filter (other than "all" categories) is active.
   bool get isEmpty =>
       selectedCategoryId == 'all' &&
+      selectedCountry == null &&
       !openNow &&
       !featured &&
       !freeDelivery &&
@@ -31,6 +34,7 @@ class StoreFilter {
   /// Number of active filter criteria (category excluded from this count).
   int get activeCount {
     var count = 0;
+    if (selectedCountry != null) count++;
     if (openNow) count++;
     if (featured) count++;
     if (freeDelivery) count++;
@@ -40,6 +44,8 @@ class StoreFilter {
 
   StoreFilter copyWith({
     String? selectedCategoryId,
+    String? selectedCountry,
+    bool clearSelectedCountry = false,
     bool? openNow,
     bool? featured,
     bool? freeDelivery,
@@ -48,6 +54,10 @@ class StoreFilter {
   }) {
     return StoreFilter(
       selectedCategoryId: selectedCategoryId ?? this.selectedCategoryId,
+      selectedCountry:
+          clearSelectedCountry
+              ? null
+              : (selectedCountry ?? this.selectedCountry),
       openNow: openNow ?? this.openNow,
       featured: featured ?? this.featured,
       freeDelivery: freeDelivery ?? this.freeDelivery,
@@ -61,6 +71,10 @@ class StoreFilter {
         !store.categoryIds.contains(selectedCategoryId)) {
       return false;
     }
+    if (selectedCountry != null &&
+        _normalize(store.address.country) != _normalize(selectedCountry)) {
+      return false;
+    }
     if (openNow && !store.isOpen) return false;
     if (featured && !store.isFeatured) return false;
     if (freeDelivery && store.freeDeliveryOver == null) return false;
@@ -68,5 +82,9 @@ class StoreFilter {
       return false;
     }
     return true;
+  }
+
+  static String _normalize(String? value) {
+    return (value ?? '').trim().toLowerCase();
   }
 }

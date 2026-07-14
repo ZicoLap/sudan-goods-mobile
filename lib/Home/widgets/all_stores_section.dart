@@ -123,7 +123,36 @@ class _AllStoresSectionState extends State<AllStoresSection> {
               return Padding(
                 padding: DesignTokens.paddingPageHorizontal,
                 child: Center(
-                  child: Text(AppLocalizations.of(context)!.noStoresAvailable),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        filter.hasActiveFilters
+                            ? AppLocalizations.of(context)!.noStoresMatchFilters
+                            : AppLocalizations.of(context)!.noStoresAvailable,
+                      ),
+                      if (filter.hasActiveFilters) ...[
+                        const SizedBox(height: 12),
+                        TextButton.icon(
+                          onPressed:
+                              () =>
+                                  context
+                                      .read<StoreFilterController>()
+                                      .resetFilters(),
+                          icon: const Icon(Icons.clear_all_rounded, size: 18),
+                          label: Text(
+                            AppLocalizations.of(context)!.clearFilters,
+                          ),
+                          style: TextButton.styleFrom(
+                            foregroundColor: AppColors.primary,
+                            textStyle: const TextStyle(
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
                 ),
               );
             }

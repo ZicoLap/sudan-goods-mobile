@@ -254,6 +254,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get noStoresAvailable => 'لا توجد متاجر متاحة';
 
   @override
+  String get noStoresMatchFilters => 'لا توجد متاجر تطابق فلاترك';
+
+  @override
+  String get clearFilters => 'مسح الفلاتر';
+
+  @override
   String get storeDetailsTitle => 'تفاصيل المتجر';
 
   @override
@@ -303,6 +309,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get filterMinOrder => 'الحد الأدنى للطلب';
+
+  @override
+  String get filterCountry => 'الدولة';
+
+  @override
+  String get filterCountryAny => 'جميع الدول';
 
   @override
   String get featuredStores => 'متاجر مميزة';
