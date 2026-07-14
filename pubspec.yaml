@@ -93,6 +93,7 @@ flutter:
     - assets/images/
     - assets/app_icon/
     - assets/onboarding/
+    - assets/order/
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

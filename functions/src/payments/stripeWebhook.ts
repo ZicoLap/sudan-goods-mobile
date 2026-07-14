@@ -229,7 +229,7 @@ async function handlePaymentSucceeded(pi: Record<string, any>): Promise<void> {
     // Do NOT recompute from live Firestore — prices may have changed since payment.
     const hasFulfillmentIssues = orderItems.some((it) => it.fulfillmentIssue);
 
-    // Write order — born confirmed + paid
+    // Write order — paid immediately; merchant confirms before status advances.
     const orderRef = db.collection('orders').doc();
     tx.set(orderRef, {
       userId: uid,
@@ -238,7 +238,7 @@ async function handlePaymentSucceeded(pi: Record<string, any>): Promise<void> {
       subtotal: chargedSubtotal,
       deliveryFee: chargedDeliveryFee,
       total: chargedTotal,
-      status: hasFulfillmentIssues ? 'fulfillment_review' : 'confirmed',
+      status: hasFulfillmentIssues ? 'fulfillment_review' : 'pending',
       paymentStatus: 'paid',
       paymentMethod: 'card',
       paymentIntentId: pi.id,

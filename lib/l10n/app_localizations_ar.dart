@@ -490,6 +490,81 @@ class AppLocalizationsAr extends AppLocalizations {
   String get orderStatusCancelled => 'ملغي';
 
   @override
+  String get orderStatusFulfillmentReview => 'قيد المراجعة';
+
+  @override
+  String get orderFilterSheetTitle => 'تصفية الطلبات';
+
+  @override
+  String get orderFilterStore => 'المتجر';
+
+  @override
+  String get orderFilterStoreAny => 'جميع المتاجر';
+
+  @override
+  String get orderFilterAmount => 'مبلغ الطلب';
+
+  @override
+  String get orderFilterAmountAny => 'أي مبلغ';
+
+  @override
+  String get orderFilterAmountUnder25 => 'أقل من 25 €';
+
+  @override
+  String get orderFilterAmount25to50 => '25 – 50 €';
+
+  @override
+  String get orderFilterAmount50to100 => '50 – 100 €';
+
+  @override
+  String get orderFilterAmountOver100 => 'أكثر من 100 €';
+
+  @override
+  String get orderFilterDate => 'تاريخ الطلب';
+
+  @override
+  String get orderFilterDateAllTime => 'كل الوقت';
+
+  @override
+  String get orderFilterDateLast7Days => 'آخر 7 أيام';
+
+  @override
+  String get orderFilterDateLast30Days => 'آخر 30 يوماً';
+
+  @override
+  String get orderFilterDateLast3Months => 'آخر 3 أشهر';
+
+  @override
+  String get orderFilterPayment => 'حالة الدفع';
+
+  @override
+  String get orderFilterPaymentAny => 'الكل';
+
+  @override
+  String get orderFilterPaymentPaid => 'مدفوع';
+
+  @override
+  String get orderFilterPaymentUnpaid => 'غير مدفوع';
+
+  @override
+  String get orderFilterSort => 'ترتيب حسب';
+
+  @override
+  String get orderFilterSortNewest => 'الأحدث أولاً';
+
+  @override
+  String get orderFilterSortOldest => 'الأقدم أولاً';
+
+  @override
+  String get orderFilterSortHighestAmount => 'أعلى مبلغ';
+
+  @override
+  String get orderFilterSortLowestAmount => 'أقل مبلغ';
+
+  @override
+  String get noOrdersMatchFilters => 'لا توجد طلبات تطابق الفلاتر';
+
+  @override
   String get failedToLoadProfile => 'فشل تحميل الملف الشخصي. يرجى المحاولة مرة أخرى.';
 
   @override

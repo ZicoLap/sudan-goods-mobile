@@ -490,6 +490,81 @@ class AppLocalizationsEn extends AppLocalizations {
   String get orderStatusCancelled => 'Cancelled';
 
   @override
+  String get orderStatusFulfillmentReview => 'Under review';
+
+  @override
+  String get orderFilterSheetTitle => 'Filter Orders';
+
+  @override
+  String get orderFilterStore => 'Store';
+
+  @override
+  String get orderFilterStoreAny => 'All stores';
+
+  @override
+  String get orderFilterAmount => 'Order amount';
+
+  @override
+  String get orderFilterAmountAny => 'Any amount';
+
+  @override
+  String get orderFilterAmountUnder25 => 'Under €25';
+
+  @override
+  String get orderFilterAmount25to50 => '€25 – €50';
+
+  @override
+  String get orderFilterAmount50to100 => '€50 – €100';
+
+  @override
+  String get orderFilterAmountOver100 => 'Over €100';
+
+  @override
+  String get orderFilterDate => 'Date placed';
+
+  @override
+  String get orderFilterDateAllTime => 'All time';
+
+  @override
+  String get orderFilterDateLast7Days => 'Last 7 days';
+
+  @override
+  String get orderFilterDateLast30Days => 'Last 30 days';
+
+  @override
+  String get orderFilterDateLast3Months => 'Last 3 months';
+
+  @override
+  String get orderFilterPayment => 'Payment status';
+
+  @override
+  String get orderFilterPaymentAny => 'Any';
+
+  @override
+  String get orderFilterPaymentPaid => 'Paid';
+
+  @override
+  String get orderFilterPaymentUnpaid => 'Unpaid';
+
+  @override
+  String get orderFilterSort => 'Sort by';
+
+  @override
+  String get orderFilterSortNewest => 'Newest first';
+
+  @override
+  String get orderFilterSortOldest => 'Oldest first';
+
+  @override
+  String get orderFilterSortHighestAmount => 'Highest amount';
+
+  @override
+  String get orderFilterSortLowestAmount => 'Lowest amount';
+
+  @override
+  String get noOrdersMatchFilters => 'No orders match your filters';
+
+  @override
   String get failedToLoadProfile => 'Failed to load profile. Please try again.';
 
   @override

@@ -995,6 +995,156 @@ abstract class AppLocalizations {
   /// **'Cancelled'**
   String get orderStatusCancelled;
 
+  /// No description provided for @orderStatusFulfillmentReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Under review'**
+  String get orderStatusFulfillmentReview;
+
+  /// No description provided for @orderFilterSheetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter Orders'**
+  String get orderFilterSheetTitle;
+
+  /// No description provided for @orderFilterStore.
+  ///
+  /// In en, this message translates to:
+  /// **'Store'**
+  String get orderFilterStore;
+
+  /// No description provided for @orderFilterStoreAny.
+  ///
+  /// In en, this message translates to:
+  /// **'All stores'**
+  String get orderFilterStoreAny;
+
+  /// No description provided for @orderFilterAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Order amount'**
+  String get orderFilterAmount;
+
+  /// No description provided for @orderFilterAmountAny.
+  ///
+  /// In en, this message translates to:
+  /// **'Any amount'**
+  String get orderFilterAmountAny;
+
+  /// No description provided for @orderFilterAmountUnder25.
+  ///
+  /// In en, this message translates to:
+  /// **'Under €25'**
+  String get orderFilterAmountUnder25;
+
+  /// No description provided for @orderFilterAmount25to50.
+  ///
+  /// In en, this message translates to:
+  /// **'€25 – €50'**
+  String get orderFilterAmount25to50;
+
+  /// No description provided for @orderFilterAmount50to100.
+  ///
+  /// In en, this message translates to:
+  /// **'€50 – €100'**
+  String get orderFilterAmount50to100;
+
+  /// No description provided for @orderFilterAmountOver100.
+  ///
+  /// In en, this message translates to:
+  /// **'Over €100'**
+  String get orderFilterAmountOver100;
+
+  /// No description provided for @orderFilterDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date placed'**
+  String get orderFilterDate;
+
+  /// No description provided for @orderFilterDateAllTime.
+  ///
+  /// In en, this message translates to:
+  /// **'All time'**
+  String get orderFilterDateAllTime;
+
+  /// No description provided for @orderFilterDateLast7Days.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 7 days'**
+  String get orderFilterDateLast7Days;
+
+  /// No description provided for @orderFilterDateLast30Days.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 30 days'**
+  String get orderFilterDateLast30Days;
+
+  /// No description provided for @orderFilterDateLast3Months.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 3 months'**
+  String get orderFilterDateLast3Months;
+
+  /// No description provided for @orderFilterPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment status'**
+  String get orderFilterPayment;
+
+  /// No description provided for @orderFilterPaymentAny.
+  ///
+  /// In en, this message translates to:
+  /// **'Any'**
+  String get orderFilterPaymentAny;
+
+  /// No description provided for @orderFilterPaymentPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid'**
+  String get orderFilterPaymentPaid;
+
+  /// No description provided for @orderFilterPaymentUnpaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Unpaid'**
+  String get orderFilterPaymentUnpaid;
+
+  /// No description provided for @orderFilterSort.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort by'**
+  String get orderFilterSort;
+
+  /// No description provided for @orderFilterSortNewest.
+  ///
+  /// In en, this message translates to:
+  /// **'Newest first'**
+  String get orderFilterSortNewest;
+
+  /// No description provided for @orderFilterSortOldest.
+  ///
+  /// In en, this message translates to:
+  /// **'Oldest first'**
+  String get orderFilterSortOldest;
+
+  /// No description provided for @orderFilterSortHighestAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Highest amount'**
+  String get orderFilterSortHighestAmount;
+
+  /// No description provided for @orderFilterSortLowestAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Lowest amount'**
+  String get orderFilterSortLowestAmount;
+
+  /// No description provided for @noOrdersMatchFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'No orders match your filters'**
+  String get noOrdersMatchFilters;
+
   /// No description provided for @failedToLoadProfile.
   ///
   /// In en, this message translates to:
