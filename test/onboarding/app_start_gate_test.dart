@@ -6,8 +6,8 @@ import 'package:sudan_goods/l10n/locale_controller.dart';
 import 'package:sudan_goods/l10n/locale_persistence_service.dart';
 import 'package:sudan_goods/onboarding/app_start_gate.dart';
 import 'package:sudan_goods/onboarding/onboarding_persistence_service.dart';
-import 'package:sudan_goods/onboarding/language_picker_screen.dart';
-import 'package:sudan_goods/onboarding/onboarding_screen.dart';
+import 'package:sudan_goods/onboarding/pages/language_picker_screen.dart';
+import 'package:sudan_goods/onboarding/pages/onboarding_screen.dart';
 
 class _FakeLocalePersistence extends LocalePersistenceService {
   _FakeLocalePersistence(this._code);

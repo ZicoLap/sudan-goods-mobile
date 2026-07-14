@@ -22,7 +22,7 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 
 // import 'package:cloud_functions/cloud_functions.dart';
 
-import 'firebase_options.dart';
+import 'core/config/firebase_options.dart';
 
 /// Stripe publishable key — safe to include in client code.
 /// Replace with your real key from https://dashboard.stripe.com/apikeys

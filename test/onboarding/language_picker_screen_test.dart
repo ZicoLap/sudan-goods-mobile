@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
 import 'package:sudan_goods/l10n/locale_controller.dart';
 import 'package:sudan_goods/l10n/locale_persistence_service.dart';
-import 'package:sudan_goods/onboarding/language_picker_screen.dart';
+import 'package:sudan_goods/onboarding/pages/language_picker_screen.dart';
 import 'package:sudan_goods/onboarding/onboarding_assets.dart';
 import 'package:sudan_goods/onboarding/onboarding_style.dart';
 

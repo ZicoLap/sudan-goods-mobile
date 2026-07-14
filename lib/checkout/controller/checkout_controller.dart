@@ -11,7 +11,7 @@ import 'package:sudan_goods/cart/cart_controller.dart';
 import 'package:sudan_goods/checkout/services/checkout_service.dart';
 import 'package:sudan_goods/checkout/services/payment_service.dart';
 import 'package:sudan_goods/models/store/store_model.dart';
-import 'package:sudan_goods/order/screens/order_success_page.dart';
+import 'package:sudan_goods/order/pages/order_success_page.dart';
 import 'package:uuid/uuid.dart';
 
 /// Controller responsible for validating checkout inputs,

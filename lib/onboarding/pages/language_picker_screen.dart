@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:sudan_goods/l10n/app_localizations.dart';
 import 'package:sudan_goods/l10n/locale_controller.dart';
 import 'package:sudan_goods/onboarding/onboarding_assets.dart';
-import 'package:sudan_goods/onboarding/onboarding_screen.dart';
+import 'package:sudan_goods/onboarding/pages/onboarding_screen.dart';
 import 'package:sudan_goods/onboarding/onboarding_style.dart';
 import 'package:sudan_goods/theme/design_tokens.dart';
 
